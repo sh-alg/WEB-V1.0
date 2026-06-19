@@ -730,7 +730,7 @@
                         <img src="https://sh-alg.github.io/SM-IMG/19-SMH-OP-SECTION.jpeg" alt="OP Section" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-slate-950/45 p-4 flex flex-col justify-end text-white">
                             <h5 class="font-bold text-sm sm:text-base max-sm:text-center font-bold">Main Outpatient Registration Desk</h5>
-                            <p class="text-[10px] text-slate-200 max-sm:text-center">Automated ticketing queue systems.</p>
+                            <p class="text-[10px] text-slate-200 max-sm:text-center">Automated queue systems.</p>
                         </div>
                     </div>
                     <div class="gallery-slide-right absolute inset-0">
@@ -801,7 +801,7 @@
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-4 max-sm:text-center">
             <div class="text-center max-w-xl mx-auto space-y-1">
                 <span class="text-[10px] font-extrabold uppercase tracking-widest text-medical-700 max-sm:mx-auto">Database Registration</span>
-                <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 max-sm:text-center">Hospital OPD Ticket Desk</h3>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 max-sm:text-center">Hospital OPD Desk</h3>
                 <p class="text-slate-500 text-xs max-sm:text-center">Fill the details to get your priority medical token instantly.</p>
             </div>
 
@@ -846,7 +846,7 @@
                         <input type="text" id="village_880055" required class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-medical-600 text-xs bg-slate-50/50 max-sm:text-center" placeholder="e.g., Allagadda">
                     </div>
                 </div>
-                <button type="submit" id="submit-btn" class="w-full bg-medical-700 hover:bg-medical-800 text-white font-bold py-3 rounded-xl transition-all shadow-md text-xs sm:text-sm tracking-wider uppercase inline-flex items-center justify-center space-x-2 max-sm:mx-auto"><span id="btn-text">Confirm Priority Ticket</span></button>
+                <button type="submit" id="submit-btn" class="w-full bg-medical-700 hover:bg-medical-800 text-white font-bold py-3 rounded-xl transition-all shadow-md text-xs sm:text-sm tracking-wider uppercase inline-flex items-center justify-center space-x-2 max-sm:mx-auto"><span id="btn-text">Confirm Priority </span></button>
             </form>
         </div>
     </div>
@@ -982,7 +982,7 @@
             <div class="text-center space-y-1">
                 <div class="w-10 h-10 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto mb-1 text-xl">✓</div>
                 <h4 class="text-lg font-bold text-slate-900 max-sm:text-center">OPD Intake Completed Successfully</h4>
-                <p class="text-xs text-slate-500 max-sm:text-center">Please show this ticket token at the hospital registration counter.</p>
+                <p class="text-xs text-slate-500 max-sm:text-center">Please show this token at the hospital registration counter.</p>
             </div>
             
             <div class="my-4 p-4 bg-slate-50 border border-slate-200/80 rounded-xl space-y-2 text-xs text-left max-sm:text-center">
@@ -1045,8 +1045,8 @@
     function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
     function handleDemoLogin(e) { e.preventDefault(); alert("This login interface is locked under Secure Administrative Protocols."); closeLoginModal(); }
 
-    /** * REGISTRATION & TICKET BOOKING FUNCTIONS */
-    async function handleRegistration(event) { event.preventDefault(); const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.innerText = "Processing..."; const payload = { fullName_880055: document.getElementById('fullName_880055').value, phone_880055: document.getElementById('phone_880055').value, age_880055: document.getElementById('age_880055').value, gender_880055: document.getElementById('gender_880055').value, village_880055: document.getElementById('village_880055').value, consultant_880055: document.getElementById('consultant_880055').value, date_880055: document.getElementById('date_880055').value }; try { const response = await fetch(GOOGLE_APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) }); const result = await response.json(); if (result.result === 'success') { const tokenNumberOnly = result.token.replace(/[A-Z]/g, ''); const modalContent = document.getElementById('modal-content'); modalContent.innerHTML = `<p><strong>Token:</strong> ${tokenNumberOnly}</p><p><strong>Name:</strong> ${payload.fullName_880055}</p><p><strong>Village:</strong> ${payload.village_880055}</p><p><strong>Phone:</strong> ${payload.phone_880055}</p>`; document.getElementById('success-modal').classList.remove('hidden'); document.getElementById('op-registration-form').reset(); prepopulateDateToToday(); } else { alert("Error: " + result.message); } } catch (err) { alert("Submission failed. Please check your connection."); } finally { btn.disabled = false; btn.innerText = "Confirm Priority Ticket"; } }
+    /** * REGISTRATION &  BOOKING FUNCTIONS */
+    async function handleRegistration(event) { event.preventDefault(); const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.innerText = "Processing..."; const payload = { fullName_880055: document.getElementById('fullName_880055').value, phone_880055: document.getElementById('phone_880055').value, age_880055: document.getElementById('age_880055').value, gender_880055: document.getElementById('gender_880055').value, village_880055: document.getElementById('village_880055').value, consultant_880055: document.getElementById('consultant_880055').value, date_880055: document.getElementById('date_880055').value }; try { const response = await fetch(GOOGLE_APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) }); const result = await response.json(); if (result.result === 'success') { const tokenNumberOnly = result.token.replace(/[A-Z]/g, ''); const modalContent = document.getElementById('modal-content'); modalContent.innerHTML = `<p><strong>Token:</strong> ${tokenNumberOnly}</p><p><strong>Name:</strong> ${payload.fullName_880055}</p><p><strong>Village:</strong> ${payload.village_880055}</p><p><strong>Phone:</strong> ${payload.phone_880055}</p>`; document.getElementById('success-modal').classList.remove('hidden'); document.getElementById('op-registration-form').reset(); prepopulateDateToToday(); } else { alert("Error: " + result.message); } } catch (err) { alert("Submission failed. Please check your connection."); } finally { btn.disabled = false; btn.innerText = "Confirm Priority "; } }
     function closeModal() { document.getElementById('success-modal').classList.add('hidden'); }
 
     /** * UTILITIES: COPY, SHARE & DATE FORMATTING */
