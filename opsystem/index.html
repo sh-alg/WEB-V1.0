@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanjeeva Multispecialty Hospital - OPD Desk</title>
+    <!-- Favicon link -->
+    <link rel="shortcut icon" href="https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png" type="image/png">
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Bilingual Telugu and English Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@300;400;500;600;700;800;900&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        slab: ['"Roboto Slab"', 'serif'],
+                        telugu: ['"Noto Serif Telugu"', 'serif']
+                    },
+                    colors: {
+                        medical: {
+                            50: '#f0fbfd',
+                            100: '#e0f7fc',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            700: '#0e7490',
+                            800: '#155e75',
+                            900: '#164e63'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .ping-fast {
+            animation: ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        body {
+            font-family: 'Roboto Slab', 'Noto Serif Telugu', serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+
+
+        /* 01-HEADER SECTION */
+
+
+        /* 02-LOGIN OVERLAY */
+
+
+        /* 03-SUB-HEADER BAR */
+
+
+        /* 04-OP REGISTRATION SECTION */
+
+
+        /* 05-TODAY REGISTERED OPDS */
+
+
+        /* 06-SWAPPABLE SHIFT SESSIONS */
+
+
+        /* 07-OPD MODIFICATION TERMINAL */
+
+
+        /* 08-FOOTER SECTION */
+
+
+        /* 09-SUCCESS REGISTRATION MODAL VIEW */
+
+
+        /* 10-PRINT ENGINES */
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 text-xs sm:text-sm">
+
+
+    <!-- 01-HEADER SECTION -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 transition-all duration-300">
+        <div class="w-full px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- HD Logo and Brand Info -->
+            <div class="flex items-center gap-3 text-center md:text-left">
+                <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" alt="Sanjeeva Hospital Logo" class="w-12 h-12 object-contain">
+                <div>
+                    <h1 class="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase leading-none">
+                        SANJEEVA MULTISPECIALTY HOSPITAL
+                    </h1>
+                    <p class="text-[10px] font-extrabold text-medical-600 dark:text-medical-400 tracking-[0.16em] uppercase flex items-center justify-center md:justify-start gap-1 mt-1">
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                        HEALTH CARE WITH ETHICS
+                    </p>
+                </div>
+            </div>
+
+            <!-- Live Weekday, Date, Time & Yellow Blinking dot -->
+            <div class="flex items-center gap-2.5 w-full md:w-auto justify-center md:justify-end">
+                <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3.5 py-2 rounded-2xl border border-slate-200 dark:border-slate-700/50 text-[11px] text-slate-600 dark:text-slate-300">
+                    <span class="relative flex h-2 w-2">
+                        <span class="ping-fast absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                    </span>
+                    <span id="liveTimestamp" class="font-mono font-bold tracking-wide">Syncing clock...</span>
+                </div>
+
+                <!-- Dark Mode System Toggle -->
+                <button id="themeToggle" class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:scale-105 transition-all" aria-label="Toggle dark mode">
+                    <svg id="sunIcon" class="w-3.5 h-3.5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                    <svg id="moonIcon" class="w-3.5 h-3.5 dark:hidden" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- 02-LOGIN OVERLAY -->
+    <div id="loginOverlay" class="flex-grow flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6">
+            <div class="text-center space-y-2">
+                <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" alt="Sanjeeva Hospital" class="w-16 h-16 mx-auto object-contain">
+                <h3 class="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">SMH Authorized Portal</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-[11px] font-semibold">Authorized hospital terminal login required</p>
+            </div>
+            
+            <form id="loginForm" onsubmit="handleStaffLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Terminal ID</label>
+                    <input type="text" id="loginUsername" value="SM01" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-medical-600 dark:text-white" placeholder="e.g., SM01">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Passkey</label>
+                    <input type="password" id="loginPassword" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-medical-600 dark:text-white" placeholder="••••">
+                </div>
+                
+                <div id="loginErrorMessage" class="hidden text-[11px] font-bold text-red-600 bg-red-50 dark:bg-red-950/30 p-3 rounded-xl border border-red-200 dark:border-red-900">
+                    Access Denied: Invalid Terminal credentials.
+                </div>
+
+                <button type="submit" id="loginSubmitBtn" class="w-full py-3 bg-medical-700 hover:bg-medical-800 text-white font-extrabold text-[10px] tracking-wider uppercase rounded-xl shadow-md transition-all">
+                    Authorize Terminal
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- MAIN TERMINAL APP VIEW (HIDDEN TILL SECURE AUTH) -->
+    <div id="appContainer" class="hidden flex-grow flex flex-col scale-95 origin-top transition-all duration-500">
+
+
+        <!-- 03-SUB-HEADER BAR -->
+        <div class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 py-2.5 px-4 sm:px-6 lg:px-8">
+            <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-bold">
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 uppercase tracking-widest text-[9px]">AUTHORIZED TERMINAL</span>
+                    <span class="text-slate-600 dark:text-slate-400">Terminal Operator: <strong id="activeOperatorBadge" class="text-slate-900 dark:text-white">Hospital Authorized Staff</strong></span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <!-- Circular reload arrow button -->
+                    <button onclick="fetchTodayData()" class="p-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-all shadow-md active:scale-95 flex items-center justify-center" title="Refresh Live Database">
+                        <svg class="w-3.5 h-3.5 animate-spin" id="syncSpinner" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="display:none">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <svg class="w-3.5 h-3.5" id="syncIcon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                    </button>
+                    
+                    <!-- Logout Session Action -->
+                    <button onclick="handleLogout()" class="px-3.5 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 shadow-sm">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN TERMINAL VIEWS -->
+        <main class="flex-grow w-full py-4 space-y-5">
+
+            <!-- DATA REFRESHED / NOTIFICATION FLOATER -->
+            <div id="toastMessage" class="fixed bottom-6 right-6 z-50 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 bg-slate-900/90 dark:bg-slate-800/95 backdrop-blur-sm text-white px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-xl border border-slate-700/50 text-[11px] font-bold uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                <span id="toastText">Data Refreshed</span>
+            </div>
+
+
+            <!-- 04-OP REGISTRATION SECTION -->
+            <section id="register" class="bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300">
+                <div class="bg-slate-50 dark:bg-slate-900/60 px-6 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="p-1.5 bg-medical-50 dark:bg-medical-950/40 text-medical-700 dark:text-medical-400 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-[11px] font-black uppercase tracking-wider text-slate-900 dark:text-white">OPD Registration Desk</h2>
+                            <p class="text-[9px] text-medical-600 dark:text-medical-400 font-extrabold uppercase tracking-widest">Active Database Writer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="op-registration-form" onsubmit="handlePatientRegistration(event)" class="p-4 sm:p-5 space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Date -->
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Appointment Date *</label>
+                            <input type="date" id="date_880055" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-medical-600 bg-slate-50 dark:bg-slate-850 dark:text-white font-bold text-xs">
+                        </div>
+                        <!-- Consultant Specialist Selection -->
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Specialist Consultant *</label>
+                            <select id="consultant_880055" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-medical-600 bg-white dark:bg-slate-900 dark:text-white font-bold text-xs">
+                                <option value="Dr. R. Anjaneyulu">Dr. R. Anjaneyulu (Gen Medicine)</option>
+                                <option value="Dr. E. Sujata Anjaneyulu">Dr. E. Sujata Anjaneyulu (Gastroenterology)</option>
+                                <option value="Dr. A. Chandrasekhar Reddy">Dr. A. Chandrasekhar Reddy (Cardiology)</option>
+                                <option value="Dr. Chanti Babu">Dr. Chanti Babu (Orthopedics)</option>
+                            </select>
+                        </div>
+                        <!-- Full Name -->
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Patient Full Name *</label>
+                            <input type="text" id="fullName_880055" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-medical-600 bg-slate-50 dark:bg-slate-850 dark:text-white font-semibold placeholder:text-slate-400 text-xs" placeholder="Patient Name">
+                        </div>
+                        <!-- Phone Number -->
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Phone Number *</label>
+                            <input type="tel" id="phone_880055" pattern="[0-9]{10}" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-medical-600 bg-slate-50 dark:bg-slate-850 dark:text-white font-mono text-xs" placeholder="10-digit number">
+                        </div>
+                        <!-- Age -->
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Patient Age *</label>
+                            <input type="number" id="age_880055" required min="0" max="120" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-medical-600 bg-slate-50 dark:bg-slate-850 dark:text-white text-xs" placeholder="Years">
+                        </div>
+                        
+                        <!-- Gender (Replaced select dropdown with active visual button selectors) -->
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Patient Gender *</label>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="selectGender('Male')" id="genderBtn_Male" class="flex-1 py-2 rounded-lg border text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1 bg-slate-50 border-slate-200 dark:bg-slate-900 dark:border-slate-800 text-slate-700 dark:text-slate-300">
+                                    Male
+                                </button>
+                                <button type="button" onclick="selectGender('Female')" id="genderBtn_Female" class="flex-1 py-2 rounded-lg border text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1 bg-slate-50 border-slate-200 dark:bg-slate-900 dark:border-slate-800 text-slate-700 dark:text-slate-300">
+                                    Female
+                                </button>
+                            </div>
+                            <!-- Hidden input field ensuring same form payloads -->
+                            <input type="hidden" id="gender_880055" required value="">
+                        </div>
+
+                        <!-- Village / Town -->
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Village / Town *</label>
+                            <input type="text" id="village_880055" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-medical-600 bg-slate-50 dark:bg-slate-850 dark:text-white placeholder:text-slate-400 text-xs" placeholder="Village name">
+                        </div>
+                        <!-- Consultation Fees -->
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Consultation Fees Amount (Optional)</label>
+                            <input type="number" id="amount_880055" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-medical-600 bg-slate-50 dark:bg-slate-850 dark:text-white placeholder:text-slate-400 font-bold text-xs" placeholder="Fees in INR">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="submit-btn" class="w-full py-3 bg-medical-700 hover:bg-medical-800 text-white font-extrabold text-[10px] tracking-wider uppercase rounded-xl transition-all shadow-md active:scale-[0.99] flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Confirm Outpatient Priority Admission
+                    </button>
+                </form>
+            </section>
+
+
+            <!-- 05-TODAY REGISTERED OPDS -->
+            <section class="bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300">
+                <div class="bg-slate-50 dark:bg-slate-900/60 px-6 py-3 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="p-1.5 bg-medical-50 dark:bg-medical-950/40 text-medical-700 dark:text-medical-400 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-[11px] font-black uppercase tracking-wider text-slate-900 dark:text-white">Today Registered OPDs (Waiting Area)</h2>
+                            <p class="text-[9px] text-medical-600 dark:text-medical-400 font-extrabold uppercase tracking-widest">Awaiting consultation fees payment authorization</p>
+                        </div>
+                    </div>
+                    <span id="allCountBadge" class="px-3.5 py-1.5 bg-medical-50 dark:bg-medical-950 text-medical-800 dark:text-medical-300 font-black rounded-full text-[10px] border border-medical-100 dark:border-medical-900 uppercase">0 Waiting Admissions</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[1250px]">
+                        <thead>
+                            <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 font-black text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider">
+                                <th class="px-4 py-3">S.No</th>
+                                <th class="px-4 py-3">Date</th>
+                                <th class="px-4 py-3">Time</th>
+                                <th class="px-4 py-3">PID</th>
+                                <th class="px-4 py-3">Consultant</th>
+                                <th class="px-4 py-3">Token ID</th>
+                                <th class="px-4 py-3">Full Name</th>
+                                <th class="px-4 py-3">Age</th>
+                                <th class="px-4 py-3">Gender</th>
+                                <th class="px-4 py-3">Village</th>
+                                <th class="px-4 py-3">Phone Number</th>
+                                <th class="px-4 py-3 text-center w-60">Amount Desk</th>
+                                <th class="px-4 py-3 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allOpdTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/50 text-xs font-semibold">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- 06-SWAPPABLE SHIFT SESSIONS -->
+            <div id="shiftsContainer" class="flex flex-col gap-6">
+
+                <!-- MORNING OPD SESSION DECK -->
+                <section id="morningShiftSection" class="bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300 flex flex-col">
+                    <div class="bg-gradient-to-r from-amber-500/[0.04] to-transparent p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-2">
+                            <div class="p-1.5 bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-[11px] font-black uppercase tracking-wider text-slate-900 dark:text-white">Today Morning OPDs</h2>
+                                    <span id="morningShiftActiveBadge" class="hidden text-[8px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 animate-pulse border border-emerald-200 dark:border-emerald-800 uppercase tracking-widest">LIVE SHIFT</span>
+                                </div>
+                                <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">Morning shift admissions queue (12:00 AM - 3:00 PM)</p>
+                            </div>
+                        </div>
+                        <span id="morningCountBadge" class="px-3.5 py-1.5 bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-black rounded-full text-[10px] border border-amber-100 dark:border-amber-900 uppercase">0 Morning Entries | Total Collection: INR 0</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[1250px]">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 font-black text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider">
+                                    <th class="px-4 py-3">S.No</th>
+                                    <th class="px-4 py-3">Date</th>
+                                    <th class="px-4 py-3">Time</th>
+                                    <th class="px-4 py-3">PID</th>
+                                    <th class="px-4 py-3">Consultant</th>
+                                    <th class="px-4 py-3">Token ID</th>
+                                    <th class="px-4 py-3">Full Name</th>
+                                    <th class="px-4 py-3">Age</th>
+                                    <th class="px-4 py-3">Gender</th>
+                                    <th class="px-4 py-3">Village</th>
+                                    <th class="px-4 py-3">Phone Number</th>
+                                    <th class="px-4 py-3">Amount</th>
+                                    <th class="px-4 py-3 text-center">OP Print</th>
+                                    <th class="px-4 py-3 text-center">Receipt</th>
+                                    <th class="px-4 py-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="morningOpdTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/50 text-xs font-semibold">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- EVENING OPD SESSION DECK -->
+                <section id="eveningShiftSection" class="bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300 flex flex-col">
+                    <div class="bg-gradient-to-r from-purple-500/[0.04] to-transparent p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-2">
+                            <div class="p-1.5 bg-purple-100 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-[11px] font-black uppercase tracking-wider text-slate-900 dark:text-white">Today Evening OPDs</h2>
+                                    <span id="eveningShiftActiveBadge" class="hidden text-[8px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 animate-pulse border border-emerald-200 dark:border-emerald-800 uppercase tracking-widest">LIVE SHIFT</span>
+                                </div>
+                                <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">Evening shift admissions queue (3:00 PM - 12:00 AM)</p>
+                            </div>
+                        </div>
+                        <span id="eveningCountBadge" class="px-3.5 py-1.5 bg-purple-50 dark:bg-purple-950 text-purple-800 dark:text-purple-300 font-black rounded-full text-[10px] border border-purple-100 dark:border-purple-900 uppercase">0 Evening Entries | Total Collection: INR 0</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[1250px]">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 font-black text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider">
+                                    <th class="px-4 py-3">S.No</th>
+                                    <th class="px-4 py-3">Date</th>
+                                    <th class="px-4 py-3">Time</th>
+                                    <th class="px-4 py-3">PID</th>
+                                    <th class="px-4 py-3">Consultant</th>
+                                    <th class="px-4 py-3">Token ID</th>
+                                    <th class="px-4 py-3">Full Name</th>
+                                    <th class="px-4 py-3">Age</th>
+                                    <th class="px-4 py-3">Gender</th>
+                                    <th class="px-4 py-3">Village</th>
+                                    <th class="px-4 py-3">Phone Number</th>
+                                    <th class="px-4 py-3">Amount</th>
+                                    <th class="px-4 py-3 text-center">OP Print</th>
+                                    <th class="px-4 py-3 text-center">Receipt</th>
+                                    <th class="px-4 py-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="eveningOpdTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/50 text-xs font-semibold">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+
+
+            <!-- 07-OPD MODIFICATION TERMINAL -->
+            <section class="bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300">
+                <div class="bg-gradient-to-r from-rose-500/[0.03] to-transparent p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="p-1.5 bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-[11px] font-black uppercase tracking-wider text-slate-900 dark:text-white">OPD Modification Terminal</h2>
+                            <p class="text-[9px] text-rose-600 dark:text-rose-400 font-extrabold uppercase tracking-widest">Locate and update registered entries directly</p>
+                        </div>
+                    </div>
+
+                    <!-- Non-scrolling patient lookup block -->
+                    <div class="flex items-center gap-2 max-w-md w-full">
+                        <span class="text-[10px] font-black uppercase text-slate-500 whitespace-nowrap">Find Patient ID:</span>
+                        <input type="text" id="pidLookupSearch" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 dark:text-white font-bold uppercase" placeholder="e.g. SM001">
+                        <button onclick="lookupPatientByPID(event)" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-[10px] uppercase tracking-wider whitespace-nowrap transition-all shadow-sm active:scale-95">Find Profile</button>
+                    </div>
+                </div>
+
+                <!-- Modification Form Container -->
+                <div class="p-5 bg-slate-50/50 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800">
+                    <form id="modificationForm" onsubmit="applyOPDModification(event)" class="space-y-4 max-w-5xl mx-auto hidden transition-all duration-300">
+                        <input type="hidden" id="modTokenId">
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Full Name</label>
+                                <input type="text" id="modFullName" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-bold dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Age</label>
+                                <input type="number" id="modAge" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-bold dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Gender</label>
+                                <select id="modGender" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-semibold dark:text-white">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Village</label>
+                                <input type="text" id="modVillage" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-bold dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Phone Number</label>
+                                <input type="tel" id="modPhone" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-bold dark:text-white font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Consultant Doctor</label>
+                                <select id="modConsultant" required class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-bold dark:text-white">
+                                    <option value="Dr. R. Anjaneyulu">Dr. R. Anjaneyulu</option>
+                                    <option value="Dr. E. Sujata Anjaneyulu">Dr. E. Sujata Anjaneyulu</option>
+                                    <option value="Dr. A. Chandrasekhar Reddy">Dr. A. Chandrasekhar Reddy</option>
+                                    <option value="Dr. Chanti Babu">Dr. Chanti Babu</option>
+                                </select>
+                            </div>
+                            <!-- Amount Modification field -->
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Paid Amount (INR)</label>
+                                <input type="number" id="modAmount" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs font-bold dark:text-white" oninput="toggleReasonRequirement()">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">
+                                Reason for Modification <span id="reasonRequiredAsterisk" class="text-rose-500 hidden">* (Required for amount modifications)</span>
+                            </label>
+                            <input type="text" id="modReason" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-xs dark:text-white font-medium" placeholder="State reason for modifications (e.g. input correction)">
+                        </div>
+
+                        <!-- Action Submit & Cancel panel -->
+                        <div id="modActionArea" class="flex gap-2.5 justify-end pt-2">
+                            <button type="button" onclick="cancelModification()" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-extrabold text-[10px] uppercase hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">Cancel</button>
+                            <button type="submit" id="modUpdateSubmitBtn" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow-sm transition-all flex items-center gap-1.5 active:scale-95">Update Record</button>
+                        </div>
+                    </form>
+
+                    <!-- Blank Prompt Message -->
+                    <div id="noModLookupPrompt" class="flex flex-col items-center justify-center p-8 text-slate-400 dark:text-slate-600 gap-2">
+                        <svg class="w-10 h-10 stroke-current" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <p class="text-xs font-bold">Please find an active Patient ID (PID) to edit fields.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- 08-FOOTER SECTION -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-5 text-center text-[10px] font-extrabold tracking-wider text-slate-500 uppercase transition-all duration-300">
+        ALL RIGHTS ARE RESERVED UNDER SANJEEVA MULTISPECIALTY HOSPITAL | ARCHITECTURE BY SRI VEDA ORG
+    </footer>
+
+
+    <!-- 09-SUCCESS REGISTRATION MODAL VIEW -->
+    <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-sm w-full border border-slate-200 dark:border-slate-800 shadow-2xl text-center space-y-4">
+            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
+            <h3 class="text-md font-black uppercase text-slate-900 dark:text-white">Admission Processed</h3>
+            <div id="modal-content" class="text-left text-xs bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                <!-- Injected dynamically -->
+            </div>
+            <button onclick="closeModal()" class="w-full py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-xs font-black uppercase rounded-xl tracking-wider hover:bg-slate-800 dark:hover:bg-slate-100 transition-all">
+                Dismiss Receipt Window
+            </button>
+        </div>
+    </div>
+
+    <!-- CORE INTERACTION SYSTEMS & SYNC LOGIC -->
+    <script>
+        // LIVE PRODUCTION GOOGLE APPS SCRIPT HOST URL
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxomoHWenCgXyEWTLGjzI5N0XjW7gQBj5phK2uJqqA_KU1uq6nmEBWIYA5h3HsrgaMo/exec";
+
+        // Local state storage
+        let opdPatients = [];
+        let originalPatientToModify = null;
+
+        // Automatically set current date to form on load
+        document.getElementById('date_880055').value = new Date().toISOString().split('T')[0];
+
+        // Active Clock initialization
+        initLiveClock();
+        initThemeToggle();
+
+
+        /* 04-OP REGISTRATION SECTION */
+        function selectGender(gender) {
+            document.getElementById('gender_880055').value = gender;
+            
+            const maleBtn = document.getElementById('genderBtn_Male');
+            const femaleBtn = document.getElementById('genderBtn_Female');
+
+            if (gender === 'Male') {
+                maleBtn.className = "flex-1 py-2 rounded-lg border text-xs font-extrabold transition-all duration-200 flex items-center justify-center gap-1 bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-600/20";
+                femaleBtn.className = "flex-1 py-2 rounded-lg border text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1 bg-slate-50 border-slate-200 dark:bg-slate-900 dark:border-slate-800 text-slate-700 dark:text-slate-300";
+            } else if (gender === 'Female') {
+                femaleBtn.className = "flex-1 py-2 rounded-lg border text-xs font-extrabold transition-all duration-200 flex items-center justify-center gap-1 bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-600/20";
+                maleBtn.className = "flex-1 py-2 rounded-lg border text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1 bg-slate-50 border-slate-200 dark:bg-slate-900 dark:border-slate-800 text-slate-700 dark:text-slate-300";
+            }
+        }
+
+
+        /* 02-LOGIN OVERLAY */
+        async function handleStaffLogin(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            const user = document.getElementById('loginUsername').value.trim().toUpperCase();
+            const pass = document.getElementById('loginPassword').value.trim();
+            const errorBlock = document.getElementById('loginErrorMessage');
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Authenticating Operator...";
+
+            try {
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    redirect: 'follow'
+                });
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    errorBlock.classList.add('hidden');
+                    document.getElementById('loginOverlay').classList.add('hidden');
+                    document.getElementById('appContainer').classList.remove('hidden');
+                    document.getElementById('activeOperatorBadge').innerText = `${result.username} (Hospital Authorized Staff)`;
+                    
+                    fetchTodayData();
+                } else {
+                    errorBlock.innerText = result.message;
+                    errorBlock.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorBlock.innerText = "Authentication Connection Error. Web app endpoint unavailable.";
+                errorBlock.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Authorize Terminal";
+            }
+        }
+
+        function handleLogout() {
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('hidden');
+        }
+
+
+        /* 01-HEADER SECTION */
+        function initLiveClock() {
+            const timeSpan = document.getElementById('liveTimestamp');
+            function updateClock() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long',
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit',
+                    hour12: true 
+                };
+                
+                let formattedStr = now.toLocaleString('en-US', options);
+                formattedStr = formattedStr.replace("am", "AM").replace("pm", "PM");
+                timeSpan.innerText = formattedStr;
+                evaluateShiftIndicatorsAndSorting();
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        function initThemeToggle() {
+            const btn = document.getElementById('themeToggle');
+            btn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        }
+
+
+        /* 04-OP REGISTRATION SECTION */
+        async function handlePatientRegistration(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            
+            // Check gender validity
+            const genderValue = document.getElementById('gender_880055').value;
+            if(!genderValue) {
+                alert("Please select a gender (Male or Female) to complete registration.");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <svg class="animate-spin h-4 w-4 mr-1 text-white inline-block" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg> Synchronizing OP Register...`;
+
+            const payload = {
+                action: 'register',
+                fullName_880055: document.getElementById('fullName_880055').value.trim(),
+                phone_880055: document.getElementById('phone_880055').value.trim(),
+                age_880055: document.getElementById('age_880055').value,
+                gender_880055: genderValue,
+                village_880055: document.getElementById('village_880055').value.trim(),
+                consultant_880055: document.getElementById('consultant_880055').value,
+                date_880055: document.getElementById('date_880055').value,
+                amount: document.getElementById('amount_880055').value.trim()
+            };
+
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    redirect: 'follow',
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    // Update preview modal elements
+                    document.getElementById('modal-content').innerHTML = `
+                        <div class="space-y-1.5 font-bold uppercase">
+                            <p class="flex justify-between border-b pb-1 dark:border-slate-800"><span class="text-slate-400">PATIENT ID:</span> <span class="text-medical-600 dark:text-medical-400">${result.pid}</span></p>
+                            <p class="flex justify-between border-b pb-1 dark:border-slate-800"><span class="text-slate-400">TOKEN NUMBER:</span> <span class="text-indigo-600 dark:text-indigo-400">${result.token}</span></p>
+                            <p class="flex justify-between border-b pb-1 dark:border-slate-800"><span class="text-slate-400">PATIENT NAME:</span> <span class="text-slate-900 dark:text-white">${payload.fullName_880055}</span></p>
+                            <p class="flex justify-between border-b pb-1 dark:border-slate-800"><span class="text-slate-400">DOCTOR:</span> <span class="text-slate-900 dark:text-white">${payload.consultant_880055}</span></p>
+                            <p class="flex justify-between border-b pb-1 dark:border-slate-800"><span class="text-slate-400">VILLAGE:</span> <span class="text-slate-900 dark:text-white">${payload.village_880055}</span></p>
+                            <p class="flex justify-between border-b pb-1 dark:border-slate-800"><span class="text-slate-400">FEE PAID:</span> <span class="text-emerald-600 dark:text-emerald-400">${payload.amount ? 'INR ' + payload.amount : 'AWAITING FEES'}</span></p>
+                            <p class="flex justify-between"><span class="text-slate-400">REG TIME:</span> <span class="text-slate-900 dark:text-white font-mono text-[10px]">${result.time}</span></p>
+                        </div>
+                    `;
+                    document.getElementById('success-modal').classList.remove('hidden');
+                    
+                    // Clear fields and calendar sync
+                    document.getElementById('op-registration-form').reset();
+                    document.getElementById('date_880055').value = new Date().toISOString().split('T')[0];
+                    document.getElementById('gender_880055').value = "";
+                    
+                    // Reset custom buttons UI
+                    document.getElementById('genderBtn_Male').className = "flex-1 py-2 rounded-lg border text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1 bg-slate-50 border-slate-200 dark:bg-slate-900 dark:border-slate-800 text-slate-700 dark:text-slate-300";
+                    document.getElementById('genderBtn_Female').className = "flex-1 py-2 rounded-lg border text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1 bg-slate-50 border-slate-200 dark:bg-slate-900 dark:border-slate-800 text-slate-700 dark:text-slate-300";
+
+                    showToastNotification("Registration successful");
+                    fetchTodayData(); 
+                } else {
+                    alert("Registration failed: " + result.message);
+                }
+            } catch (err) {
+                if (window.location.protocol === 'file:') {
+                    alert("Database communication error. Note: CORS Google Apps Script calls are blocked locally via file:// URLs. Please run it through a server or host it online.");
+                } else {
+                    alert("Database communication error. Check script parameters.");
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg> Confirm Outpatient Priority Admission`;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+
+        /* 05-TODAY REGISTERED OPDS */
+        async function fetchTodayData() {
+            toggleSyncState(true);
+            try {
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=fetchToday`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    redirect: 'follow'
+                });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    opdPatients = data.records;
+                    renderDataTables();
+                } else {
+                    alert("Database Sync Error: " + data.message);
+                }
+            } catch (err) {
+                console.error("Fetch Today Error:", err);
+            } finally {
+                toggleSyncState(false);
+            }
+        }
+
+        async function verifyPaidAmount(pid) {
+            const amountInput = document.getElementById(`amt_${pid}`);
+            const btn = document.getElementById(`btn_verify_${pid}`);
+            const amountVal = amountInput.value.trim();
+
+            if (!amountVal || isNaN(amountVal) || parseFloat(amountVal) <= 0) {
+                alert("Please specify a valid numeric consultation fee.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `
+                <svg class="animate-spin h-3.5 w-3.5 text-white mx-auto" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>`;
+
+            try {
+                const payload = { action: 'updateAmount', pid: pid, amount: amountVal };
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    redirect: 'follow',
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    btn.className = "px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-extrabold text-[10px] uppercase shadow-sm";
+                    btn.innerHTML = "✓";
+
+                    const row = document.getElementById(`row_waiting_${pid}`);
+                    if (row) {
+                        row.style.transition = "all 0.4s ease";
+                        row.style.opacity = "0";
+                        row.style.transform = "translateX(50px)";
+                        setTimeout(() => {
+                            fetchTodayData();
+                        }, 400);
+                    } else {
+                        fetchTodayData();
+                    }
+                } else {
+                    alert("Verification transaction failed: " + result.message);
+                    btn.disabled = false;
+                    btn.innerHTML = "Verify";
+                }
+            } catch (err) {
+                alert("Verification communication failed.");
+                btn.disabled = false;
+                btn.innerHTML = "Verify";
+            }
+        }
+
+        async function deleteOPDRecord(pid) {
+            if (!confirm(`Are you absolutely sure you want to permanently delete patient ticket ${pid}?`)) {
+                return;
+            }
+
+            try {
+                const payload = { action: 'delete', pid: pid };
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    redirect: 'follow',
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    showToastNotification("Record removed successfully");
+                    fetchTodayData();
+                } else {
+                    alert("Purge request rejected: " + result.message);
+                }
+            } catch (err) {
+                alert("Failed to communicate purge request.");
+            }
+        }
+
+        function renderDataTables() {
+            const allBody = document.getElementById('allOpdTableBody');
+            const morningBody = document.getElementById('morningOpdTableBody');
+            const eveningBody = document.getElementById('eveningOpdTableBody');
+
+            allBody.innerHTML = '';
+            morningBody.innerHTML = '';
+            eveningBody.innerHTML = '';
+
+            let unpaidSNo = 1;
+            let morningSNo = 1;
+            let eveningSNo = 1;
+
+            let totalMorningRevenue = 0;
+            let totalEveningRevenue = 0;
+
+            opdPatients.forEach((patient) => {
+                const formattedTimeStr = normalizeTimeFormat(patient.time);
+                const isEvening = isTimeEvening(formattedTimeStr);
+
+                // Waiting Area
+                if (!patient.paidAmount) {
+                    const allRow = document.createElement('tr');
+                    allRow.id = `row_waiting_${patient.pid}`;
+                    allRow.className = "hover:bg-slate-100/50 dark:hover:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/60 font-semibold transition-all duration-300";
+                    
+                    const amountSectionHTML = `
+                        <div class="flex items-center gap-1.5 justify-center">
+                            <input type="number" id="amt_${patient.pid}" placeholder="INR" class="w-20 px-2 py-1 text-xs text-center border rounded-xl dark:bg-slate-950 border-slate-200 dark:border-slate-800 bg-white font-bold text-slate-900 dark:text-white">
+                            <button id="btn_verify_${patient.pid}" onclick="verifyPaidAmount('${patient.pid}')" class="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow-sm transition-all active:scale-95 flex items-center justify-center min-w-[55px]">Verify</button>
+                        </div>
+                    `;
+
+                    allRow.innerHTML = `
+                        <td class="px-4 py-3 font-bold">${unpaidSNo++}</td>
+                        <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${patient.date}</td>
+                        <td class="px-4 py-3 text-slate-500 font-mono whitespace-nowrap">${formattedTimeStr}</td>
+                        <td class="px-4 py-3 text-medical-600 dark:text-medical-400 font-black">${patient.pid}</td>
+                        <td class="px-4 py-3 text-slate-900 dark:text-white font-bold">${patient.consultant}</td>
+                        <td class="px-4 py-3 font-mono text-indigo-600 dark:text-indigo-400 font-bold">${patient.token}</td>
+                        <td class="px-4 py-3 font-bold text-slate-900 dark:text-white">${patient.name}</td>
+                        <td class="px-4 py-3">${patient.age}</td>
+                        <td class="px-4 py-3">${patient.gender}</td>
+                        <td class="px-4 py-3 text-slate-500">${patient.village}</td>
+                        <td class="px-4 py-3 font-mono">${patient.phone}</td>
+                        <td class="px-4 py-3 text-center">${amountSectionHTML}</td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="deleteOPDRecord('${patient.pid}')" class="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors" title="Delete OP ticket">
+                                <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                        </td>
+                    `;
+                    allBody.appendChild(allRow);
+                }
+                // Sessions Area (Verified Patients)
+                else {
+                    const sessionRow = document.createElement('tr');
+                    sessionRow.className = "hover:bg-slate-100/50 dark:hover:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/60 font-semibold";
+                    
+                    const printColHTML = `
+                        <button onclick="printOPTicket('${patient.pid}')" class="px-2.5 py-1.5 rounded-xl bg-slate-800 dark:bg-slate-700 text-white font-extrabold text-[10px] uppercase tracking-wider flex items-center gap-1 hover:bg-slate-700 transition-all shadow-sm mx-auto">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                            OP Slip
+                        </button>
+                    `;
+
+                    const receiptColHTML = `
+                        <button onclick="printPaymentReceipt('${patient.pid}')" class="px-2.5 py-1.5 rounded-xl bg-teal-600 text-white font-extrabold text-[10px] uppercase tracking-wider flex items-center gap-1 hover:bg-teal-500 transition-all shadow-sm mx-auto">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Receipt
+                        </button>
+                    `;
+
+                    const actionColHTML = `
+                        <button onclick="deleteOPDRecord('${patient.pid}')" class="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors" title="Delete OP ticket">
+                            <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                    `;
+
+                    const commonRowHTML = `
+                        <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${patient.date}</td>
+                        <td class="px-4 py-3 text-slate-500 font-mono whitespace-nowrap">${formattedTimeStr}</td>
+                        <td class="px-4 py-3 text-medical-600 dark:text-medical-400 font-black">${patient.pid}</td>
+                        <td class="px-4 py-3 text-slate-900 dark:text-white font-bold">${patient.consultant}</td>
+                        <td class="px-4 py-3 font-mono text-indigo-600 dark:text-indigo-400 font-bold">${patient.token}</td>
+                        <td class="px-4 py-3 font-bold text-slate-900 dark:text-white">${patient.name}</td>
+                        <td class="px-4 py-3">${patient.age}</td>
+                        <td class="px-4 py-3">${patient.gender}</td>
+                        <td class="px-4 py-3 text-slate-500">${patient.village}</td>
+                        <td class="px-4 py-3 font-mono">${patient.phone}</td>
+                        <td class="px-4 py-3 font-bold text-emerald-600 dark:text-emerald-400">INR ${patient.paidAmount}</td>
+                        <td class="px-4 py-3 text-center">${printColHTML}</td>
+                        <td class="px-4 py-3 text-center">${receiptColHTML}</td>
+                        <td class="px-4 py-3 text-center">${actionColHTML}</td>
+                    `;
+
+                    if (!isEvening) {
+                        sessionRow.innerHTML = `<td class="px-4 py-3 font-bold">${morningSNo++}</td>` + commonRowHTML;
+                        morningBody.appendChild(sessionRow);
+                        totalMorningRevenue += parseFloat(patient.paidAmount || 0);
+                    } else {
+                        sessionRow.innerHTML = `<td class="px-4 py-3 font-bold">${eveningSNo++}</td>` + commonRowHTML;
+                        eveningBody.appendChild(sessionRow);
+                        totalEveningRevenue += parseFloat(patient.paidAmount || 0);
+                    }
+                }
+            });
+
+            if (unpaidSNo === 1) {
+                allBody.innerHTML = `<tr><td colspan="13" class="px-6 py-12 text-center text-slate-400 dark:text-slate-600 font-bold uppercase tracking-widest">No active unpaid registrations in waiting area</td></tr>`;
+            }
+            if (morningSNo === 1) {
+                morningBody.innerHTML = `<tr><td colspan="15" class="px-6 py-12 text-center text-slate-400 dark:text-slate-600 font-bold uppercase tracking-widest">No verified morning sessions</td></tr>`;
+            }
+            if (eveningSNo === 1) {
+                eveningBody.innerHTML = `<tr><td colspan="15" class="px-6 py-12 text-center text-slate-400 dark:text-slate-600 font-bold uppercase tracking-widest">No verified evening sessions</td></tr>`;
+            }
+
+            document.getElementById('allCountBadge').innerText = `${unpaidSNo - 1} Waiting Admissions`;
+            document.getElementById('morningCountBadge').innerText = `${morningSNo - 1} Morning Entries | Total Collection: INR ${totalMorningRevenue}`;
+            document.getElementById('eveningCountBadge').innerText = `${eveningSNo - 1} Evening Entries | Total Collection: INR ${totalEveningRevenue}`;
+        }
+
+        function normalizeTimeFormat(timeStr) {
+            if (!timeStr) return "12:00 AM";
+            let clean = timeStr.toString().trim();
+
+            if (clean.includes('T') && (clean.endsWith('Z') || clean.includes('+') || clean.includes('-'))) {
+                try {
+                    const dateObj = new Date(clean);
+                    if (!isNaN(dateObj.getTime())) {
+                        let hours = dateObj.getHours();
+                        let minutes = dateObj.getMinutes();
+                        let ampm = hours >= 12 ? 'PM' : 'AM';
+                        hours = hours % 12;
+                        hours = hours ? hours : 12;
+                        let minutesStr = minutes < 10 ? '0' + minutes : minutes;
+                        let hoursStr = hours < 10 ? '0' + hours : hours;
+                        return `${hoursStr}:${minutesStr} ${ampm}`;
+                    }
+                } catch (e) {
+                    console.error("Error parsing ISO date format in normalizeTimeFormat", e);
+                }
+            }
+
+            clean = clean.toUpperCase();
+            const match = clean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
+            if (match) {
+                let hour = match[1];
+                let minute = match[2];
+                let amp = match[3];
+                if (hour.length === 1) hour = "0" + hour;
+                return `${hour}:${minute} ${amp}`;
+            }
+            return clean;
+        }
+
+        function isTimeEvening(timeStr) {
+            if (!timeStr) return false;
+            if (timeStr.toUpperCase().includes('PM')) {
+                const parts = timeStr.split(':');
+                const hour = parseInt(parts[0], 10);
+                if (hour === 12 || hour < 3) return false; 
+                return true;
+            }
+            return false; 
+        }
+
+        function toggleSyncState(isActive) {
+            const spinner = document.getElementById('syncSpinner');
+            const icon = document.getElementById('syncIcon');
+            if (isActive) {
+                spinner.style.display = 'inline-block';
+                icon.style.display = 'none';
+            } else {
+                spinner.style.display = 'none';
+                icon.style.display = 'inline-block';
+            }
+        }
+
+        function showToastNotification(message) {
+            const toast = document.getElementById('toastMessage');
+            const text = document.getElementById('toastText');
+            text.innerText = message;
+            toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+
+        /* 06-SWAPPABLE SHIFT SESSIONS */
+        function evaluateShiftIndicatorsAndSorting() {
+            const currentHour = new Date().getHours();
+            const morningBadge = document.getElementById('morningShiftActiveBadge');
+            const eveningBadge = document.getElementById('eveningShiftActiveBadge');
+
+            const morningSection = document.getElementById('morningShiftSection');
+            const eveningSection = document.getElementById('eveningShiftSection');
+            const parentContainer = document.getElementById('shiftsContainer');
+
+            if (currentHour < 15) { 
+                morningBadge.classList.remove('hidden');
+                eveningBadge.classList.add('hidden');
+                if (parentContainer && eveningSection && morningSection && eveningSection.nextSibling !== morningSection) {
+                    parentContainer.insertBefore(morningSection, eveningSection);
+                }
+            } else { 
+                morningBadge.classList.add('hidden');
+                eveningBadge.classList.remove('hidden');
+                if (parentContainer && morningSection && eveningSection && morningSection.nextSibling !== eveningSection) {
+                    parentContainer.insertBefore(eveningSection, morningSection);
+                }
+            }
+        }
+
+
+        /* 10-PRINT ENGINES */
+        function printOPTicket(pid) {
+            const patient = opdPatients.find(p => p.pid === pid);
+            if (!patient) return;
+
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const pDate = new Date(patient.date);
+            const weekdayStr = isNaN(pDate.getTime()) ? '' : days[pDate.getDay()];
+
+            // Mapping consultant names to correct medical degrees and specialities as registered in Telugu
+            let selectedDoctorName = "డా|| ఆర్. అంజనేయులు";
+            let selectedDoctorDegree = "M.B.B.S., M.D. (Paed)";
+            let selectedDoctorSpeciality = "పిల్లల మరియు పురిటి పిల్లల వైద్య నిపుణులు";
+            let selectedDoctorReg = "Regd No. 54702";
+
+            if (patient.consultant.includes("Sujata")) {
+                selectedDoctorName = "డా|| ఇ. సుజాత అంజనేయులు";
+                selectedDoctorDegree = "M.B.B.S., M.S. (OBG)";
+                selectedDoctorSpeciality = "స్త్రీ మరియు ప్రసూతి వ్యాధి నిపుణులు";
+                selectedDoctorReg = "Regd No. 62254";
+            } else if (patient.consultant.includes("Chandrasekhar")) {
+                selectedDoctorName = "డా|| ఎ. చంద్రశేఖర్ రెడ్డి";
+                selectedDoctorDegree = "M.S. (ENT)";
+                selectedDoctorSpeciality = "చెవి, ముక్కు, గొంతు వైద్యులు";
+                selectedDoctorReg = "Cell: 7013738036";
+            } else if (patient.consultant.includes("Chanti Babu")) {
+                selectedDoctorName = "డా|| చంటి బాబు";
+                selectedDoctorDegree = "M.S. (Ortho)";
+                selectedDoctorSpeciality = "కీళ్ల నొప్పులు మరియు ఎముకల వైద్య నిపుణులు";
+                selectedDoctorReg = "Regd No. 71832";
+            }
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Sanjeeva Multispecialty Hospital - OP Prescription Slip [${pid}]</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;700;800&family=Roboto+Slab:wght@400;700;900&display=swap" rel="stylesheet">
+                    <style>
+                        @page { 
+                            size: A4 portrait; 
+                            margin: 0; 
+                        }
+                        
+                        * {
+                            box-sizing: border-box;
+                        }
+
+                        body {
+                            font-family: 'Roboto Slab', 'Noto Serif Telugu', serif;
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f1f5f9;
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+
+                        /* Enforcing the gap on the outer sides of A4 */
+                        .print-wrapper {
+                            padding: 8mm;
+                            width: 210mm;
+                            height: 297mm;
+                            margin: 0 auto;
+                            background-color: #f1f5f9;
+                        }
+
+                        /* Page border inside wrapper */
+                        .a4-container {
+                            width: 100%;
+                            height: 100%;
+                            padding: 10mm;
+                            background-color: #ffffff;
+                            border: 3px double #1e3a8a;
+                            display: flex;
+                            flex-direction: column;
+                            position: relative;
+                            overflow: hidden;
+                        }
+
+                        .header-brand {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 15px;
+                            padding-bottom: 8px;
+                            position: relative;
+                        }
+
+                        .logo-container {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 75px;
+                            height: 75px;
+                            flex-shrink: 0;
+                        }
+
+                        .logo {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                        }
+
+                        .brand-text {
+                            flex-grow: 1;
+                            padding-left: 10px;
+                        }
+
+                        .hospital-english-name {
+                            font-size: 20px;
+                            font-weight: 900;
+                            color: #1e3a8a;
+                            margin: 0 0 2px 0;
+                            letter-spacing: -0.2px;
+                        }
+
+                        .hospital-telugu-name {
+                            font-size: 19px;
+                            font-weight: 800;
+                            color: #b91c1c; 
+                            margin: 0 0 4px 0;
+                        }
+
+                        .hospital-address {
+                            font-size: 9px;
+                            color: #475569;
+                            margin: 0;
+                            font-weight: 700;
+                        }
+
+                        .cell-block {
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+                            font-size: 13px;
+                            font-weight: 900;
+                            color: #1e3a8a;
+                            flex-shrink: 0;
+                        }
+
+                        .cell-icon {
+                            width: 16px;
+                            height: 16px;
+                        }
+
+                        .header-divider {
+                            border: 0;
+                            height: 1px;
+                            background: #1e3a8a;
+                            margin: 0 0 10px 0;
+                        }
+
+                        /* Demographics Layout Section with Raw Token */
+                        .demographics-area {
+                            display: grid;
+                            grid-template-columns: 80px 1fr;
+                            gap: 15px;
+                            border-bottom: 1px dashed #cbd5e1;
+                            padding-bottom: 10px;
+                            margin-bottom: 10px;
+                        }
+
+                        .token-raw-column {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border-right: 1px solid #e2e8f0;
+                            padding-right: 15px;
+                        }
+
+                        .token-raw-value {
+                            font-size: 64px;
+                            font-weight: 900;
+                            color: #1d4ed8;
+                            line-height: 1;
+                            margin: 0;
+                        }
+
+                        .patient-details-grid {
+                            display: grid;
+                            grid-template-columns: 1.5fr 1fr;
+                            gap: 8px;
+                            font-size: 11.5px;
+                        }
+
+                        .line-field {
+                            border-bottom: 1px solid #cbd5e1;
+                            padding-bottom: 2px;
+                            font-weight: 700;
+                            color: #0f172a;
+                        }
+
+                        .label-dim {
+                            color: #64748b;
+                            font-weight: 700;
+                            text-transform: uppercase;
+                            font-size: 9px;
+                            margin-right: 4px;
+                        }
+
+                        /* Doctor & Opp Metadata layout */
+                        .doctor-opposite-row {
+                            display: grid;
+                            grid-template-columns: 1.5fr 1fr;
+                            gap: 15px;
+                            background-color: #f8fafc;
+                            border: 1px solid #cbd5e1;
+                            border-radius: 8px;
+                            padding: 8px;
+                            margin-bottom: 10px;
+                        }
+
+                        .doctor-info-left {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                        }
+
+                        .doctor-name-main {
+                            font-size: 14px;
+                            font-weight: 800;
+                            color: #b91c1c;
+                        }
+
+                        .doctor-sub-details {
+                            font-size: 10.5px;
+                            font-weight: 700;
+                            color: #334155;
+                            margin-top: 2px;
+                        }
+
+                        .doctor-reg {
+                            font-size: 9.5px;
+                            font-weight: 700;
+                            color: #1e3a8a;
+                        }
+
+                        .patient-metadata-right {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 4px 10px;
+                            font-size: 10px;
+                            font-weight: 700;
+                            color: #334155;
+                            align-content: center;
+                            border-left: 1px solid #e2e8f0;
+                            padding-left: 15px;
+                        }
+
+                        /* Clinical area with Rx opposite */
+                        .clinical-workspace {
+                            display: grid;
+                            grid-template-columns: 1fr 200px;
+                            gap: 15px;
+                            flex-grow: 1;
+                            border-top: 1.5px solid #1e3a8a;
+                            padding-top: 10px;
+                        }
+
+                        .clinical-left-rx {
+                            position: relative;
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                        .clinical-right-vitals {
+                            border-left: 1px dashed #cbd5e1;
+                            padding-left: 15px;
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                        .rx-symbol {
+                            font-size: 32px;
+                            font-weight: 900;
+                            color: #1e3a8a;
+                            line-height: 1;
+                            margin-bottom: 10px;
+                            text-align: right;
+                        }
+
+                        .blank-prescription-box {
+                            flex-grow: 1;
+                            border: 1px dashed #e2e8f0;
+                            border-radius: 6px;
+                            padding: 10px;
+                            font-size: 9px;
+                            color: #cbd5e1;
+                            font-weight: bold;
+                        }
+
+                        .vital-line {
+                            margin-bottom: 10px;
+                            font-weight: 700;
+                            font-size: 10.5px;
+                            color: #334155;
+                            border-bottom: 1px dashed #cbd5e1;
+                            padding-bottom: 4px;
+                            display: flex;
+                            justify-content: space-between;
+                        }
+
+                        /* Print Footer and Notes */
+                        .prescription-footer {
+                            border-top: 1px solid #cbd5e1;
+                            padding-top: 8px;
+                            margin-top: auto;
+                        }
+
+                        .sig-block {
+                            text-align: right;
+                            font-weight: 800;
+                            font-size: 11px;
+                            margin-bottom: 12px;
+                            color: #0f172a;
+                        }
+
+                        .footer-notes-divider {
+                            border: 0;
+                            height: 1.5px;
+                            background: #1e3a8a;
+                            margin: 6px 0;
+                        }
+
+                        .notes-container-telugu {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 6px 15px;
+                            font-size: 8px;
+                            font-weight: 800;
+                            color: #334155;
+                            line-height: 1.3;
+                        }
+
+                        .note-item {
+                            position: relative;
+                            padding-left: 10px;
+                        }
+
+                        .note-item::before {
+                            content: "•";
+                            position: absolute;
+                            left: 0;
+                            color: #b91c1c;
+                        }
+
+                        .branding-credits {
+                            text-align: center;
+                            font-size: 7.5px;
+                            color: #94a3b8;
+                            margin-top: 5px;
+                            letter-spacing: 0.5px;
+                            font-weight: 700;
+                        }
+
+                        @media print {
+                            body {
+                                background-color: #ffffff;
+                            }
+                            .print-wrapper {
+                                padding: 0;
+                                margin: 0;
+                                width: 210mm;
+                                height: 297mm;
+                                background-color: #ffffff;
+                            }
+                            .a4-container {
+                                border: 3px double #1e3a8a !important;
+                                padding: 10mm !important;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-wrapper">
+                        <div class="a4-container">
+                            
+                            <!-- BRAND LETTERHEAD -->
+                            <div class="header-brand">
+                                <div class="logo-container">
+                                    <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="logo" alt="SMH">
+                                </div>
+                                <div class="brand-text">
+                                    <h1 class="hospital-english-name">SANJEEVA MULTISPECIALTY HOSPITAL</h1>
+                                    <h2 class="hospital-telugu-name">శ్రీ సంజీవ మల్టీ స్పెషాలిటీ హాస్పిటల్</h2>
+                                    <p class="hospital-address">D.No: 1-7-26, PEDDANNA STREET, ALLAGADDA, NANDYALA DIST.</p>
+                                </div>
+                                <div class="cell-block">
+                                    <svg class="cell-icon" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M17 19H7V5h10v14zm-5-1a1 1 0 100-2 1 1 0 000 2zm4-15H8a3 3 0 00-3 3v12a3 3 0 003 3h8a3 3 0 003-3V6a3 3 0 00-3-3z"/>
+                                    </svg>
+                                    <span>9100349825</span>
+                                </div>
+                            </div>
+                            <hr class="header-divider">
+
+                            <!-- RAW TOKEN & PATIENT DETAILS -->
+                            <div class="demographics-area">
+                                <div class="token-raw-column">
+                                    <div class="token-raw-value">${patient.token}</div>
+                                </div>
+                                <div class="patient-details-grid">
+                                    <div class="line-field" style="grid-column: span 2;">
+                                        <span class="label-dim">Name:</span> 
+                                        <span style="font-size: 13px;">${patient.name}</span>
+                                    </div>
+                                    <div class="line-field">
+                                        <span class="label-dim">Age/Sex:</span> 
+                                        <span>${patient.age} Y / ${patient.gender}</span>
+                                    </div>
+                                    <div class="line-field">
+                                        <span class="label-dim">Wt:</span> 
+                                        <span>___________ kg</span>
+                                    </div>
+                                    <div class="line-field" style="grid-column: span 2;">
+                                        <span class="label-dim">Address:</span> 
+                                        <span>${patient.village}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DOCTOR HEADER & OPPOSING METADATA -->
+                            <div class="doctor-opposite-row">
+                                <div class="doctor-info-left">
+                                    <div class="doctor-name-main">${selectedDoctorName}</div>
+                                    <div class="doctor-sub-details">${selectedDoctorDegree}</div>
+                                    <div class="doctor-reg">${selectedDoctorSpeciality} | ${selectedDoctorReg}</div>
+                                </div>
+                                <div class="patient-metadata-right">
+                                    <div><span class="label-dim">PID:</span>${patient.pid}</div>
+                                    <div><span class="label-dim">Date:</span>${patient.date}</div>
+                                    <div><span class="label-dim">Time:</span>${normalizeTimeFormat(patient.time)}</div>
+                                    <div><span class="label-dim">Day:</span>${weekdayStr}</div>
+                                </div>
+                            </div>
+
+                            <!-- CLINICAL WORKSPACE: Rx Left, Vitals Right -->
+                            <div class="clinical-workspace">
+                                <div class="clinical-left-rx">
+                                    <div class="rx-symbol">Rx</div>
+                                    <div class="blank-prescription-box">
+                                        Prescription Notes / Clinical Orders
+                                    </div>
+                                </div>
+                                <div class="clinical-right-vitals">
+                                    <div class="vital-line"><span>Temp:</span><span>________________ °F</span></div>
+                                    <div class="vital-line"><span>Weight:</span><span>________________ kg</span></div>
+                                    <div class="vital-line"><span>SpO2:</span><span>________________ %</span></div>
+                                    <div class="vital-line"><span>PR:</span><span>________________ bpm</span></div>
+                                    <div class="vital-line"><span>BP:</span><span>________ / ________ mmHg</span></div>
+                                </div>
+                            </div>
+
+                            <!-- COMPACT FOOTER & OUTSIDE DISCLAIMER -->
+                            <div class="prescription-footer">
+                                <div class="sig-block">Doctor Signature</div>
+                                <hr class="footer-notes-divider">
+                                
+                                <div class="notes-container-telugu">
+                                    <div class="note-item">మొదలగు వారికి ఇన్షూరెన్స్ కార్డు కలిగిన వారికి క్యాష్‌లెస్ ట్రీట్‌మెంట్ సదుపాయం కలదు: Link FPA, Volo FPA, Universal Sompo, FHPL, Bajaj, Heritage, Navi TPA.</div>
+                                    <div class="note-item">అన్ని రకాల ఆపరేషన్లు మరియు అన్నీ రకాల వ్యాక్సిన్లు ప్రతిరోజు వేయబడును.</div>
+                                    <div class="note-item">అల్ట్రా సౌండ్ స్కాన్ (ULTRA SOUND SCAN) సౌకర్యం కలదు.</div>
+                                    <div class="note-item">పై మందులు 3 రోజులు దాటితే వెనక్కి తీసుకోబడవు.</div>
+                                </div>
+
+                                <div class="branding-credits">
+                                    SANJEEVA MULTISPECIALTY HOSPITAL • ALLAGADDA • MANAGED BY SRI VEDA ORG
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(function(){ window.close(); }, 500);
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        function printPaymentReceipt(pid) {
+            const patient = opdPatients.find(p => p.pid === pid);
+            if (!patient) return;
+
+            const feePaid = patient.paidAmount ? `INR ${patient.paidAmount} /-` : "PENDING AT CASHIER";
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>SMH Payment Receipt [${pid}]</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700;900&display=swap" rel="stylesheet">
+                    <style>
+                        body {
+                            font-family: 'Roboto Slab', serif;
+                            padding: 0;
+                            margin: 0;
+                            color: #1e293b;
+                            background-color: #ffffff;
+                            display: flex;
+                            align-items: flex-start;
+                            justify-content: center;
+                        }
+                        .receipt-wrapper {
+                            width: 210mm;
+                            height: 99mm; /* Exact 1/3 of an A4 page */
+                            padding: 6mm;
+                            border-bottom: 2px dashed #94a3b8;
+                            box-sizing: border-box;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                        }
+                        .header {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            border-bottom: 2px dashed #cbd5e1;
+                            padding-bottom: 8px;
+                        }
+                        .logo-brand {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+                        .logo {
+                            width: 42px;
+                            height: 42px;
+                            object-fit: contain;
+                        }
+                        .hospital-name {
+                            font-size: 14px;
+                            font-weight: 900;
+                            color: #1e3a8a;
+                            margin: 0;
+                            text-transform: uppercase;
+                        }
+                        .tagline {
+                            font-size: 8px;
+                            font-weight: 700;
+                            color: #0e7490;
+                            letter-spacing: 1.5px;
+                        }
+                        .receipt-title {
+                            font-size: 11px;
+                            font-weight: 900;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                            color: #0f172a;
+                            border: 1px solid #1e3a8a;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                        }
+                        .receipt-details-grid {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 6px 20px;
+                            font-size: 10.5px;
+                            margin-top: 8px;
+                        }
+                        .row-item {
+                            display: flex;
+                            justify-content: space-between;
+                            border-bottom: 1px dotted #e2e8f0;
+                            padding-bottom: 2px;
+                        }
+                        .label {
+                            font-weight: 700;
+                            color: #64748b;
+                        }
+                        .value {
+                            font-weight: 700;
+                            color: #0f172a;
+                        }
+                        .footer-receipt {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: flex-end;
+                            margin-top: 8px;
+                            border-top: 1px solid #e2e8f0;
+                            padding-top: 6px;
+                        }
+                        .total-block {
+                            background: #1e3a8a;
+                            color: white;
+                            padding: 6px 12px;
+                            border-radius: 6px;
+                            text-align: center;
+                            min-width: 150px;
+                        }
+                        .total-label {
+                            font-size: 8px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            font-weight: 700;
+                        }
+                        .total-val {
+                            font-size: 15px;
+                            font-weight: 900;
+                        }
+                        .signature-block {
+                            text-align: right;
+                            font-size: 9.5px;
+                            font-weight: 800;
+                            color: #0f172a;
+                        }
+                        .sig-line {
+                            margin-top: 15px;
+                            border-top: 1px solid #94a3b8;
+                            width: 140px;
+                            display: inline-block;
+                        }
+                        @media print {
+                            body {
+                                background-color: #ffffff;
+                            }
+                            .receipt-wrapper {
+                                border-bottom: 2px dashed #94a3b8 !important;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="receipt-wrapper">
+                        
+                        <!-- Header banner -->
+                        <div class="header">
+                            <div class="logo-brand">
+                                <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="logo" alt="SMH">
+                                <div>
+                                    <div class="hospital-name">SANJEEVA MULTISPECIALTY HOSPITAL</div>
+                                    <div class="tagline">HEALTH CARE WITH ETHICS</div>
+                                </div>
+                            </div>
+                            <div class="receipt-title">Payment Receipt</div>
+                        </div>
+
+                        <!-- Data matrix -->
+                        <div class="receipt-details-grid">
+                            <div class="row-item"><span class="label">Patient ID:</span><span class="value">${patient.pid}</span></div>
+                            <div class="row-item"><span class="label">Token ID:</span><span class="value">${patient.token}</span></div>
+                            <div class="row-item"><span class="label">Date:</span><span class="value">${patient.date}</span></div>
+                            <div class="row-item"><span class="label">Time:</span><span class="value">${normalizeTimeFormat(patient.time)}</span></div>
+                            <div class="row-item" style="grid-column: span 2;"><span class="label">Patient Name:</span><span class="value" style="font-size: 11.5px;">${patient.name}</span></div>
+                            <div class="row-item"><span class="label">Age/Gender:</span><span class="value">${patient.age} Y / ${patient.gender}</span></div>
+                            <div class="row-item"><span class="label">Consultant:</span><span class="value">${patient.consultant}</span></div>
+                        </div>
+
+                        <!-- Lower transactional level -->
+                        <div class="footer-receipt">
+                            <div class="total-block">
+                                <div class="total-label">OP CONSULTATION FEE</div>
+                                <div class="total-val">${feePaid}</div>
+                            </div>
+                            <div class="signature-block">
+                                <div>Authorized Staff Signature</div>
+                                <div class="sig-line"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(function(){ window.close(); }, 500);
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+
+        /* 07-OPD MODIFICATION TERMINAL */
+        function toggleReasonRequirement() {
+            const modReason = document.getElementById('modReason');
+            const modAmount = document.getElementById('modAmount');
+            const asterisk = document.getElementById('reasonRequiredAsterisk');
+
+            if (!originalPatientToModify) return;
+
+            const isAmountChanged = parseFloat(modAmount.value) !== parseFloat(originalPatientToModify.paidAmount || 0);
+            
+            if (isAmountChanged) {
+                modReason.required = true;
+                asterisk.classList.remove('hidden');
+            } else {
+                modReason.required = false;
+                asterisk.classList.add('hidden');
+            }
+        }
+
+        async function applyOPDModification(event) {
+            event.preventDefault();
+            const pid = document.getElementById('modTokenId').value;
+            const submitBtn = document.getElementById('modUpdateSubmitBtn');
+            const originalAmount = parseFloat(originalPatientToModify.paidAmount || 0);
+            const enteredAmount = parseFloat(document.getElementById('modAmount').value || 0);
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <svg class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>`;
+
+            try {
+                if (originalAmount !== enteredAmount) {
+                    const amountPayload = { action: 'updateAmount', pid: pid, amount: enteredAmount.toString() };
+                    await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        redirect: 'follow',
+                        body: JSON.stringify(amountPayload)
+                    });
+                }
+
+                const modifyPayload = {
+                    action: 'modify',
+                    pid: pid,
+                    name: document.getElementById('modFullName').value.trim(),
+                    age: document.getElementById('modAge').value,
+                    gender: document.getElementById('modGender').value,
+                    village: document.getElementById('modVillage').value.trim(),
+                    phone: document.getElementById('modPhone').value.trim(),
+                    consultant: document.getElementById('modConsultant').value,
+                    reason: document.getElementById('modReason').value.trim()
+                };
+
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    redirect: 'follow',
+                    body: JSON.stringify(modifyPayload)
+                });
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    submitBtn.className = "px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-extrabold text-[10px] uppercase shadow-sm transition-all";
+                    submitBtn.innerHTML = "✓ Updated Successfully";
+                    
+                    showToastNotification("Record modified successfully");
+                    
+                    setTimeout(() => {
+                        cancelModification();
+                        fetchTodayData();
+                        submitBtn.className = "px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow-sm transition-all flex items-center gap-1.5 active:scale-95";
+                        submitBtn.innerHTML = "Update Record";
+                        submitBtn.disabled = false;
+                    }, 1200);
+                } else {
+                    alert("Modification rejected: " + result.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = "Update Record";
+                }
+            } catch (err) {
+                alert("Failed to sync modification with spreadsheet backend.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = "Update Record";
+            }
+        }
+
+        function lookupPatientByPID(event) {
+            if (event) event.preventDefault();
+
+            const searchVal = document.getElementById('pidLookupSearch').value.trim();
+            if (!searchVal) {
+                alert("Please specify a Patient ID (PID) to query.");
+                return;
+            }
+
+            const patient = opdPatients.find(p => p.pid.toLowerCase() === searchVal.toLowerCase());
+            
+            if (patient) {
+                originalPatientToModify = { ...patient };
+                
+                document.getElementById('modTokenId').value = patient.pid;
+                document.getElementById('modFullName').value = patient.name;
+                document.getElementById('modAge').value = patient.age;
+                document.getElementById('modGender').value = patient.gender;
+                document.getElementById('modVillage').value = patient.village;
+                document.getElementById('modPhone').value = patient.phone;
+                document.getElementById('modConsultant').value = patient.consultant;
+                document.getElementById('modAmount').value = patient.paidAmount || "";
+                document.getElementById('modReason').value = ""; 
+
+                document.getElementById('modificationForm').classList.remove('hidden');
+                document.getElementById('noModLookupPrompt').classList.add('hidden');
+                
+                toggleReasonRequirement();
+                showToastNotification("Patient record loaded");
+            } else {
+                alert("No records matched that specific Patient ID.");
+            }
+        }
+
+        function cancelModification() {
+            document.getElementById('modificationForm').reset();
+            document.getElementById('modificationForm').classList.add('hidden');
+            document.getElementById('noModLookupPrompt').classList.remove('hidden');
+            originalPatientToModify = null;
+        }
+
+    </script>
+</body>
+</html>
