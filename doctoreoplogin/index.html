@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanjeeva Multispecialty Hospital - Doctor's Portal</title>
+    <link rel="shortcut icon" href="https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@300;400;500;600;700;800;900&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { slab: ['"Roboto Slab"', 'serif'], telugu: ['"Noto Serif Telugu"', 'serif'] }, colors: { medical: { 50: '#f0fbfd', 100: '#e0f7fc', 500: '#06b6d4', 600: '#0891b2', 700: '#0e7490', 800: '#155e75', 900: '#164e63' } } } } }
+    </script>
+    <style>
+        .ping-fast { animation: ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite; }
+        body { font-family: 'Roboto Slab', 'Noto Serif Telugu', serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        .dark ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+        /* LOGIN OVERLAY BOX SHADOW */
+        .login-card { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+
+        /* SUB-HEADER TRANSPARENT BACKGROUND */
+        .sub-bar { background-color: rgba(248, 250, 252, 0.8); }
+
+        /* CARD BORDER RADIUSES */
+        .op-card { border-radius: 20px; }
+        .table-wrap { border-radius: 12px; }
+        .shift-session { border-radius: 16px; }
+        .mod-term { border-radius: 16px; }
+
+        /* PRINT MEDIA ENGINE STYLING */
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300 text-xs sm:text-sm">
+
+    <!-- 01-HEADER SECTION (Scrollable, Sticky removed) -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 transition-all duration-300">
+        <div class="w-full px-4 sm:px-6 lg:px-8 py-2.5 flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3 text-center md:text-left flex-col md:flex-row">
+                <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" alt="Sanjeeva Hospital Logo" class="w-16 h-16 object-contain drop-shadow-md">
+                <div>
+                    <h1 class="text-base sm:text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase leading-none">SANJEEVA MULTISPECIALTY HOSPITAL</h1>
+                    <p class="text-[10px] font-extrabold text-medical-600 dark:text-medical-400 tracking-[0.16em] uppercase flex items-center justify-center md:justify-start gap-1 mt-1"><span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>HEALTH CARE WITH ETHICS</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 w-full md:w-auto justify-center md:justify-end">
+                <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700/50 text-[10px] text-slate-600 dark:text-slate-300">
+                    <span class="relative flex h-2 w-2"><span class="ping-fast absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span></span>
+                    <span id="liveTimestamp" class="font-mono font-bold tracking-wide">Syncing clock...</span>
+                </div>
+                <button id="themeToggle" class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:scale-105 transition-all"><svg id="sunIcon" class="w-3.5 h-3.5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg><svg id="moonIcon" class="w-3.5 h-3.5 dark:hidden" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 02-LOGIN OVERLAY -->
+    <div id="loginOverlay" class="flex-grow flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div class="text-center space-y-2.5">
+                <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" alt="Sanjeeva Hospital" class="w-20 h-20 mx-auto object-contain drop-shadow-md">
+                <h3 class="text-lg font-black tracking-tight text-slate-900 dark:text-white uppercase">SMH Doctor's Portal</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-[10px] font-semibold">Authorized Doctor/Consultant Login</p>
+            </div>
+            <form id="loginForm" onsubmit="handleStaffLogin(event)" class="space-y-3">
+                <div class="relative">
+                    <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Doctor ID / Username</label>
+                    <div class="relative flex items-center">
+                        <span class="absolute left-3 text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></span>
+                        <input type="text" id="loginUsername" required class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-medical-600 dark:text-white font-bold" placeholder="Enter Doctor Username">
+                    </div>
+                </div>
+                <div class="relative">
+                    <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Passkey</label>
+                    <div class="relative flex items-center">
+                        <span class="absolute left-3 text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg></span>
+                        <input type="password" id="loginPassword" required class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-medical-600 dark:text-white" placeholder="••••">
+                    </div>
+                </div>
+                <div id="loginErrorMessage" class="hidden text-[10px] font-bold text-red-600 bg-red-50 dark:bg-red-950/30 p-2.5 rounded-xl border border-red-200 dark:border-red-900">Access Denied: Invalid credentials.</div>
+                <button type="submit" id="loginSubmitBtn" class="w-full py-2.5 bg-medical-700 hover:bg-medical-800 text-white font-extrabold text-[9px] tracking-wider uppercase rounded-xl shadow-md transition-all flex items-center justify-center gap-2"><span>Authorize Terminal</span></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN TERMINAL APP VIEW -->
+    <div id="appContainer" class="hidden flex-grow flex flex-col scale-95 origin-top transition-all duration-500">
+
+        <!-- 03-SUB-HEADER BAR -->
+        <div class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 py-2 px-4 sm:px-6 lg:px-8">
+            <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-2.5 text-[10px] font-bold">
+                <div class="flex items-center gap-2"><span class="px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 uppercase tracking-widest text-[8px]">DOCTOR PORTAL ACTIVE</span><span class="text-slate-600 dark:text-slate-400">Consultant: <strong id="activeOperatorBadge" class="text-slate-900 dark:text-white">Staff</strong></span></div>
+                <div class="flex items-center gap-2.5"><button onclick="fetchTodayData()" class="p-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white transition-all shadow-md active:scale-95 flex items-center justify-center"><svg class="w-3 h-3 animate-spin" id="syncSpinner" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="display:none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><svg class="w-3 h-3" id="syncIcon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" /></svg></button><button onclick="handleLogout()" class="px-2.5 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 shadow-sm"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>Logout</button></div>
+            </div>
+        </div>
+
+        <!-- MAIN TERMINAL VIEWS -->
+        <main class="flex-grow w-full py-3 space-y-4 px-4 sm:px-6 lg:px-8">
+            <div id="toastMessage" class="fixed bottom-6 right-6 z-50 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 bg-slate-900/90 dark:bg-slate-800/95 text-white px-3.5 py-2 rounded-xl flex items-center gap-2 shadow-xl border border-slate-700/50 text-[10px] font-bold uppercase tracking-wider"><span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span><span id="toastText">Data Refreshed</span></div>
+
+            <!-- DATE SELECTOR SECTION -->
+            <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="p-1.5 bg-medical-50 dark:bg-medical-950/40 text-medical-700 dark:text-medical-400 rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">Filter Patient Date-Sheet</h2>
+                        <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Select date to load patients registered in Column B</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2.5 w-full md:w-auto">
+                    <label class="text-[10px] font-extrabold uppercase text-slate-500 whitespace-nowrap">Consultation Date:</label>
+                    <input type="date" id="selectedDateFilter" onchange="renderDataTables()" class="w-full md:w-48 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 dark:text-white font-extrabold text-[11px] focus:outline-none focus:ring-2 focus:ring-medical-600">
+                </div>
+            </section>
+
+            <!-- STATS COUNTERS FOR SELECTED DATE -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-between shadow-sm">
+                    <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Total Date OPDs</span>
+                    <span id="statTotalOpd" class="text-xl sm:text-2xl font-black mt-1 text-slate-900 dark:text-white leading-none">0</span>
+                    <span class="text-[8px] text-slate-400 mt-1 uppercase font-semibold">Total registered patients</span>
+                </div>
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-between shadow-sm">
+                    <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest">Awaiting / Registered</span>
+                    <span id="statWaitingOpd" class="text-xl sm:text-2xl font-black mt-1 text-amber-600 dark:text-amber-400 leading-none">0</span>
+                    <span class="text-[8px] text-slate-400 mt-1 uppercase font-semibold">Awaiting payment verification</span>
+                </div>
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-between shadow-sm">
+                    <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Paid OPD Admissions</span>
+                    <span id="statPaidOpd" class="text-xl sm:text-2xl font-black mt-1 text-emerald-600 dark:text-emerald-450 leading-none">0</span>
+                    <span class="text-[8px] text-slate-400 mt-1 uppercase font-semibold">Ready for consulting</span>
+                </div>
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col justify-between shadow-sm">
+                    <span class="text-[9px] font-black text-medical-600 uppercase tracking-widest">Total Fees Collected</span>
+                    <span id="statTotalAmount" class="text-lg sm:text-xl font-black mt-1 text-medical-700 dark:text-medical-400 leading-none">INR 0</span>
+                    <span class="text-[8px] text-slate-400 mt-1 uppercase font-semibold">Gross day balance</span>
+                </div>
+            </div>
+
+            <!-- 06-SWAPPABLE SHIFT SESSIONS FOR SELECTED DATE -->
+            <div id="shiftsContainer" class="flex flex-col gap-4">
+                <!-- MORNING SHIFT SECTION (ONLY PAID MORNING) -->
+                <section id="morningShiftSection" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+                    <div class="bg-gradient-to-r from-amber-500/[0.04] to-transparent p-3 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <div class="p-1.5 bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-[10px] font-black uppercase tracking-wider text-slate-900 dark:text-white">Morning OPDs (<span class="selected-date-label">Date</span>)</h2>
+                                    <span id="morningShiftActiveBadge" class="hidden text-[8px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 animate-pulse border border-emerald-200 dark:border-emerald-800 uppercase tracking-widest">LIVE SHIFT</span>
+                                </div>
+                                <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">Morning shift queue (12:00 AM - 03:00 PM)</p>
+                            </div>
+                        </div>
+                        <span id="morningCountBadge" class="px-3 py-1 bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-black rounded-full text-[9px] border border-amber-100 dark:border-amber-900 uppercase">0 Morning Entries</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[1000px]">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 font-black text-slate-500 dark:text-slate-400 text-[9px] uppercase tracking-wider">
+                                    <th class="px-3 py-2">S.No</th><th class="px-3 py-2">Date</th><th class="px-3 py-2">Time</th><th class="px-3 py-2">PID</th><th class="px-3 py-2">Token ID</th><th class="px-3 py-2">Full Name</th><th class="px-3 py-2">Age</th><th class="px-3 py-2">Gender</th><th class="px-3 py-2">Village</th><th class="px-3 py-2">Phone Number</th><th class="px-3 py-2">Fee Status</th><th class="px-3 py-2">Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody id="morningOpdTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/50 text-[11px] font-semibold"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- EVENING SHIFT SECTION (ONLY PAID EVENING) -->
+                <section id="eveningShiftSection" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+                    <div class="bg-gradient-to-r from-purple-500/[0.04] to-transparent p-3 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <div class="p-1.5 bg-purple-100 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-[10px] font-black uppercase tracking-wider text-slate-900 dark:text-white">Evening OPDs (<span class="selected-date-label">Date</span>)</h2>
+                                    <span id="eveningShiftActiveBadge" class="hidden text-[8px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 animate-pulse border border-emerald-200 dark:border-emerald-800 uppercase tracking-widest">LIVE SHIFT</span>
+                                </div>
+                                <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">Evening shift queue (03:00 PM - 12:00 AM)</p>
+                            </div>
+                        </div>
+                        <span id="eveningCountBadge" class="px-3 py-1 bg-purple-50 dark:bg-purple-950 text-purple-800 dark:text-purple-300 font-black rounded-full text-[9px] border border-purple-100 dark:border-purple-900 uppercase">0 Evening Entries</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[1000px]">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 font-black text-slate-500 dark:text-slate-400 text-[9px] uppercase tracking-wider">
+                                    <th class="px-3 py-2">S.No</th><th class="px-3 py-2">Date</th><th class="px-3 py-2">Time</th><th class="px-3 py-2">PID</th><th class="px-3 py-2">Token ID</th><th class="px-3 py-2">Full Name</th><th class="px-3 py-2">Age</th><th class="px-3 py-2">Gender</th><th class="px-3 py-2">Village</th><th class="px-3 py-2">Phone Number</th><th class="px-3 py-2">Fee Status</th><th class="px-3 py-2">Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody id="eveningOpdTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/50 text-[11px] font-semibold"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- REGISTERED UNPAID OPDS SECTION (Morning & Evening combined) -->
+                <section id="unpaidSection" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+                    <div class="bg-gradient-to-r from-rose-500/[0.04] to-transparent p-3 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <div class="p-1.5 bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                            </div>
+                            <div>
+                                <h2 class="text-[10px] font-black uppercase tracking-wider text-slate-900 dark:text-white">Registered Unpaid OPDs (<span class="selected-date-label">Date</span>)</h2>
+                                <p class="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">Awaiting fee payments / billing confirmation</p>
+                            </div>
+                        </div>
+                        <span id="unpaidCountBadge" class="px-3 py-1 bg-rose-50 dark:bg-rose-950 text-rose-800 dark:text-rose-300 font-black rounded-full text-[9px] border border-rose-100 dark:border-rose-900 uppercase">0 Unpaid Entries</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[1000px]">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 font-black text-slate-500 dark:text-slate-400 text-[9px] uppercase tracking-wider">
+                                    <th class="px-3 py-2">S.No</th><th class="px-3 py-2">Date</th><th class="px-3 py-2">Time</th><th class="px-3 py-2">PID</th><th class="px-3 py-2">Token ID</th><th class="px-3 py-2">Full Name</th><th class="px-3 py-2">Age</th><th class="px-3 py-2">Gender</th><th class="px-3 py-2">Village</th><th class="px-3 py-2">Phone Number</th><th class="px-3 py-2">Fee Status</th><th class="px-3 py-2">Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody id="unpaidOpdTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/50 text-[11px] font-semibold"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- 08-FOOTER SECTION -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-4 text-center text-[9px] font-extrabold tracking-wider text-slate-500 uppercase transition-all duration-300">© 2026 ALL RIGHTS ARE RESERVED UNDER SANJEEVA MULTISPECIALTY HOSPITAL | ARCHITECTURE BY SRI VEDA ORG</footer>
+
+    <!-- HIDDEN PRINT IFRAME (Same-page popup engine) -->
+    <iframe id="printFrame" style="position: absolute; width: 0; height: 0; border: 0; opacity: 0; visibility: hidden;" src="about:blank"></iframe>
+
+    <!-- 10-PRINT ENGINES & ACTIONS -->
+    <script>
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7rJsxfqo7PQHUCADDlEqrc4pQOEN3H_Jzb30drdzfPDjSCh8iWhdfa79k4KX8YDcn/exec";
+        let opdPatients = [];
+        let activeDoctorSessionKey = ""; // Securely keeps active doctor's username state
+        
+        // Initialize Default Filtering Date to Today
+        document.getElementById('selectedDateFilter').value = new Date().toISOString().split('T')[0];
+        initLiveClock();
+        initThemeToggle();
+        initLoginFocusControl();
+
+        function initLoginFocusControl() {
+            const usernameInput = document.getElementById('loginUsername');
+            const passwordInput = document.getElementById('loginPassword');
+            if (usernameInput && passwordInput) {
+                usernameInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        passwordInput.focus();
+                    }
+                });
+            }
+        }
+
+        async function handleStaffLogin(event) { 
+            event.preventDefault(); 
+            const submitBtn = document.getElementById('loginSubmitBtn'); 
+            const user = document.getElementById('loginUsername').value.trim(); 
+            const pass = document.getElementById('loginPassword').value.trim(); 
+            const errorBlock = document.getElementById('loginErrorMessage'); 
+            submitBtn.disabled = true; 
+            submitBtn.innerHTML = `<svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Authenticating...`; 
+            
+            try { 
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`, { method: 'GET', mode: 'cors', redirect: 'follow' }); 
+                const result = await response.json(); 
+                if (result.result === 'success') { 
+                    submitBtn.innerHTML = `✓ Authorized!`; 
+                    errorBlock.classList.add('hidden'); 
+                    activeDoctorSessionKey = result.username; // Stores uppercase unique username mapping
+                    setTimeout(() => { 
+                        document.getElementById('loginOverlay').classList.add('hidden'); 
+                        document.getElementById('appContainer').classList.remove('hidden'); 
+                        document.getElementById('activeOperatorBadge').innerText = `${result.displayName} (Consultant)`; 
+                        fetchTodayData(); 
+                    }, 800); 
+                } else { 
+                    errorBlock.innerText = result.message || "Access Denied: Invalid credentials."; 
+                    errorBlock.classList.remove('hidden'); 
+                    submitBtn.innerHTML = `<span>Authorize Terminal</span>`; 
+                    submitBtn.disabled = false; 
+                } 
+            } catch (err) { 
+                errorBlock.innerText = "Authentication Connection Error."; 
+                errorBlock.classList.remove('hidden'); 
+                submitBtn.innerHTML = `<span>Authorize Terminal</span>`; 
+                submitBtn.disabled = false; 
+            } 
+        }
+
+        function handleLogout() { 
+            activeDoctorSessionKey = "";
+            document.getElementById('loginForm').reset(); 
+            document.getElementById('loginOverlay').classList.remove('hidden'); 
+            document.getElementById('appContainer').classList.add('hidden'); 
+        }
+
+        function initLiveClock() { 
+            const timeSpan = document.getElementById('liveTimestamp'); 
+            function updateClock() { 
+                const now = new Date(); 
+                const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }; 
+                let formattedStr = now.toLocaleString('en-US', options); 
+                formattedStr = formattedStr.replace("am", "AM").replace("pm", "PM"); 
+                timeSpan.innerText = formattedStr; 
+                evaluateShiftIndicatorsAndSorting(); 
+            } 
+            updateClock(); 
+            setInterval(updateClock, 1000); 
+        }
+
+        function initThemeToggle() { 
+            const btn = document.getElementById('themeToggle'); 
+            btn.addEventListener('click', () => { 
+                document.documentElement.classList.toggle('dark'); 
+            }); 
+        }
+
+        async function fetchTodayData() { 
+            if (!activeDoctorSessionKey) return;
+            toggleSyncState(true); 
+            try { 
+                // Fetching records strictly filtered by doctor username on the backend side
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_URL}?action=fetchToday&username=${encodeURIComponent(activeDoctorSessionKey)}`, { method: 'GET', mode: 'cors', redirect: 'follow' }); 
+                const data = await response.json(); 
+                if (data.result === 'success') { 
+                    opdPatients = data.records; 
+                    renderDataTables(); 
+                } else { 
+                    alert("Database Sync Error: " + data.message); 
+                } 
+            } catch (err) { 
+                console.error("Fetch Today Error:", err); 
+            } finally { 
+                toggleSyncState(false); 
+            } 
+        }
+
+        function renderDataTables() { 
+            const filterDate = document.getElementById('selectedDateFilter').value;
+            
+            // Format labels
+            const displayDateText = filterDate ? new Date(filterDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "Selected Date";
+            document.querySelectorAll('.selected-date-label').forEach(el => el.innerText = displayDateText);
+
+            const morningBody = document.getElementById('morningOpdTableBody'); 
+            const eveningBody = document.getElementById('eveningOpdTableBody'); 
+            const unpaidBody = document.getElementById('unpaidOpdTableBody'); 
+            
+            morningBody.innerHTML = ''; 
+            eveningBody.innerHTML = ''; 
+            unpaidBody.innerHTML = ''; 
+            
+            let morningSNo = 1; 
+            let eveningSNo = 1; 
+            let unpaidSNo = 1; 
+            let totalMorningRevenue = 0; 
+            let totalEveningRevenue = 0; 
+
+            let totalOpdCount = 0;
+            let waitingOpdCount = 0;
+            let paidOpdCount = 0;
+            let totalAmountCollected = 0;
+
+            // Filter active data purely by Selected Date (matches patient.date - Column B format yyyy-MM-dd)
+            const filteredPatients = opdPatients.filter(patient => {
+                if (!patient.date) return false;
+                // Standardize dates to match YYYY-MM-DD
+                let pDateNormalized = patient.date;
+                if (patient.date.includes('/')) {
+                    const parts = patient.date.split('/');
+                    if (parts[0].length === 4) {
+                        pDateNormalized = parts[0] + "-" + ("0" + parts[1]).slice(-2) + "-" + ("0" + parts[2]).slice(-2);
+                    } else if (parts[2].length === 4) {
+                        pDateNormalized = parts[2] + "-" + ("0" + parts[1]).slice(-2) + "-" + ("0" + parts[0]).slice(-2);
+                    }
+                }
+                return pDateNormalized === filterDate;
+            });
+
+            filteredPatients.forEach((patient) => { 
+                totalOpdCount++;
+                const isPaid = !!patient.paidAmount;
+                if (isPaid) {
+                    paidOpdCount++;
+                    totalAmountCollected += parseFloat(patient.paidAmount || 0);
+                } else {
+                    waitingOpdCount++;
+                }
+
+                const formattedTimeStr = normalizeTimeFormat(patient.time); 
+                const isEvening = isTimeEvening(formattedTimeStr); 
+
+                const sessionRow = document.createElement('tr'); 
+                sessionRow.className = "hover:bg-slate-100/50 dark:hover:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/60 font-semibold"; 
+                
+                const feeStatusHTML = isPaid 
+                    ? `<span class="font-bold text-emerald-600 dark:text-emerald-450">INR ${patient.paidAmount}</span>`
+                    : `<span class="text-amber-500 font-extrabold animate-pulse uppercase tracking-wider text-[10px]">Unpaid</span>`;
+
+                const modificationReasonText = patient.modificationReason ? patient.modificationReason : "-";
+
+                // Standardized columns without Consultant name, OP Print & Receipts columns
+                const commonRowHTML = `
+                    <td class="px-3 py-2 text-slate-500 whitespace-nowrap">${patient.date}</td>
+                    <td class="px-3 py-2 text-slate-500 font-mono whitespace-nowrap">${formattedTimeStr}</td>
+                    <td class="px-3 py-2 text-medical-600 dark:text-medical-400 font-black">${patient.pid}</td>
+                    <td class="px-3 py-2 font-mono text-indigo-600 dark:text-indigo-400 font-bold">${patient.token}</td>
+                    <td class="px-3 py-2 font-bold text-slate-900 dark:text-white">${patient.name}</td>
+                    <td class="px-3 py-2">${patient.age}</td>
+                    <td class="px-3 py-2">${patient.gender}</td>
+                    <td class="px-3 py-2 text-slate-500">${patient.village}</td>
+                    <td class="px-3 py-2 font-mono">${patient.phone}</td>
+                    <td class="px-3 py-2 font-bold">${feeStatusHTML}</td>
+                    <td class="px-3 py-2 text-slate-500 italic max-w-[150px] truncate" title="${modificationReasonText}">${modificationReasonText}</td>
+                `; 
+
+                if (!isPaid) {
+                    // Route directly to bottom Unpaid Section
+                    sessionRow.innerHTML = `<td class="px-3 py-2 font-bold">${unpaidSNo++}</td>` + commonRowHTML;
+                    unpaidBody.appendChild(sessionRow);
+                } else if (!isEvening) { 
+                    sessionRow.innerHTML = `<td class="px-3 py-2 font-bold">${morningSNo++}</td>` + commonRowHTML; 
+                    morningBody.appendChild(sessionRow); 
+                    totalMorningRevenue += parseFloat(patient.paidAmount || 0); 
+                } else { 
+                    sessionRow.innerHTML = `<td class="px-3 py-2 font-bold">${eveningSNo++}</td>` + commonRowHTML; 
+                    eveningBody.appendChild(sessionRow); 
+                    totalEveningRevenue += parseFloat(patient.paidAmount || 0); 
+                } 
+            }); 
+
+            // Empty state handlers
+            if (morningSNo === 1) { 
+                morningBody.innerHTML = `<tr><td colspan="12" class="px-6 py-8 text-center text-slate-400 dark:text-slate-600 font-bold uppercase tracking-widest">No morning session PAID OPD registrations on this date</td></tr>`; 
+            } 
+            if (eveningSNo === 1) { 
+                eveningBody.innerHTML = `<tr><td colspan="12" class="px-6 py-8 text-center text-slate-400 dark:text-slate-600 font-bold uppercase tracking-widest">No evening session PAID OPD registrations on this date</td></tr>`; 
+            } 
+            if (unpaidSNo === 1) { 
+                unpaidBody.innerHTML = `<tr><td colspan="12" class="px-6 py-8 text-center text-emerald-500/80 dark:text-emerald-500/50 font-bold uppercase tracking-widest">All current registrations cleared and paid for today</td></tr>`; 
+            } 
+
+            // Update stats cards
+            document.getElementById('statTotalOpd').innerText = totalOpdCount;
+            document.getElementById('statWaitingOpd').innerText = waitingOpdCount;
+            document.getElementById('statPaidOpd').innerText = paidOpdCount;
+            document.getElementById('statTotalAmount').innerText = `INR ${totalAmountCollected}`;
+
+            // Update badges
+            document.getElementById('morningCountBadge').innerText = `${morningSNo - 1} Paid Morning Entries | Collection: INR ${totalMorningRevenue}`; 
+            document.getElementById('eveningCountBadge').innerText = `${eveningSNo - 1} Paid Evening Entries | Collection: INR ${totalEveningRevenue}`; 
+            document.getElementById('unpaidCountBadge').innerText = `${unpaidSNo - 1} Unpaid Entries Total`; 
+        }
+
+        function normalizeTimeFormat(timeStr) { 
+            if (!timeStr) return "12:00 AM"; 
+            let clean = timeStr.toString().trim(); 
+            if (clean.includes('T') && (clean.endsWith('Z') || clean.includes('+') || clean.includes('-'))) { 
+                try { 
+                    const dateObj = new Date(clean); 
+                    if (!isNaN(dateObj.getTime())) { 
+                        let hours = dateObj.getHours(); 
+                        let minutes = dateObj.getMinutes(); 
+                        let ampm = hours >= 12 ? 'PM' : 'AM'; 
+                        hours = hours % 12; 
+                        hours = hours ? hours : 12; 
+                        let minutesStr = minutes < 10 ? '0' + minutes : minutes; 
+                        let hoursStr = hours < 10 ? '0' + hours : hours; 
+                        return `${hoursStr}:${minutesStr} ${ampm}`; 
+                    } 
+                } catch (e) { 
+                    console.error("Error parsing ISO date", e); 
+                } 
+            } 
+            clean = clean.toUpperCase(); 
+            const match = clean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/); 
+            if (match) { 
+                let hour = match[1]; 
+                let minute = match[2]; 
+                let amp = match[3]; 
+                if (hour.length === 1) hour = "0" + hour; 
+                return `${hour}:${minute} ${amp}`; 
+            } 
+            return clean; 
+        }
+
+        function isTimeEvening(timeStr) { 
+            if (!timeStr) return false; 
+            if (timeStr.toUpperCase().includes('PM')) { 
+                const parts = timeStr.split(':'); 
+                const hour = parseInt(parts[0], 10); 
+                if (hour === 12 || hour < 3) return false; 
+                return true; 
+            } 
+            return false; 
+        }
+
+        function toggleSyncState(isActive) { 
+            const spinner = document.getElementById('syncSpinner'); 
+            const icon = document.getElementById('syncIcon'); 
+            if (isActive) { 
+                spinner.style.display = 'inline-block'; 
+                icon.style.display = 'none'; 
+            } else { 
+                spinner.style.display = 'none'; 
+                icon.style.display = 'inline-block'; 
+            } 
+        }
+
+        function showToastNotification(message) { 
+            const toast = document.getElementById('toastMessage'); 
+            const text = document.getElementById('toastText'); 
+            text.innerText = message; 
+            toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none'); 
+            setTimeout(() => { 
+                toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none'); 
+            }, 3000); 
+        }
+
+        function evaluateShiftIndicatorsAndSorting() { 
+            const currentHour = new Date().getHours(); 
+            const morningBadge = document.getElementById('morningShiftActiveBadge'); 
+            const eveningBadge = document.getElementById('eveningShiftActiveBadge'); 
+            const morningSection = document.getElementById('morningShiftSection'); 
+            const eveningSection = document.getElementById('eveningShiftSection'); 
+            const parentContainer = document.getElementById('shiftsContainer'); 
+            if (currentHour < 15) { 
+                morningBadge.classList.remove('hidden'); 
+                eveningBadge.classList.add('hidden'); 
+                if (parentContainer && eveningSection && morningSection && eveningSection.nextSibling !== morningSection) { 
+                    parentContainer.insertBefore(morningSection, eveningSection); 
+                } 
+            } else { 
+                morningBadge.classList.add('hidden'); 
+                eveningBadge.classList.remove('hidden'); 
+                if (parentContainer && morningSection && eveningSection && morningSection.nextSibling !== eveningSection) { 
+                    parentContainer.insertBefore(eveningSection, morningSection); 
+                } 
+            } 
+        }
+
+        function printOPTicket(pid) { 
+            const patient = opdPatients.find(p => p.pid === pid); 
+            if (!patient) return; 
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']; 
+            const pDate = new Date(patient.date); 
+            const weekdayStr = isNaN(pDate.getTime()) ? '' : days[pDate.getDay()]; 
+            
+            let selectedDoctorName = "డా|| ఆర్. అంజనేయులు"; 
+            let selectedDoctorDegree = "M.B.B.S., M.D. (Paed)"; 
+            let selectedDoctorSpeciality = "పిల్లల మరియు పురిటి పిల్లల వైద్య నిపుణులు"; 
+            let selectedDoctorReg = "Regd No. 54702"; 
+            if (patient.consultant.includes("Sujatha") || patient.consultant.includes("Sujata")) { 
+                selectedDoctorName = "డా|| ఇ. సుజాత అంజనేయులు"; 
+                selectedDoctorDegree = "M.B.B.S., M.S. (OBG)"; 
+                selectedDoctorSpeciality = "స్త్రీ మరియు ప్రసూతి వ్యాధి నిపుణులు"; 
+                selectedDoctorReg = "Regd No. 62254"; 
+            } else if (patient.consultant.includes("Chandrasekhar")) { 
+                selectedDoctorName = "డా|| ఎ. చంద్రశేఖర్ రెడ్డి"; 
+                selectedDoctorDegree = "M.S. (ENT)"; 
+                selectedDoctorSpeciality = "చెవి, ముక్కు, గొంతు వైద్యులు"; 
+                selectedDoctorReg = "Cell: 7013738036"; 
+            } else if (patient.consultant.includes("Chitti") || patient.consultant.includes("Chanti")) { 
+                selectedDoctorName = "డా|| చంటి బాబు"; 
+                selectedDoctorDegree = "M.S. (Ortho)"; 
+                selectedDoctorSpeciality = "కీళ్ల నొప్పులు మరియు ఎముకల వైద్య నిపుణులు"; 
+                selectedDoctorReg = "Regd No. 71832"; 
+            } 
+            
+            const numericalToken = patient.token.replace(/\D/g, ''); 
+            
+            const ticketHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OP Ticket [${pid}]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;700;800&family=Roboto+Slab:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        @page { size: A4 portrait; margin: 0mm; } 
+        * { box-sizing: border-box; } 
+        body { 
+            font-family: 'Roboto Slab', 'Noto Serif Telugu', serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #ffffff; 
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact; 
+        } 
+        .print-wrapper {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            padding: 4mm;
+            background-color: #ffffff;
+        }
+        .a4-container {
+            width: 100%;
+            height: 100%;
+            padding: 8mm;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+        .header-brand {
+            display: grid;
+            grid-template-columns: 110px 1fr 80px;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 6px;
+            position: relative;
+        }
+        .logo-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 110px; 
+            height: 110px; 
+            flex-shrink: 0; 
+        } 
+        .logo { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+        } 
+        .brand-text {
+            flex-grow: 1;
+            padding-left: 15px;
+            text-align: center;
+        }
+        .hospital-english-name { 
+            font-size: 21px; 
+            font-weight: 900; 
+            color: #1e3a8a; 
+            margin: 0; 
+            letter-spacing: -0.2px; 
+            text-transform: uppercase; 
+            white-space: nowrap; 
+        } 
+        .hospital-tagline { 
+            font-size: 10px; 
+            font-weight: 800; 
+            color: #0891b2; 
+            margin: 2px 0; 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+        }
+        .hospital-telugu-name { 
+            font-size: 18px; 
+            font-weight: 800; 
+            color: #b91c1c; 
+            margin: 2px 0 4px 0; 
+        } 
+        .hospital-address {
+            font-size: 9px;
+            color: #475569;
+            margin: 0;
+            font-weight: 700;
+            text-align: center;
+        } 
+        .cell-block {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 900;
+            color: #1e3a8a;
+            flex-shrink: 0;
+        }
+        .cell-icon { 
+            width: 16px; 
+            height: 16px; 
+            fill: currentColor; 
+        } 
+        .header-divider { 
+            border: 0; 
+            height: 1.5px; 
+            background: #000000; 
+            margin: 0 0 10px 0; 
+        } 
+        .demographics-area { 
+            display: grid; 
+            grid-template-columns: 80px 1fr; 
+            gap: 15px; 
+            border-bottom: 1.5px dashed #000000; 
+            padding-bottom: 10px; 
+            margin-bottom: 10px; 
+        } 
+        .token-raw-column { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-right: 1px solid #e2e8f0; 
+            padding-right: 12px; 
+        } 
+        .token-raw-value { 
+            font-size: 64px; 
+            font-weight: 900; 
+            color: #000000; 
+            line-height: 1; 
+            margin: 0; 
+        } 
+        .patient-details-grid { 
+            display: grid; 
+            grid-template-columns: 1.5fr 1fr; 
+            gap: 8px; 
+            font-size: 11px; 
+        } 
+        .line-field { 
+            border-bottom: none; 
+            padding-bottom: 1px; 
+            font-weight: 700; 
+            color: #0f172a; 
+        } 
+        .label-dim { 
+            color: #64748b; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            font-size: 9px; 
+            margin-right: 6px; 
+        } 
+        .doctor-opposite-row { 
+            display: grid; 
+            grid-template-columns: 1.5fr 1fr; 
+            gap: 15px; 
+            background-color: #f8fafc; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            padding: 8px; 
+            margin-bottom: 10px; 
+        } 
+        .doctor-info-left { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+        } 
+        .doctor-name-main { 
+            font-size: 14px; 
+            font-weight: 800; 
+            color: #b91c1c; 
+        } 
+        .doctor-sub-details { font-size:10px; font-weight:700; color:#334155; margin-top:2px; padding-left:25px; } 
+        .doctor-reg { 
+            font-size: 9px; 
+            font-weight: 700; 
+            color: #1e3a8a; 
+        } 
+        .patient-metadata-right { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 3px; 
+            font-size: 10px; 
+            font-weight: 700; 
+            color: #334155; 
+            align-content: center; 
+            border-left: 1px solid #e2e8f0; 
+            padding-left: 12px; 
+        } 
+        .clinical-workspace { 
+            display: grid; 
+            grid-template-columns: 1fr 180px; 
+            gap: 15px; 
+            flex-grow: 1; 
+            border-top: 1.5px solid #000000; 
+            padding-top: 10px; 
+        } 
+        .clinical-left-rx { 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+        } 
+        .clinical-right-vitals { 
+            border-left: 1px dashed #cbd5e1; 
+            padding-left: 12px; 
+            display: flex; 
+            flex-direction: column; 
+        } 
+        .rx-symbol { font-size:32px; font-weight:900; color:#000000; line-height:1; margin-top:100px; margin-bottom:8px; margin-left:140px; text-align:left; } 
+        .vital-line { 
+            margin-bottom: 10px; 
+            font-weight: 700; 
+            font-size: 10px; 
+            color: #334155; 
+            border-bottom: 1px dashed #cbd5e1; 
+            padding-bottom: 4px; 
+            display: flex; 
+            justify-content: space-between; 
+        } 
+        .prescription-footer { 
+            margin-top: auto; 
+        } 
+        .sig-block { 
+            text-align: right; 
+            font-weight: 800; 
+            font-size: 11px; 
+            margin-bottom: 8px; 
+            color: #0f172a; 
+        } 
+        .footer-notes-divider { 
+            border: 0; 
+            height: 2px; 
+            background: #000000; 
+            margin: 6px 0; 
+        } 
+        .notes-container-telugu { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 3px; 
+            font-size: 9px; 
+            font-weight: 800; 
+            color: #000000; 
+            line-height: 1.3; 
+            margin-bottom: 6px; 
+        } 
+        .note-item { 
+            position: relative; 
+            padding-left: 10px; 
+        } 
+        .note-item::before { 
+            content: "•"; 
+            position: absolute; 
+            left: 0; 
+            color: #b91c1c; 
+        } 
+        .branding-credits { 
+            text-align: center; 
+            font-size: 8px; 
+            color: #000000; 
+            margin-top: 4px; 
+            letter-spacing: 0.5px; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+        } 
+        @media print {
+            body { background:#ffffff; }
+            .print-wrapper { width:210mm !important; height:297mm !important; padding:4mm !important; margin:0 auto !important; }
+            .a4-container { width:100% !important; height:100% !important; border:2px solid #000000 !important; border-radius:18px !important; padding:8mm !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-wrapper">
+        <div class="a4-container">
+            <div class="header-brand">
+                <div class="logo-container">
+                    <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="logo" alt="SMH Logo">
+                </div>
+                <div class="brand-text">
+                    <h1 class="hospital-english-name">Sanjeeva Multispecialty Hospital</h1>
+                    <div class="hospital-tagline">HEALTH CARE WITH ETHICS</div>
+                    <h2 class="hospital-telugu-name">శ్రీ సంజీవ మల్టీ స్పెషాలిటీ హాస్పిటల్</h2>
+                    <p class="hospital-address">D.No: 1-7-26, PEDDANNA STREET, ALLAGADDA, NANDYALA DIST.</p>
+                </div>
+                <div class="cell-block">
+                    <svg class="cell-icon" viewBox="0 0 24 24">
+                        <path d="M17 19H7V5h10v14zm-5-1a1 1 0 100-2 1 1 0 000 2zm4-15H8a3 3 0 00-3 3v12a3 3 0 003 3h8a3 3 0 003-3V6a3 3 0 00-3-3z"/>
+                    </svg>
+                    <span>9100349825</span>
+                </div>
+            </div>
+            <hr class="header-divider">
+            <div class="demographics-area">
+                <div class="token-raw-column">
+                    <div class="token-raw-value">${numericalToken}</div>
+                </div>
+                <div class="patient-details-grid">
+                    <div class="line-field" style="grid-column: span 2;">
+                        <span class="label-dim">Name:</span>
+                        <span style="font-size: 13px;">${patient.name}</span>
+                    </div>
+                    <div class="line-field">
+                        <span class="label-dim">Age / Gender:</span>
+                        <span>${patient.age} Y / ${patient.gender}</span>
+                    </div>
+                    <div class="line-field" style="grid-column: span 2;">
+                        <span class="label-dim">Address:</span>
+                        <span>${patient.village}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="doctor-opposite-row">
+                <div class="doctor-info-left">
+                    <div class="doctor-name-main">${selectedDoctorName}</div>
+                    <div class="doctor-sub-details">${selectedDoctorDegree}</div>
+                    <div class="doctor-reg">${selectedDoctorSpeciality} | ${selectedDoctorReg}</div>
+                </div>
+                <div class="patient-metadata-right">
+                    <div><span class="label-dim">PID:</span>${patient.pid}</div>
+                    <div><span class="label-dim">Date:</span>${patient.date}</div>
+                    <div><span class="label-dim">Time:</span>${normalizeTimeFormat(patient.time)}</div>
+                    <div><span class="label-dim">Day:</span>${weekdayStr}</div>
+                </div>
+            </div>
+            <div class="clinical-workspace">
+                <div class="clinical-left-rx">
+                    <div class="rx-symbol">Rx</div>
+                </div>
+                <div class="clinical-right-vitals">
+                    <div class="vital-line"><span>Temp:</span><span>________________ °F</span></div>
+                    <div class="vital-line"><span>SpO2:</span><span>________________ %</span></div>
+                    <div class="vital-line"><span>PR:</span><span>________________ bpm</span></div>
+                    <div class="vital-line"><span>BP:</span><span>________ / ________ mmHg</span></div>
+                </div>
+            </div>
+            <div class="prescription-footer">
+                <div class="sig-block">Doctor Signature</div>
+                <hr class="footer-notes-divider">
+                <div class="notes-container-telugu">
+                    <div class="note-item">Link FPA, Volo FPA, Universal Sompo, FHPL, Bajaj, Heritage, Navi TPA మొదలగు ఇన్సూరెన్స్ కార్డు కలవారికి క్యాష్‌లెస్ ట్రీట్‌మెంట్ సదుపాయం కలదు.</div>
+                    <div class="note-item">మొదలకు వారికి ఇన్సూరెన్స్ కార్డు కలిగిన వారికి క్యాష్ లెస్ ట్రీట్‌మెంట్ సదుపాయం కలదు.</div>
+                    <div class="note-item">అల్ట్రాసౌండ్ స్కానింగ్ (ULTRA SOUND SCAN) సౌకర్యం కలదు.</div>
+                    <div class="note-item">అన్ని రకాల ఆపరేషన్లు మరియు వ్యాక్సిన్లు ప్రతిరోజు వేయబడును.</div>
+                    <div class="note-item">పై మందులు 3 రోజులు దాటితే వెనక్కి తీసుకోబడవు.</div>
+                </div>
+                <div class="branding-credits">© 2026 SANJEEVA MULTISPECIALTY HOSPITAL • ALLAGADDA • MANAGED BY SRI VEDA ORG</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+
+            const pFrame = document.getElementById('printFrame');
+            const pDoc = pFrame.contentWindow.document;
+            pDoc.open();
+            pDoc.write(ticketHTML);
+            pDoc.close();
+
+            setTimeout(() => {
+                pFrame.contentWindow.focus();
+                pFrame.contentWindow.print();
+            }, 350);
+        }
+
+        function printPaymentReceipt(pid) { 
+            const patient = opdPatients.find(p => p.pid === pid); 
+            if (!patient) return; 
+            const feePaid = patient.paidAmount ? `INR ${patient.paidAmount} /-` : "PENDING AT CASHIER"; 
+            
+            const receiptHTML = `<html>
+<head>
+    <title>Receipt [${pid}]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto Slab', serif; padding: 0; margin: 0; color: #1e293b; background-color: #ffffff; display: flex; align-items: flex-start; justify-content: center; } 
+        .receipt-wrapper { width: 210mm; height: 99mm; padding: 6mm; border-bottom: 2px dashed #000000; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; } 
+        .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px dashed #000000; padding-bottom: 6px; } 
+        .logo-brand { display: flex; align-items: center; gap: 12px; } 
+        .logo { width: 55px; height: 55px; object-fit: contain; } 
+        .hospital-name { font-size: 14px; font-weight: 900; color: #1e3a8a; margin: 0; text-transform: uppercase; } 
+        .tagline { font-size: 8px; font-weight: 700; color: #0e7490; letter-spacing: 1.5px; } 
+        .receipt-title { font-size: 10px; font-weight: 950; letter-spacing: 1px; text-transform: uppercase; color: #0f172a; border: 1.5px solid #000000; padding: 3px 8px; border-radius: 4px; } 
+        .receipt-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 15px; font-size: 10px; margin-top: 8px; } 
+        .row-item { display: flex; justify-content: space-between; border-bottom: 1px dotted #e2e8f0; padding-bottom: 1px; } 
+        .label { font-weight: 700; color: #64748b; } 
+        .value { font-weight: 700; color: #0f172a; } 
+        .footer-receipt { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px; border-top: 1.5px solid #000000; padding-top: 6px; } 
+        .total-block { background: #000000; color: white; padding: 6px 12px; border-radius: 6px; text-align: center; min-width: 140px; } 
+        .total-label { font-size: 7px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; } 
+        .total-val { font-size: 14px; font-weight: 900; } 
+        .signature-block { text-align: right; font-size: 9px; font-weight: 900; color: #0f172a; } 
+        .sig-line { margin-top: 14px; border-top: 1.5px solid #000000; width: 130px; display: inline-block; } 
+        @media print { body { background-color: #ffffff; } .receipt-wrapper { border-bottom: 2px dashed #000000 !important; } }
+    </style>
+</head>
+<body>
+    <div class="receipt-wrapper">
+        <div class="header">
+            <div class="logo-brand">
+                <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="logo" alt="SMH">
+                <div style="display:flex; flex-direction:column;">
+                    <span class="hospital-name">SANJEEVA MULTISPECIALTY HOSPITAL</span>
+                    <span class="tagline">HEALTH CARE WITH ETHICS</span>
+                </div>
+            </div>
+            <div class="receipt-title">Payment Receipt</div>
+        </div>
+        <div class="receipt-details-grid">
+            <div class="row-item"><span class="label">Patient ID:</span><span class="value">${patient.pid}</span></div>
+            <div class="row-item"><span class="label">Token ID:</span><span class="value">${patient.token}</span></div>
+            <div class="row-item"><span class="label">Date:</span><span class="value">${patient.date}</span></div>
+            <div class="row-item"><span class="label">Time:</span><span class="value">${normalizeTimeFormat(patient.time)}</span></div>
+            <div class="row-item" style="grid-column: span 2;"><span class="label">Patient Name:</span><span class="value" style="font-size: 11px;">${patient.name}</span></div>
+            <div class="row-item"><span class="label">Age / Gender:</span><span class="value">${patient.age} Y / ${patient.gender}</span></div>
+            <div class="row-item"><span class="label">Consultant:</span><span class="value">${patient.consultant}</span></div>
+        </div>
+        <div class="footer-receipt">
+            <div class="total-block">
+                <div class="total-label">OP Consultation Fee Paid</div>
+                <div class="total-val">${feePaid}</div>
+            </div>
+            <div class="signature-block">
+                <div>Authorized Staff Signature</div>
+                <div class="sig-line"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+
+            const pFrame = document.getElementById('printFrame');
+            const pDoc = pFrame.contentWindow.document;
+            pDoc.open();
+            pDoc.write(receiptHTML);
+            pDoc.close();
+
+            setTimeout(() => {
+                pFrame.contentWindow.focus();
+                pFrame.contentWindow.print();
+            }, 350);
+        }
+    </script>
+</body>
+</html>
