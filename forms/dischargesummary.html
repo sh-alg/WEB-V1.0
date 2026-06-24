@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discharge Summary Report - Sanjeeva Hospital</title>
+<link rel="icon" type="image/png" href="https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body { 
+        font-family: 'Roboto Slab', serif; 
+        background-color: #f1f5f9; 
+        padding: 20px 10px; 
+        margin: 0; 
+    }
+    .a4-page { 
+        width: 210mm; 
+        min-height: 297mm; 
+        padding: 12mm 15mm; 
+        margin: 20px auto; 
+        background: #ffffff; 
+        border: 4px double #1e3a8a; 
+        box-sizing: border-box; 
+        display: flex; 
+        flex-direction: column; 
+        position: relative; 
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
+    }
+    .watermark-bg { 
+        position: absolute; 
+        top: 52%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+        width: 450px; 
+        height: 450px; 
+        opacity: 0.03; 
+        pointer-events: none; 
+        z-index: 0; 
+    }
+
+
+    /* 01-OPERATIONS CONSOLE */
+    .operation-btn {
+        transition: all 0.3s ease;
+    }
+    .modal-card-reset {
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+
+    /* 02-PATIENT REGISTRATION DETAILS */
+    .header-container { 
+        display: flex; 
+        flex-direction: column; 
+        border-bottom: 2px solid #1e3a8a; 
+        padding-bottom: 8px; 
+        margin-bottom: 8px; 
+    }
+    .header-top { 
+        display: flex; 
+        align-items: center; 
+        gap: 20px; 
+    }
+    .logo-img { 
+        height: 80px; 
+        width: 100px; 
+        object-fit: contain; 
+    }
+    .hospital-name { 
+        font-size: 1.6rem; 
+        font-weight: 900; 
+        color: #1e3a8a; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+    }
+    .report-headline { 
+        font-size: 1.3rem; 
+        font-weight: 800; 
+        color: #1e3a8a; 
+        text-decoration: underline; 
+        text-transform: uppercase; 
+        text-align: center; 
+        margin: 12px 0; 
+        letter-spacing: 1px; 
+    }
+    .field-label { 
+        font-weight: 800; 
+        color: #1e3a8a; 
+        display: inline-block; 
+    }
+    .line-input { 
+        border: none; 
+        border-bottom: 1.5px dotted #1e3a8a; 
+        outline: none; 
+        padding: 0 4px; 
+        font-weight: 700; 
+        color: #0f172a; 
+        background: transparent; 
+    }
+    .date-wrapper { 
+        position: relative; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+    }
+    .date-wrapper input { 
+        border: 1.5px solid #cbd5e1; 
+        padding: 5px 10px; 
+        border-radius: 6px; 
+        font-weight: 700; 
+        color: #1e3a8a; 
+        width: 100%; 
+        font-size: 0.8rem;
+        cursor: pointer; 
+        background-color: #ffffff;
+    }
+
+
+    /* 03-CLINICAL DIAGNOSTICS */
+    .section-title { 
+        font-weight: 800; 
+        color: #1e3a8a; 
+        border-bottom: 1px solid #1e3a8a; 
+        margin-top: 10px; 
+        margin-bottom: 6px; 
+        text-transform: uppercase; 
+        font-size: 0.85rem; 
+    }
+    .content-area { 
+        min-height: 42px; 
+        border: 1px dashed #cbd5e1; 
+        padding: 6px; 
+        margin-bottom: 8px; 
+        font-size: 0.82rem; 
+        line-height: 1.4; 
+        outline: none; 
+    }
+    .footer-wrapper { 
+        margin-top: auto; 
+        border-top: 2px solid #1e3a8a; 
+        padding-top: 8px; 
+    }
+    
+    @media print { 
+        .no-print { display: none !important; } 
+        body { background: none; padding: 0; margin: 0; } 
+        .a4-page { box-shadow: none; border: 4px double #1e3a8a !important; margin: 0; padding: 10mm 12mm; width: 100%; min-height: 100%; } 
+    }
+</style>
+</head>
+<body class="relative min-h-screen">
+
+
+<!-- 01-OPERATIONS CONSOLE -->
+<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden no-print">
+    <div class="bg-white rounded-lg max-w-md w-full p-6 shadow-2xl border-t-4 border-rose-600 mx-4 transform transition-all duration-300 scale-95 opacity-0 modal-card-reset" id="confirmModalCard">
+        <div class="flex items-center gap-3 mb-4 text-rose-600">
+            <i class="fas fa-exclamation-triangle text-3xl"></i>
+            <h3 class="text-xl font-extrabold text-slate-800">Confirm Reset</h3>
+        </div>
+        <p class="text-slate-600 font-bold text-sm mb-6 leading-relaxed">
+            Are you sure you want to reset this form? All current diagnostic modifications, patient files, and unsubmitted changes will be completely cleared.
+        </p>
+        <div class="flex justify-end gap-3 font-bold text-sm">
+            <button onclick="closeConfirmModal(false)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-2.5 rounded transition-all">No, Cancel</button>
+            <button onclick="closeConfirmModal(true)" class="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded shadow-md hover:shadow-lg transition-all">Yes, Reset</button>
+        </div>
+    </div>
+</div>
+
+<div class="no-print bg-white p-4 shadow-md mb-6 flex flex-col gap-4 max-w-[210mm] mx-auto rounded-lg border-t-4 border-blue-900 mt-4">
+    <div class="flex flex-wrap justify-center gap-4">
+        <!-- New Form Reset Command -->
+        <button type="button" onclick="triggerResetConfirmation()" class="bg-rose-600 hover:bg-rose-700 text-white px-6 py-2.5 rounded font-extrabold shadow hover:shadow-md transition-all flex items-center gap-2 operation-btn">
+            <i class="fas fa-undo"></i> Reset
+        </button>
+        
+        <!-- Live Action Save / Update Trigger -->
+        <button type="button" id="saveBtn" onclick="saveForm()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded font-extrabold shadow hover:shadow-md flex items-center gap-2 justify-center min-w-[150px] transition-all operation-btn">
+            <span id="saveBtnIcon"><i class="fas fa-save"></i></span>
+            <span id="saveBtnText">Save</span>
+        </button>
+        
+        <!-- Document Print Output System -->
+        <button type="button" id="printBtn" onclick="window.print()" disabled class="bg-gray-300 text-gray-500 cursor-not-allowed px-6 py-2.5 rounded font-extrabold transition-all flex items-center gap-2 shadow-inner operation-btn">
+            <i class="fas fa-print"></i> Print
+        </button>
+    </div>
+    
+    <!-- Database Document Index Match verification -->
+    <div class="flex justify-center items-center gap-2 mt-2 flex-wrap bg-slate-50 p-3 rounded-lg border border-slate-200">
+        <label class="font-extrabold text-blue-900 text-sm">DS ID:</label>
+        <input type="text" id="ipSearch" class="border-2 border-blue-200 rounded px-3 py-1.5 focus:border-blue-900 focus:outline-none w-48 text-center font-black text-rose-600 uppercase tracking-wider text-sm transition-all" placeholder="e.g. SMDS001">
+        <button type="button" id="verifyBtn" onclick="verifyID()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded font-extrabold transition-all flex items-center gap-2 min-w-[130px] justify-center shadow operation-btn">
+            <span id="verifyBtnIcon"><i class="fas fa-search"></i></span>
+            <span id="verifyBtnText">Verify</span>
+        </button>
+    </div>
+    
+    <!-- Standard Transaction Log Message Banners -->
+    <div id="statusMessage" class="text-center text-xs font-bold p-3 rounded-md hidden shadow-sm border"></div>
+</div>
+
+
+<!-- 02-PATIENT REGISTRATION DETAILS -->
+<div class="a4-page">
+    <!-- Subtle Watermark -->
+    <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="watermark-bg" alt="Hospital Logo Watermark">
+    
+    <!-- Branding Header Panel -->
+    <div class="header-container">
+        <div class="header-top">
+            <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="logo-img" alt="Sanjeeva Hospital Logo">
+            <div class="header-text">
+                <h1 class="hospital-name">Sanjeeva Multispecialty Hospital</h1>
+                <div class="text-xs font-bold text-blue-900 mt-1 italic">"HEALTH CARE WITH ETHICS" | <i class="fas fa-phone-alt"></i> 9100349825</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Metadata side-by-side profiles -->
+    <div class="grid grid-cols-2 gap-4 text-xs py-2">
+        <!-- Left Column: Dr. R. Anjaneyulu -->
+        <div class="text-left border-r border-blue-200 pr-4">
+            <div class="text-sm font-extrabold text-blue-900">DR. R. ANJANEYULU</div>
+            <div class="font-bold text-slate-800 text-[10.5px] mt-0.5">M.B.B.S., M.D. (PAED) MCH.</div>
+            <div class="font-bold text-blue-800 text-[10.5px]">Pediatrician & Neonatologist</div>
+            <div class="text-[10px] text-slate-500 font-bold">REGD NO: 54702</div>
+        </div>
+        <!-- Right Column: Dr. E. Sujata Anjaneyulu -->
+        <div class="text-right pl-4">
+            <div class="text-sm font-extrabold text-blue-900">DR. E. SUJATA ANJANEYULU</div>
+            <div class="font-bold text-slate-800 text-[10.5px] mt-0.5">M.B.B.S., M.S. (OBG)</div>
+            <div class="font-bold text-blue-800 text-[10.5px]">Civil Assistant Surgeon, Obstetrician & Gynecologist</div>
+            <div class="text-[10px] text-slate-500 font-bold">REGD NO: 62254</div>
+        </div>
+    </div>
+
+    <!-- Dividing Separation Rule -->
+    <div class="border-b-2 border-blue-900 mb-3 w-full"></div>
+
+    <!-- Index Reference and date picker selection -->
+    <div class="flex justify-between items-center font-bold text-blue-900 text-xs mb-3">
+        <div>DS ID: <span id="ipDisplay" class="font-extrabold text-rose-600 px-2 py-0.5 border border-dashed border-rose-400 bg-rose-50 rounded">NEW</span></div>
+        <div class="flex items-center gap-1.5">
+            <span>Date:</span> 
+            <input type="date" id="docDate" class="border-b border-dotted border-blue-900 outline-none text-slate-800 font-extrabold w-28 text-xs bg-transparent cursor-pointer">
+            <i class="fas fa-calendar-alt text-blue-900 text-[11px]"></i>
+        </div>
+    </div>
+
+    <!-- Report Title Heading -->
+    <div class="report-headline">DISCHARGE SUMMARY</div>
+
+    <!-- Patient Profile Input Blocks (Flexible Wrapping Row 1, Address on Row 2 as requested) -->
+    <div class="flex flex-col gap-y-3.5 text-xs mb-4">
+        <!-- Row 1: Patient Name, Age, Sex with wrapping support -->
+        <div class="flex flex-wrap items-end w-full gap-x-4 gap-y-2">
+            <div class="flex items-end flex-grow min-w-[200px]">
+                <span class="field-label whitespace-nowrap mr-2">Patient Name:</span>
+                <span id="patientName" contenteditable="plaintext-only" class="line-input flex-grow outline-none min-h-[18px] break-words whitespace-pre-wrap leading-tight"></span>
+            </div>
+            <div class="flex items-end w-24">
+                <span class="field-label whitespace-nowrap mr-2">Age:</span>
+                <span id="patientAge" contenteditable="plaintext-only" class="line-input flex-grow outline-none text-center min-h-[18px]"></span>
+            </div>
+            <div class="flex items-end w-24">
+                <span class="field-label whitespace-nowrap mr-2">Sex:</span>
+                <span id="patientSex" contenteditable="plaintext-only" class="line-input flex-grow outline-none text-center min-h-[18px]"></span>
+            </div>
+        </div>
+        <!-- Row 2: Address safely positioned below for space maximization -->
+        <div class="flex items-end w-full">
+            <span class="field-label whitespace-nowrap mr-2">Address:</span>
+            <span id="address" contenteditable="plaintext-only" class="line-input flex-grow outline-none min-h-[18px] break-words whitespace-pre-wrap leading-tight"></span>
+        </div>
+    </div>
+
+    <!-- Admission Dates picker grids styled exactly as shown in image_7b47ea.png -->
+    <div class="grid grid-cols-3 gap-3 mb-3">
+        <div class="date-wrapper">
+            <label class="text-[10px] font-extrabold text-blue-900 mb-0.5">Admitting Date:</label>
+            <input type="date" id="admDate" class="outline-none">
+        </div>
+        <div class="date-wrapper">
+            <label class="text-[10px] font-extrabold text-blue-900 mb-0.5">Discharge Date:</label>
+            <input type="date" id="disDate" class="outline-none">
+        </div>
+        <div class="date-wrapper">
+            <label class="text-[10px] font-extrabold text-blue-900 mb-0.5">Lab/Imaging Date:</label>
+            <input type="date" id="labDate" class="outline-none">
+        </div>
+    </div>
+
+
+<!-- 03-CLINICAL DIAGNOSTICS -->
+    <!-- Clinical Diagnostic Data blocks -->
+    <div class="section-title">Admitting Diagnosis</div><div id="admDiag" contenteditable="plaintext-only" class="content-area"></div>
+    <div class="section-title">Discharge Diagnosis</div><div id="disDiag" contenteditable="plaintext-only" class="content-area"></div>
+    <div class="section-title">Brief History</div><div id="history" contenteditable="plaintext-only" class="content-area" style="min-height: 70px;"></div>
+    <div class="section-title">Patient X-Ray & Imaging Data</div><div id="imaging" contenteditable="plaintext-only" class="content-area"></div>
+    <div class="section-title">Discharge Medication</div><div id="meds" contenteditable="plaintext-only" class="content-area" style="min-height: 70px;"></div>
+    <div class="section-title">Discharge Follow-up</div><div id="followup" contenteditable="plaintext-only" class="content-area"></div>
+    <div class="section-title">Discharge Conditions</div><div id="conditions" contenteditable="plaintext-only" class="content-area"></div>
+    <div class="section-title">Conclusion & Instructions</div><div id="instructions" contenteditable="plaintext-only" class="content-area" style="min-height: 70px;"></div>
+
+    <!-- Layout footer matching physical specs with new Copyright notice -->
+    <div class="footer-wrapper">
+        <div class="text-center font-bold text-blue-900 text-[10px] leading-relaxed uppercase tracking-wide">
+            <div>D NO:1-7-26, PEDDANNA STREET, OPPO RAMANA FUNCTION HALL, G V TEXTILES BACKSIDE, ALLAGADDA, NANDYALA DIST, AP-518543.</div>
+            <div class="border-t border-blue-200 mt-2 pt-1.5 text-[8.5px] text-slate-500 font-bold tracking-wider">
+                ALL RIGHTS ARE RESERVED UNDER SANJEEVA MULTISPECIALTY HOSPITAL | ARCHITECTURE BY SRI VEDA ORG
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Live Target Apps Script WebApp Endpoint URL
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw2Z3K2uF8LyGr3TfDYX3oI1zSgbvAVNjLqqe1Mcqs1KcQ2gZoVb6boz41mKTTgFiyk/exec";
+
+    // Track unsaved modifications to guard tab closure
+    let isFormDirty = false;
+
+
+    /* 01-OPERATIONS CONSOLE */
+    // Trigger Non-blocking custom modal dialog
+    function triggerResetConfirmation() {
+        const modal = document.getElementById('confirmModal');
+        const modalCard = document.getElementById('confirmModalCard');
+        
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalCard.classList.remove('scale-95', 'opacity-0');
+            modalCard.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    // Handle interactive modal closures
+    function closeConfirmModal(shouldReset) {
+        const modal = document.getElementById('confirmModal');
+        const modalCard = document.getElementById('confirmModalCard');
+
+        modalCard.classList.remove('scale-100', 'opacity-100');
+        modalCard.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            if (shouldReset) {
+                // Clear state triggers to prevent unsaved changes warnings
+                isFormDirty = false;
+                // Full form reset logic execution
+                location.reload();
+            }
+        }, 200);
+    }
+
+
+    /* 02-PATIENT REGISTRATION DETAILS */
+    // Ordered configuration sequence for key press Enter focus navigation mechanics
+    const clinicalFieldsInOrder = [
+        "patientName", "patientAge", "patientSex", "address", 
+        "docDate", "admDate", "disDate", "labDate", 
+        "admDiag", "disDiag", "history", "imaging", "meds", "followup", "conditions", "instructions"
+    ];
+
+    // Set initial date representation on body load (today's date default)
+    document.getElementById('docDate').value = new Date().toISOString().split('T')[0];
+
+    // Keyboard navigation sequence engine intercepting enter key presses
+    document.addEventListener("keydown", function(event) {
+        // Exit if target isn't within interactive clinical elements
+        if (!clinicalFieldsInOrder.includes(event.target.id)) return;
+
+        // Listen for standard Enter events
+        if (event.key === "Enter") {
+            const currentElement = event.target;
+            const currentId = currentElement.id;
+            const currentIndex = clinicalFieldsInOrder.indexOf(currentId);
+
+            // Allow normal multiline editing shift-key behaviors
+            if (event.shiftKey) return;
+
+            // Intercept standard single-line entries or explicitly control multi-line jumps
+            const isSingleLine = ["patientName", "patientAge", "patientSex", "address", "docDate", "admDate", "disDate", "labDate"].includes(currentId);
+            
+            if (isSingleLine || event.ctrlKey) {
+                event.preventDefault(); // Halt default carriage returns
+                const nextIndex = currentIndex + 1;
+                
+                if (nextIndex < clinicalFieldsInOrder.length) {
+                    const nextField = document.getElementById(clinicalFieldsInOrder[nextIndex]);
+                    if (nextField) {
+                        nextField.focus();
+                        
+                        // Move cursor to end if contenteditable
+                        if (nextField.hasAttribute('contenteditable')) {
+                            const range = document.createRange();
+                            const sel = window.getSelection();
+                            range.selectNodeContents(nextField);
+                            range.collapse(false);
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Mark document dirty when edited
+    document.addEventListener("input", function(e) {
+        if (clinicalFieldsInOrder.includes(e.target.id)) {
+            isFormDirty = true;
+        }
+    });
+
+    // Preventive Browser unload guardian configurations
+    window.addEventListener('beforeunload', function (e) {
+        if (isFormDirty) {
+            e.preventDefault();
+            e.returnValue = 'You have unsaved changes on this form. Are you sure you want to refresh?';
+            return 'You have unsaved changes on this form. Are you sure you want to refresh?';
+        }
+    });
+
+    /**
+     * Helper to safely format spreadsheet Date strings (e.g. 24 Jun 2026 or 16-Jun-2026) to the HTML "yyyy-MM-dd" input requirement
+     */
+function formatDateForInput(dateVal) {
+    if (!dateVal) return "";
+
+    let cleanVal = String(dateVal).trim();
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(cleanVal)) return cleanVal;
+
+    if (cleanVal.includes("T")) return cleanVal.split("T")[0];
+
+    let months = {
+        JAN:"01", FEB:"02", MAR:"03", APR:"04", MAY:"05", JUN:"06",
+        JUL:"07", AUG:"08", SEP:"09", OCT:"10", NOV:"11", DEC:"12"
+    };
+
+    let parts = cleanVal.replace(/,/g,"").split(/[-\/\s]+/);
+
+    if (parts.length === 3) {
+
+        let day = "";
+        let month = "";
+        let year = "";
+
+        if (parts[0].length === 4) {
+            year = parts[0];
+            month = parts[1];
+            day = parts[2];
+        } else {
+            day = parts[0];
+            month = parts[1];
+            year = parts[2];
+        }
+
+        if (isNaN(month)) {
+            month = months[month.toUpperCase()];
+        } else {
+            month = String(month).padStart(2,"0");
+        }
+
+        day = String(day).padStart(2,"0");
+
+        if (year && month && day) {
+            return `${year}-${month}-${day}`;
+        }
+    }
+
+    return "";
+}
+
+    /**
+     * Search and retrieve existing spreadsheet row matching user-specified DS ID
+     */
+    async function verifyID() {
+        const queryId = document.getElementById('ipSearch').value.trim().toUpperCase();
+        const verifyBtn = document.getElementById('verifyBtn');
+        const verifyBtnIcon = document.getElementById('verifyBtnIcon');
+        const verifyBtnText = document.getElementById('verifyBtnText');
+
+        if (!queryId) {
+            showNotification("Please enter a valid DS ID (e.g., SMDS001) to search.", "error");
+            return;
+        }
+
+        // Configure Searching States strictly inside the button bounds
+        verifyBtn.disabled = true;
+        verifyBtn.classList.add('opacity-85', 'cursor-not-allowed');
+        verifyBtnIcon.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+        verifyBtnText.textContent = "Verifying...";
+        showNotification("Searching clinical records index...", "info");
+
+        try {
+            // Send query parameters via GET request
+            const response = await fetch(`${WEB_APP_URL}?dsId=${encodeURIComponent(queryId)}`);
+            const result = await response.json();
+
+            if (result.success && result.record) {
+                const record = result.record;
+                
+                // Populate interactive fields inside HTML
+                document.getElementById('ipDisplay').innerText = record.dsId;
+                document.getElementById('ipDisplay').className = "font-extrabold text-emerald-600 px-2 py-0.5 border border-emerald-400 bg-emerald-50 rounded";
+                
+                document.getElementById('patientName').innerText = record.patientName || "";
+                document.getElementById('patientAge').innerText = record.patientAge || (record.ageSex ? record.ageSex.split('/')[0].trim() : "");
+                document.getElementById('patientSex').innerText = record.patientSex || (record.ageSex ? record.ageSex.split('/')[1]?.trim() || "" : "");
+                document.getElementById('address').innerText = record.address || "";
+                
+                // POPULATING DATE PICKERS USING ROBUST FORMATTING FALLBACKS
+document.getElementById('docDate').value = formatDateForInput(record.docDate || "");
+document.getElementById('admDate').value = formatDateForInput(record.admDate || "");
+document.getElementById('disDate').value = formatDateForInput(record.disDate || "");
+document.getElementById('labDate').value = formatDateForInput(record.labDate || "");
+                
+                // Populate clinical diagnostics
+                document.getElementById('admDiag').innerText = record.admDiag || "";
+                document.getElementById('disDiag').innerText = record.disDiag || "";
+                document.getElementById('history').innerText = record.history || "";
+                document.getElementById('imaging').innerText = record.imaging || "";
+                document.getElementById('meds').innerText = record.meds || "";
+                document.getElementById('followup').innerText = record.followup || "";
+                document.getElementById('conditions').innerText = record.conditions || "";
+                document.getElementById('instructions').innerText = record.instructions || "";
+                
+                // Reset form dirty flag since we loaded a fresh database record
+                isFormDirty = false;
+
+                // Enable dynamic print command
+                const printBtn = document.getElementById('printBtn');
+                printBtn.disabled = false;
+                printBtn.className = "bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded font-extrabold shadow hover:shadow-md transition-all flex items-center gap-2 cursor-pointer";
+
+                // Success visual transition inside button only
+                verifyBtnIcon.innerHTML = `<i class="fas fa-check-circle text-emerald-200"></i>`;
+                verifyBtnText.textContent = "Verified!";
+                showNotification(`DS ID ${queryId} found and loaded successfully!`, "success");
+
+                // Restore Verify button state to normal after brief delay
+                setTimeout(() => {
+                    verifyBtn.disabled = false;
+                    verifyBtn.classList.remove('opacity-85', 'cursor-not-allowed');
+                    verifyBtnIcon.innerHTML = `<i class="fas fa-search"></i>`;
+                    verifyBtnText.textContent = "Verify";
+                }, 2000);
+
+            } else {
+                showNotification(`DS ID "${queryId}" does not exist in our directory.`, "error");
+                verifyBtn.disabled = false;
+                verifyBtn.classList.remove('opacity-85', 'cursor-not-allowed');
+                verifyBtnIcon.innerHTML = `<i class="fas fa-search"></i>`;
+                verifyBtnText.textContent = "Verify";
+            }
+        } catch (e) {
+            console.error(e);
+            showNotification("Data retrieval failed. Please check internet connection or Apps Script CORS configs.", "error");
+            verifyBtn.disabled = false;
+            verifyBtn.classList.remove('opacity-85', 'cursor-not-allowed');
+            verifyBtnIcon.innerHTML = `<i class="fas fa-search"></i>`;
+            verifyBtnText.textContent = "Verify";
+        }
+    }
+
+
+    /* 03-CLINICAL DIAGNOSTICS */
+    /**
+     * Send payload to save new rows or update an existing matched row
+     * Uses text/plain Content-Type to prevent browser CORS Preflight (OPTIONS) triggers.
+     */
+    async function saveForm() {
+        const saveBtn = document.getElementById('saveBtn');
+        const saveBtnIcon = document.getElementById('saveBtnIcon');
+        const saveBtnText = document.getElementById('saveBtnText');
+
+        // Capture current status of global unique ID state 
+        const currentId = document.getElementById('ipDisplay').innerText.trim();
+
+        // Put button into Saving State strictly inside button bounds
+        saveBtn.disabled = true;
+        saveBtn.classList.add('opacity-85', 'cursor-not-allowed');
+        saveBtnIcon.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+        saveBtnText.textContent = "Saving...";
+        showNotification("Writing summary details to Google Sheet...", "info");
+
+        // Payload Construction
+        const payload = {
+            dsId: currentId, // Passes "NEW" for fresh inserts, or "SMDS0XX" for matched rows to trigger updates
+            ipNumber: "",
+            patientName: document.getElementById('patientName').innerText,
+            patientAge: document.getElementById('patientAge').innerText,
+            patientSex: document.getElementById('patientSex').innerText,
+            ageSex: document.getElementById('patientAge').innerText + " / " + document.getElementById('patientSex').innerText,
+            address: document.getElementById('address').innerText,
+            docDate: document.getElementById('docDate').value,
+            admDate: document.getElementById('admDate').value, // 'YYYY-MM-DD' sent directly to be parsed in backend
+            disDate: document.getElementById('disDate').value,
+            labDate: document.getElementById('labDate').value,
+            admDiag: document.getElementById('admDiag').innerText,
+            disDiag: document.getElementById('disDiag').innerText,
+            history: document.getElementById('history').innerText,
+            imaging: document.getElementById('imaging').innerText,
+            meds: document.getElementById('meds').innerText,
+            followup: document.getElementById('followup').innerText,
+            conditions: document.getElementById('conditions').innerText,
+            instructions: document.getElementById('instructions').innerText
+        };
+
+        try {
+            // Crucial: Use "text/plain" content-type to bypass complex CORS Preflight checks on GAS
+            const response = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                // Clear dirty flag as changes are safely pushed
+                isFormDirty = false;
+
+                // Update interactive Unique ID on screen with returned generated ID
+                document.getElementById('ipDisplay').innerText = result.dsId;
+                document.getElementById('ipDisplay').className = "font-extrabold text-emerald-600 px-2 py-0.5 border border-emerald-400 bg-emerald-50 rounded";
+                
+                // Keep input search synced
+                document.getElementById('ipSearch').value = result.dsId;
+                
+                // Configure Printing trigger
+                const printBtn = document.getElementById('printBtn');
+                printBtn.disabled = false;
+                printBtn.className = "bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded font-extrabold transition-all flex items-center gap-2 cursor-pointer";
+
+                // Tick mark success feedback inside button only
+                saveBtnIcon.innerHTML = `<i class="fas fa-check-circle text-emerald-200"></i>`;
+                saveBtnText.textContent = "Saved!";
+                showNotification(result.message || "Data Saved Successfully!", "success");
+
+                // Revert Save button back to Normal State after brief delay
+                setTimeout(() => {
+                    saveBtn.disabled = false;
+                    saveBtn.classList.remove('opacity-85', 'cursor-not-allowed');
+                    saveBtnIcon.innerHTML = `<i class="fas fa-save"></i>`;
+                    saveBtnText.textContent = "Save";
+                }, 2000);
+
+            } else {
+                showNotification("Failed to save. Error details: " + (result.error || "Unknown Error"), "error");
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('opacity-85', 'cursor-not-allowed');
+                saveBtnIcon.innerHTML = `<i class="fas fa-save"></i>`;
+                saveBtnText.textContent = "Save";
+            }
+        } catch (e) {
+            console.error(e);
+            showNotification("Data transmission failure: Ensure Web App is deployed correctly.", "error");
+            saveBtn.disabled = false;
+            saveBtn.classList.remove('opacity-85', 'cursor-not-allowed');
+            saveBtnIcon.innerHTML = `<i class="fas fa-save"></i>`;
+            saveBtnText.textContent = "Save";
+        }
+    }
+
+    // Helper notification status styles
+    function showNotification(message, type) {
+        const msgEl = document.getElementById('statusMessage');
+        msgEl.classList.remove('hidden', 'bg-blue-50', 'text-blue-700', 'border-blue-200', 'bg-green-50', 'text-green-700', 'border-green-200', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-yellow-50', 'text-yellow-700', 'border-yellow-200');
+        
+        if (type === "info") {
+            msgEl.className = "text-center text-sm font-bold p-3 rounded-md bg-blue-50 text-blue-700 border border-blue-200 mt-2";
+        } else if (type === "success") {
+            msgEl.className = "text-center text-sm font-bold p-3 rounded-md bg-green-50 text-green-700 border border-green-200 mt-2";
+        } else if (type === "error") {
+            msgEl.className = "text-center text-sm font-bold p-3 rounded-md bg-red-50 text-red-700 border border-red-200 mt-2";
+        } else if (type === "warning") {
+            msgEl.className = "text-center text-sm font-bold p-3 rounded-md bg-yellow-50 text-yellow-700 border border-yellow-200 mt-2";
+        }
+        
+        msgEl.innerText = message;
+        msgEl.classList.remove('hidden');
+    }
+
+    // Initial setup on window load
+    window.onload = function() {
+        showNotification("Sanjeeva Hospital Discharge Summary ready.", "info");
+    };
+</script>
+</body>
+</html>

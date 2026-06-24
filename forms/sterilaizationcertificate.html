@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sterilaization Certificate</title>
+<link rel="icon" type="image/png" href="https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Roboto Slab', serif; background-color: #ffffff; padding: 10px; margin: 0; }
+.a4-page { width: 210mm; height: 140mm; min-height: 10mm; padding: 3mm 6mm; margin: 120px auto 40px auto; background: #ffffff; border: 2.5px solid #1e3a8a; box-sizing: border-box; display: flex; flex-direction: column; position: relative; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); overflow: hidden;   }
+.header-container { display: flex; flex-direction: column; border-bottom: 2.5px solid #1e3a8a; padding-bottom: 10px; margin-bottom: 10px; }
+.header-top { display: flex; align-items: center; justify-content: flex-start; gap: 15px; width: 100%; }
+.logo-img { height: 90px; width: 110px; object-fit: contain; }
+.hospital-name { font-size: 1.23rem; font-weight: 900; color:#1e3a8a; text-transform: uppercase; line-height: 1.2; }
+.since-box { font-size: 0.9rem; font-weight: 800; color:#000000;background-color:#7FD3FF; padding: 3px 10px; border-radius: 4px; border: 1px solid #1e3a8a; }
+.receipt-headline { font-size: 1.05rem; font-weight: 800; color: #1e3a8a; text-decoration: underline; text-transform: uppercase; letter-spacing: 0.05em; text-align: center; margin-top: 4px; margin-bottom: 4px; }
+.receipt-paragraph { font-size: 0.9rem; line-height: 2.4; color: #1e293b; text-align: justify; font-weight: 600; text-transform: uppercase; }
+.line-input { border: none; border-bottom: 1.5px dotted #1e3a8a; outline: none; padding: 0 4px; font-weight: 800; color: #1e3a8a; text-align: center; background: transparent; font-size: 0.90rem; min-width: 100px; display: inline-block; vertical-align: bottom; }
+.date-input-container { position: relative; display: inline-flex; align-items: center; }
+.date-input-container input[type="date"] { position: absolute; opacity: 0; width: 100%; cursor: pointer; }
+.date-field { border:none;border-bottom:1.5px dotted #1e3a8a;outline:none;padding:0 4px;color:#1e3a8a;font-weight:800;width:110px;text-align:center;font-size:0.75rem;cursor:pointer; }
+.controls-wrapper { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 1000; }
+.btn { padding: 8px 20px; background-color: #1e3a8a; color: white; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+.search-box { background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border:2px solid #1e3a8a;padding:3px 12px;border-radius:8px;display:flex;align-items:center;gap:8px;font-weight:800;color:#1e3a8a;box-shadow:0 2px 4px rgba(0,0,0,0.1);height:34px; }
+.search-box input { border:1px solid #1e3a8a;outline:none;padding:2px 6px;height:24px;border-radius:4px;font-weight:700;background:#ffffff;width:240px;font-size:12px; }
+
+@media print {
+    @page { size: A4; margin: 12mm 10mm 10mm 10mm; }
+    body { padding: 0; margin: 0; background: #ffffff; }
+    .controls-wrapper, .status-msg, .fa-calendar-alt { display: none !important; }
+    .a4-page { width: 100% !important; max-width: 190mm !important; height: 130mm !important; margin: 2mm auto 0 auto !important; padding: 4mm 8mm !important; box-shadow: none !important; border: 3px solid #1e3a8a !important; box-sizing: border-box !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="controls-wrapper">
+    <div class="flex gap-4">
+        <button class="btn bg-rose-600" onclick="confirmReset()"><i class="fa-solid fa-trash-can"></i> RESET</button>
+        <button class="btn btn-save bg-emerald-600" id="commitBtn_9381" onclick="handleSaveOrUpdate_7182()"><i class="fa-solid fa-cloud-arrow-up" id="saveIcon"></i> <span id="btnText_992">SAVE</span></button>
+        <button class="btn btn-print bg-blue-500" onclick="window.print()"><i class="fa-solid fa-print"></i> PRINT</button>
+    </div>
+	
+<div class="search-box">
+   IP No:
+    <input
+        type="text"
+        id="searchInput_8822"
+        placeholder="Enter Certificate No"
+        oninput="this.value=this.value.toUpperCase()"
+        onkeydown="handleSearchEnter(event)"
+    >
+    <button
+        id="verifyBtn_7722"
+        class="btn"
+        style="padding:2px 10px;height:24px;font-size:11px;min-width:90px;"
+        onclick="performSearch_9281()"
+    >
+        <i id="verifyIcon_7722" class="fa-solid fa-check"></i>
+        VERIFY
+    </button>
+</div>
+    <div id="statusMsg_991" class="text-xs font-bold text-blue-900 text-center"></div>
+</div>
+
+<div class="a4-page">
+    <div class="header-container">
+        <div class="header-top">
+            <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="logo-img">
+            <div class="header-text">
+                <h1 class="hospital-name">Sanjeeva Multispecialty Hospital</h1>
+                <div class="flex items-center gap-4 mt-2"> <span class="text-sm font-bold text-blue-600">"HEALTH CARE WITH ETHICS"</span> <span class="font-bold text-blue-900 ml-auto"><i class="fas fa-phone-alt"></i> 9100349825</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden elements required by Google Apps Script to prevent JS error -->
+    <input type="hidden" id="deliveryTime" value="">
+    <input type="hidden" id="childGender_1011" value="MALE">
+
+    <div class="flex-grow flex flex-col justify-start">
+        <div class="flex justify-between w-full mt-2 font-bold text-blue-900 border-b border-blue-900/30 pb-1 text-xs">
+            <div>IP No: <span id="receiptNumDisplay_9182" class="text-rose-600 font-extrabold">[New]</span></div>
+            <div class="date-input-container" style="height:16px;">Date:
+                <input type="text" id="receiptDate_8471" class="date-field" placeholder="DD MON YYYY" readonly>
+                <input type="date" onchange="formatDate(this, 'receiptDate_8471')">
+                <i class="fas fa-calendar-alt ml-2 text-blue-900 cursor-pointer"></i>
+            </div>
+        </div>
+        <div class="receipt-headline">STERILAIZATION CERTIFICATE</div>
+        <p class="receipt-paragraph">
+            THIS IS TO CERTIFY THAT SMT. <span contenteditable="plaintext-only" id="smtName_1004" class="line-input"></span>
+            W/O SRI <span contenteditable="plaintext-only" id="sriName_1005" class="line-input"></span>
+            NATIVE OF <span contenteditable="plaintext-only" id="nativePlace_1006" class="line-input"></span>
+            MANDAL <span contenteditable="plaintext-only" id="mandalName_1007" class="line-input"></span>
+            DIST <span contenteditable="plaintext-only" id="distName_1008" class="line-input"></span>
+            STERILAIZATION ON
+            <span class="date-input-container">
+                <input type="text" id="deliveryDate_1009" class="date-field" placeholder="DD MON YYYY" readonly>
+                <input type="date" onchange="formatDate(this, 'deliveryDate_1009')">
+                <i class="fas fa-calendar-alt ml-2 text-blue-900 cursor-pointer"></i>
+            </span>.
+           
+            CHILDREN <select id="deliveryOrder_1010" class="line-input w-16 text-blue-900"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+            M+F : LCB
+        </p>
+    </div>
+    <div class="flex justify-between items-center text-[0.7rem] font-bold italic mb-1">
+        <div>Generated digitally. Authenticated record.</div>
+        <div>Authorized Signatory</div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #1e3a8a;margin-bottom:4px;">
+
+    <div class="footer-wrapper">
+        <div class="footer text-center text-blue-900">
+            <p class="text-[0.7rem] font-bold">D NO:1-7-26, PEDDANNA STREET, OPPO RAMANA FUNCTION HALL, G V TEXSTILES BACKSIDE, ALLAGADDA, NANDYALA DIS, AP-518543.</p>
+            <p class="text-[0.5rem] font-bold mt-0.5">© 2026 All Rights Reserved | Sanjeeva Multispecialty Hospital  | Architected by Sri Veda Org.</p>
+        </div>
+    </div>
+</div>
+
+<div id="resetPopup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:20px;border-radius:10px;text-align:center;min-width:300px;">
+        <h3>Are You Sure To Reset ?</h3>
+        <div style="margin-top:15px;">
+            <button class="btn bg-red-600" onclick="doReset()">YES</button>
+            <button class="btn bg-green-600" onclick="closeResetPopup()">NO</button>
+        </div>
+    </div>
+</div>
+
+<div id="successPopup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:30px;border-radius:15px;text-align:center;min-width:350px;">
+        <i class="fa-solid fa-circle-check" style="font-size:60px;color:#16a34a;"></i>
+        <h2 style="margin-top:15px;font-weight:800;color:#16a34a;">SUCCESS</h2>
+        <p id="successText" style="font-weight:700;margin-top:10px;"></p>
+        <button class="btn bg-green-600" onclick="closeSuccessPopup()">OK</button>
+    </div>
+</div>
+
+<script>
+const URL = "https://script.google.com/macros/s/AKfycbzMsPZJAFSqgM-I7wBm5SJ_vQLToO5q8mdaWKMnZ-xawchHOc7jkTHcj8MHEckShKTy/exec";
+const saveFormData = () => { const formData = { certNo: localStorage.getItem('vsr_cert') || '', receiptDate: document.getElementById('receiptDate_8471').value, deliveryDate: document.getElementById('deliveryDate_1009').value, deliveryTime: document.getElementById('deliveryTime').value, motherName: document.getElementById('smtName_1004').innerText, fatherName: document.getElementById('sriName_1005').innerText, village: document.getElementById('nativePlace_1006').innerText, mandal: document.getElementById('mandalName_1007').innerText, dist: document.getElementById('distName_1008').innerText, deliveryOrder: document.getElementById('deliveryOrder_1010').value, childGender: document.getElementById('childGender_1011').value }; localStorage.setItem('vsr_form_data', JSON.stringify(formData)); };
+const loadFormData = () => { const data = JSON.parse(localStorage.getItem('vsr_form_data') || '{}'); if (!Object.keys(data).length) return; document.getElementById('receiptDate_8471').value = data.receiptDate || ''; document.getElementById('deliveryDate_1009').value = data.deliveryDate || ''; document.getElementById('deliveryTime').value = data.deliveryTime || ''; document.getElementById('smtName_1004').innerText = data.motherName || ''; document.getElementById('sriName_1005').innerText = data.fatherName || ''; document.getElementById('nativePlace_1006').innerText = data.village || ''; document.getElementById('mandalName_1007').innerText = data.mandal || ''; document.getElementById('distName_1008').innerText = data.dist || ''; document.getElementById('deliveryOrder_1010').value = data.deliveryOrder || '1'; document.getElementById('childGender_1011').value = data.childGender || 'MALE'; if (data.certNo) { document.getElementById('receiptNumDisplay_9182').innerText = data.certNo; } };
+window.addEventListener('load', loadFormData);
+document.addEventListener('input', saveFormData);
+document.addEventListener('change', saveFormData);
+const formatDate = (input, targetId) => { const d = new Date(input.value); const m = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"]; document.getElementById(targetId).value = `${("0"+d.getDate()).slice(-2)} ${m[d.getMonth()]} ${d.getFullYear()}`; saveFormData(); };
+const normalizeDate = (v) => { if (!v || !v.includes('T')) return v; const d = new Date(v); const m = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"]; return `${("0"+d.getDate()).slice(-2)} ${m[d.getMonth()]} ${d.getFullYear()}`; };
+const confirmReset = () => { document.getElementById('resetPopup').style.display = 'flex'; };
+const closeResetPopup = () => { document.getElementById('resetPopup').style.display = 'none'; };
+const doReset = () => { localStorage.removeItem('vsr_cert'); localStorage.removeItem('vsr_form_data'); document.getElementById('searchInput_8822').value = ''; document.getElementById('receiptNumDisplay_9182').innerText = '[New]'; document.getElementById('receiptDate_8471').value = ''; document.getElementById('deliveryDate_1009').value = ''; document.getElementById('deliveryTime').value = ''; document.getElementById('smtName_1004').innerText = ''; document.getElementById('sriName_1005').innerText = ''; document.getElementById('nativePlace_1006').innerText = ''; document.getElementById('mandalName_1007').innerText = ''; document.getElementById('distName_1008').innerText = ''; document.getElementById('deliveryOrder_1010').selectedIndex = 0; document.getElementById('childGender_1011').value = 'MALE'; closeResetPopup(); window.location.reload(); };
+const performSearch_9281 = () => { const q = document.getElementById('searchInput_8822').value.trim(); if (!q) { document.getElementById('verifyBtn_7722').disabled = false; document.getElementById('verifyIcon_7722').className = 'fa-solid fa-check'; return; } document.getElementById('verifyBtn_7722').disabled = true; document.getElementById('verifyIcon_7722').className = 'fa-solid fa-spinner fa-spin'; fetch(`${URL}?certNo=${encodeURIComponent(q)}`).then(r => r.json()).then(d => { if (d.status === "success") { document.getElementById('smtName_1004').innerText = d.data['Mothers Name'] || ''; document.getElementById('sriName_1005').innerText = d.data['Father Name'] || ''; document.getElementById('nativePlace_1006').innerText = d.data['village'] || ''; document.getElementById('mandalName_1007').innerText = d.data['Mandal'] || ''; document.getElementById('distName_1008').innerText = d.data['Dist'] || ''; document.getElementById('receiptDate_8471').value = normalizeDate(d.data['Date']); document.getElementById('deliveryDate_1009').value = normalizeDate(d.data['On Date']); document.getElementById('deliveryTime').value = d.data['Time'] || ''; document.getElementById('receiptNumDisplay_9182').innerText = q; localStorage.setItem('vsr_cert', q); saveFormData(); document.getElementById('verifyBtn_7722').disabled = false; document.getElementById('verifyIcon_7722').className = 'fa-solid fa-check'; } else { document.getElementById('verifyBtn_7722').disabled = false; document.getElementById('verifyIcon_7722').className = 'fa-solid fa-check'; alert('Certificate Not Found'); } }).catch(err => { document.getElementById('verifyBtn_7722').disabled = false; document.getElementById('verifyIcon_7722').className = 'fa-solid fa-check'; console.error(err); alert('Search Error'); }); };
+const handleSearchEnter = (event) => { if (event.key === 'Enter') { event.preventDefault(); performSearch_9281(); } };
+const handleSaveOrUpdate_7182 = () => { const receiptDate = document.getElementById('receiptDate_8471').value.trim(); const deliveryDate = document.getElementById('deliveryDate_1009').value.trim(); const motherName = document.getElementById('smtName_1004').innerText.trim(); const fatherName = document.getElementById('sriName_1005').innerText.trim(); const mandalName = document.getElementById('mandalName_1007').innerText.trim(); if (!receiptDate) { alert("Please Select Certificate Date"); return; } if (!deliveryDate) { alert("Please Select Sterilization Date"); return; } if (!motherName) { alert("Please Enter Mother Name"); return; } if (!fatherName) { alert("Please Enter Father Name"); return; } if (!mandalName) { alert("Please Enter Mandal Name"); return; } document.getElementById('saveIcon').className = 'fa-solid fa-spinner fa-spin'; document.getElementById('btnText_992').innerText = 'SAVING'; const p = { certNo: localStorage.getItem('vsr_cert') || "NEW", date: document.getElementById('receiptDate_8471').value, motherName: document.getElementById('smtName_1004').innerText, fatherName: document.getElementById('sriName_1005').innerText, village: document.getElementById('nativePlace_1006').innerText, mandal: document.getElementById('mandalName_1007').innerText, dist: document.getElementById('distName_1008').innerText, onDate: document.getElementById('deliveryDate_1009').value, time: document.getElementById('deliveryTime').value, delivered: document.getElementById('deliveryOrder_1010').value, gender: document.getElementById('childGender_1011').value }; fetch(URL, { method: "POST", body: JSON.stringify(p) }).then(r => r.json()).then(d => { document.getElementById('receiptNumDisplay_9182').innerText = d.certNo; localStorage.setItem('vsr_cert', d.certNo); document.getElementById('saveIcon').className = 'fa-solid fa-circle-check'; document.getElementById('btnText_992').innerText = 'UPDATED'; document.getElementById('successText').innerHTML = 'Certificate Saved Successfully<br><br>Certificate No : <b>' + d.certNo + '</b>'; document.getElementById('successPopup').style.display = 'flex'; }).catch(err => { document.getElementById('saveIcon').className = 'fa-solid fa-cloud-arrow-up'; document.getElementById('btnText_992').innerText = 'SAVE'; console.error(err); alert("Save Error"); }); };
+const closeSuccessPopup = () => { document.getElementById('successPopup').style.display = 'none'; document.getElementById('saveIcon').className = 'fa-solid fa-cloud-arrow-up'; document.getElementById('btnText_992').innerText = 'SAVE'; };
+</script>
+</body>
+</html>
