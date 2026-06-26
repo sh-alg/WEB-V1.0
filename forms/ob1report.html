@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanjeeva Multispecialty Hospital - OB Report Portal</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Roboto Slab for the entire page -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Roboto Slab', serif !important; }
+    input { font-family: 'Roboto Slab', serif !important; }
+    select { font-family: 'Roboto Slab', serif !important; }
+    textarea { font-family: 'Roboto Slab', serif !important; }
+    button { font-family: 'Roboto Slab', serif !important; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); display: flex; align-items: center; justify-content: center; z-index: 100; }
+    .modal-box { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); max-width: 400px; width: 90%; text-align: center; }
+
+
+.a4-page {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    position: relative;
+    box-sizing: border-box;
+    padding: 16mm;
+    overflow: hidden;
+}
+
+    .border-frame { border: 3.5px solid #0f766e; border-radius: 12px; height: 100%; padding: 6mm 8mm; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; position: relative; overflow: hidden; }
+    input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.7; filter: invert(32%) sepia(85%) saturate(437%) hue-rotate(130deg) brightness(95%) contrast(90%); transition: opacity 0.2s; }
+    input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+    .input-underlined { background: transparent; border-bottom: 1px solid #cbd5e1; font-weight: 700; color: #0f172a; outline: none; padding-bottom: 1px; text-align: center; }
+    .input-underlined:focus { border-bottom-color: #0f766e; }
+
+
+
+
+
+
+
+
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    body {
+        background: white;
+        margin: 0;
+        padding: 0;
+        height: 297mm;
+        overflow: hidden;
+    }
+
+    html {
+        height: 297mm;
+        overflow: hidden;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .a4-page {
+        width: 210mm;
+        height: 297mm;
+        max-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 16mm;
+        page-break-after: avoid;
+        page-break-before: avoid;
+        page-break-inside: avoid;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .border-frame {
+        border: 3.5px solid #0f766e !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    input,
+    select,
+    textarea {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    ::placeholder {
+        color: transparent !important;
+    }
+
+    .input-underlined {
+        border-bottom: none !important;
+    }
+}
+
+
+
+
+
+
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
+
+
+  <!-- 01-CONTROL PANEL -->
+  <header class="bg-teal-950 border-b border-teal-900 shadow-md relative z-50 no-print py-3.5 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Verification Tool with Hidden Backend App Url -->
+      <div class="flex items-center gap-2 w-full md:w-96 bg-teal-900/60 p-1.5 rounded-lg border border-teal-800">
+        <input type="text" id="search-id-input" placeholder="Enter OB ID (e.g. SSMOB001)" class="bg-transparent text-sm px-3 py-1 w-full focus:outline-none text-teal-100 placeholder-teal-400 font-medium" />
+        <button onclick="verifyAndSearchReport()" class="bg-[#10b981] hover:bg-emerald-600 text-teal-950 text-xs font-bold px-5 py-2 rounded-md transition-all flex items-center gap-1 shrink-0 uppercase tracking-wide">
+          Verify ID
+        </button>
+      </div>
+
+      <!-- Control Keys with Exact matching uploaded styles -->
+      <div class="flex items-center gap-3 shrink-0">
+        <!-- Reset Button: Red rounded capsule style with optimized icon -->
+        <button onclick="resetForm()" class="bg-[#de1a44] hover:bg-rose-700 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-all flex items-center gap-1.5 uppercase tracking-wider shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15.172" /></svg>
+          Reset
+        </button>
+        <!-- Save Button: Orange / Amber rounded style with optimized icon -->
+        <button id="btn-save" onclick="saveReport()" class="bg-[#f59e0b] hover:bg-amber-600 text-teal-950 text-xs font-black px-5 py-2.5 rounded-lg transition-all flex items-center gap-1.5 uppercase tracking-wider shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-teal-950 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 10H9m4-3H9m2-9a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+          Save
+        </button>
+        <!-- Print Button: Green rounded style, disabled by default with optimized icon -->
+        <button id="btn-print" onclick="triggerPrint()" disabled class="bg-[#10b981] hover:bg-emerald-600 text-teal-950 text-xs font-black px-6 py-2.5 rounded-lg transition-all shadow-md flex items-center gap-2 uppercase tracking-wider opacity-50 cursor-not-allowed">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-teal-950 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4" /></svg>
+          Print
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Custom Reset Confirmation Modal Overlay -->
+  <div id="reset-modal" class="modal-overlay hidden no-print">
+    <div class="modal-box">
+      <h3 class="text-base font-black text-slate-800 tracking-wide uppercase leading-tight mb-2">Reset Report</h3>
+      <p class="text-xs text-slate-600 font-medium mb-6">Are you sure want to reset?</p>
+      <div class="flex items-center justify-center gap-4">
+        <button onclick="confirmReset(true)" class="bg-[#de1a44] hover:bg-rose-700 text-white text-xs font-bold px-6 py-2 rounded-md transition-all shadow uppercase tracking-wider">Yes</button>
+        <button onclick="confirmReset(false)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-6 py-2 rounded-md transition-all shadow uppercase tracking-wider">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST ALERTS CONTAINER -->
+  <div id="toast-container" class="fixed top-20 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+
+  <!-- 02-REPORT HEADER -->
+  <main class="flex-grow p-2 flex justify-center items-start">
+    <div id="print-area" class="a4-page">
+      <div class="border-frame">
+        
+        <div class="space-y-3.5">
+          <!-- ================= HEADER: SINGLE BIG LOGO + TEXT LINE ================= -->
+          <header class="border-b-2 border-teal-800 pb-1.5 flex items-center gap-4">
+            <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" alt="Sanjeeva Hospital Logo" class="h-12 md:h-14 object-contain shrink-0" onerror="this.src='https://placehold.co/180x40?text=SANJEEVA+HOSPITAL'">
+            <div class="flex-grow flex flex-col justify-center">
+              <h2 class="text-lg md:text-xl font-black text-teal-800 tracking-wide uppercase leading-tight whitespace-nowrap">
+                SANJEEVA MULTISPECIALTY HOSPITAL
+              </h2>
+              <div class="mt-0.5">
+                <span class="inline-block bg-teal-800 text-white font-bold text-[8.5px] tracking-widest px-2.5 py-0.5 rounded-md uppercase">
+                  HEALTH CARE WITH ETHICS
+                </span>
+              </div>
+            </div>
+          </header>
+
+          <!-- ================= DOCTOR CREDENTIALS SECTION ================= -->
+          <section class="border-b border-teal-800/20 pb-2 px-1.5 flex justify-between items-center text-slate-800">
+            <div>
+              <h3 class="text-xs font-black text-teal-900 uppercase tracking-wider">Dr. E. Sujata Anjaneyulu</h3>
+              <p class="text-[10px] font-bold text-slate-600 uppercase tracking-wider">M.B.B.S., M.S. (OBG)</p>
+              <p class="text-[9px] text-slate-400 font-semibold uppercase">Civil Assistant Surgeon</p>
+            </div>
+            <div class="text-right">
+              <p class="text-xs font-black text-teal-800 uppercase tracking-wider">Obstetrician & Gynecologist</p>
+              <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Regd. No. 62254</p>
+            </div>
+          </section>
+
+          <!-- ================= FORUM HEADER ================= -->
+          <div class="text-center my-2">
+            <span class="border-b-4 border-double border-teal-800 px-8 py-0.5 text-xs font-black tracking-widest text-teal-900 uppercase">
+              OB Report
+            </span>
+          </div>
+
+
+          <!-- 03-PATIENT DATA -->
+          <section class="mb-2">
+            <div class="grid grid-cols-12 gap-x-3.5 gap-y-2 bg-teal-50/10 p-2.5 rounded-lg border border-teal-800/10 text-[10.5px]">
+              
+              <!-- Left Column: OB Report ID / Register Number -->
+              <div class="col-span-12 md:col-span-4 flex flex-col justify-center border-b md:border-b-0 md:border-r border-teal-800/15 pb-1.5 md:pb-0 md:pr-3.5">
+                <span class="text-[8px] font-extrabold tracking-widest text-teal-800 uppercase mb-0.5">Register Number</span>
+                <input type="text" id="ob-report-id" value="[Auto-Generated]" readonly class="w-full bg-transparent border-b border-slate-300 font-extrabold text-teal-950 text-xs focus:outline-none pb-0.5 select-all" />
+              </div>
+
+              <!-- Right Column: Patient Details -->
+              <div class="col-span-12 md:col-span-8 grid grid-cols-3 gap-x-2.5 gap-y-2">
+                
+                <!-- Patient Name -->
+                <div class="flex flex-col col-span-3 sm:col-span-2">
+                  <span class="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Patient Name</span>
+                  <input type="text" id="p-name" placeholder="Enter Patient Name" class="w-full bg-transparent border-b border-slate-300 text-slate-800 font-bold focus:border-teal-600 focus:outline-none pb-0.5" />
+                </div>
+
+                <!-- Exam Date -->
+                <div class="flex flex-col col-span-3 sm:col-span-1">
+                  <span class="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Exam Date</span>
+                  <input type="date" id="p-exam-date" class="w-full bg-transparent text-slate-800 font-semibold focus:outline-none pb-0.5 border-b border-slate-300" />
+                </div>
+
+                <!-- Age -->
+                <div class="flex flex-col">
+                  <span class="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Age</span>
+                  <input type="text" id="p-age" placeholder="e.g. 24 Yrs" class="w-full bg-transparent border-b border-slate-300 text-slate-800 font-semibold focus:border-teal-600 focus:outline-none pb-0.5" />
+                </div>
+
+                <!-- Sex Selection -->
+                <div class="flex flex-col">
+                  <span class="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Sex</span>
+                  <select id="p-sex" class="w-full bg-transparent border-b border-slate-300 text-slate-800 font-semibold focus:border-teal-600 focus:outline-none pb-0.5 cursor-pointer">
+                    <option value="Female" selected>Female</option>
+                    <option value="Male">Male</option>
+                  </select>
+                </div>
+
+                <!-- Village Address fallback -->
+                <div class="flex flex-col">
+                  <span class="text-[8px] font-bold text-slate-500 uppercase tracking-wider">Patient Village</span>
+                  <input type="text" id="p-village" placeholder="Enter Village" class="w-full bg-transparent border-b border-slate-300 text-slate-800 font-semibold focus:border-teal-600 focus:outline-none pb-0.5" />
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+
+
+          <!-- 04-CLINICAL MEASUREMENTS -->
+          <section class="mb-2 text-[10.5px] leading-normal">
+            <!-- Section Header from image_bf02df.jpg -->
+            <div class="bg-teal-800 text-white py-0.5 px-2 rounded mb-1.5">
+              <span class="text-[8.5px] font-bold tracking-widest uppercase">|| & ||| TRIMSTER :2D- REAL TIME ULTRA – SONOGRAPHY OF THE GRAVID UTEREUS</span>
+            </div>
+
+            <!-- Descriptive Ultrasound Statement Rows matching image_bf02df.jpg exact items -->
+            <div class="space-y-1.5 px-1 text-slate-800">
+              
+              <!-- Presenting Fetus row -->
+              <div class="flex flex-wrap items-center gap-1">
+                <span class="font-bold">* SINGLE INTRAUTERINE LIVE FOETUS IN :</span>
+                <select id="ob-presentation" class="font-bold text-teal-900 bg-transparent border-b border-slate-300 focus:outline-none pb-0.5 px-1 cursor-pointer">
+                  <option value="CEPHALIC" selected>CEPHALIC</option>
+                  <option value="BREECH">BREECH</option>
+                  <option value="TRANSVERSE">TRANSVERSE</option>
+                  <option value="VARIABLE">VARIABLE</option>
+                </select>
+                <span class="font-bold">PRESENTION .</span>
+              </div>
+
+              <!-- Fetal heart details and movements -->
+              <div class="flex flex-wrap items-center gap-1">
+                <span class="font-bold">* FOETAL HEART RATE :</span>
+                <input type="text" id="ob-fhr-bpm" placeholder="142" class="w-12 input-underlined" />
+                <span class="font-bold">BPM : RHYTHM :</span>
+                <select id="ob-fhr-rhythm" class="font-bold text-teal-900 bg-transparent border-b border-slate-300 focus:outline-none pb-0.5 px-1 cursor-pointer">
+                  <option value="REGULAR" selected>REGULAR</option>
+                  <option value="IRREGULAR">IRREGULAR</option>
+                </select>
+              </div>
+
+              <!-- Fetal Movements row -->
+              <div class="flex flex-wrap items-center gap-1">
+                <span class="font-bold">* FOETAL MOVEMENTS ARE</span>
+                <select id="ob-fetal-movements" class="font-bold text-teal-900 bg-transparent border-b border-slate-300 focus:outline-none pb-0.5 px-1 cursor-pointer">
+                  <option value="PRESENT" selected>PRESENT</option>
+                  <option value="SLUGGISH">SLUGGISH</option>
+                  <option value="ABSENT">ABSENT</option>
+                </select>
+                <span class="font-bold">.</span>
+              </div>
+
+              <!-- Fetal Biometry Section styled directly from image_bf02df.jpg -->
+              <div class="mt-2 pt-1.5 border-t border-slate-100">
+                <div class="text-center mb-1">
+                  <span class="text-[9px] font-black tracking-widest text-teal-900 uppercase border-b border-dashed border-teal-800 pb-0.5">FOETAL BIOMETRY</span>
+                </div>
+                
+                <div class="grid grid-cols-1 gap-y-1 bg-slate-50/60 p-2.5 rounded border border-slate-100">
+                  <!-- BPD Row -->
+                  <div class="grid grid-cols-12 items-center text-left gap-0.5">
+                    <span class="col-span-2 font-bold text-slate-700">BPD :</span>
+                    <div class="col-span-10 flex items-center justify-start gap-4">
+                      <div>
+                        <input type="text" id="ob-bpd-val" placeholder="8.2" class="w-12 input-underlined text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">CMs</span>
+                      </div>
+                      <div>
+                        <span class="text-[9px] text-slate-500 font-bold">:</span>
+                        <input type="text" id="ob-bpd-wks" placeholder="32" class="w-10 input-underlined ml-0.5 text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">WKs</span>
+                      </div>
+                      <div>
+                        <span class="text-[9px] text-slate-500 font-bold">:</span>
+                        <input type="text" id="ob-bpd-days" placeholder="3" class="w-10 input-underlined ml-0.5 text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">DAY</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- HC Row -->
+                  <div class="grid grid-cols-12 items-center text-left gap-0.5">
+                    <span class="col-span-2 font-bold text-slate-700">HC :</span>
+                    <div class="col-span-10 flex items-center justify-start gap-4">
+                      <div>
+                        <input type="text" id="ob-hc-val" placeholder="29.4" class="w-12 input-underlined text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">CMs</span>
+                      </div>
+                      <div>
+                        <span class="text-[9px] text-slate-500 font-bold">:</span>
+                        <input type="text" id="ob-hc-wks" placeholder="32" class="w-10 input-underlined ml-0.5 text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">WKs</span>
+                      </div>
+                      <div>
+                        <span class="text-[9px] text-slate-500 font-bold">:</span>
+                        <input type="text" id="ob-hc-days" placeholder="2" class="w-10 input-underlined ml-0.5 text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">DAY</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- AC Row -->
+                  <div class="grid grid-cols-12 items-center text-left gap-0.5">
+                    <span class="col-span-2 font-bold text-slate-700">AC :</span>
+                    <div class="col-span-10 flex items-center justify-start gap-4">
+                      <div>
+                        <input type="text" id="ob-ac-val" placeholder="28.1" class="w-12 input-underlined text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">CMs</span>
+                      </div>
+                      <div>
+                        <span class="text-[9px] text-slate-500 font-bold">:</span>
+                        <input type="text" id="ob-ac-wks" placeholder="32" class="w-10 input-underlined ml-0.5 text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">WKs</span>
+                      </div>
+                      <div>
+                        <span class="text-[9px] text-slate-500 font-bold">:</span>
+                        <input type="text" id="ob-ac-days" placeholder="4" class="w-10 input-underlined ml-0.5 text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">DAY</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- FL Row -->
+                  <div class="grid grid-cols-12 items-center text-left gap-0.5">
+                    <span class="col-span-2 font-bold text-slate-700">FL :</span>
+                    <div class="col-span-10 flex items-center justify-start gap-4">
+                      <div>
+                        <input type="text" id="ob-fl-val" placeholder="6.1" class="w-12 input-underlined text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">CMs</span>
+                      </div>
+                      <div>
+                        <span class="text-[9px] text-slate-500 font-bold">:</span>
+                        <input type="text" id="ob-fl-wks" placeholder="32" class="w-10 input-underlined ml-0.5 text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">WKs</span>
+                      </div>
+                      <div>
+                        <span class="text-[9px] text-slate-500 font-bold">:</span>
+                        <input type="text" id="ob-fl-days" placeholder="1" class="w-10 input-underlined ml-0.5 text-[10px]" /> <span class="text-[9px] text-slate-500 font-bold">DAY</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- CGA and other Lower parameters exactly mirroring image_bf02df.jpg structures -->
+              <div class="grid grid-cols-1 gap-y-1.5 pt-1.5 border-t border-slate-100">
+                
+                <!-- Composite Gestational Age -->
+                <div class="flex items-center justify-between border-b border-dashed border-slate-200 pb-0.5">
+                  <span class="font-bold text-slate-700">* COMPOSITE GESTATIONAL AGE :</span>
+                  <div class="flex items-center gap-1.5">
+                    <input type="text" id="ob-cga-wks" placeholder="32" class="w-10 input-underlined text-[10px]" /> <span class="text-slate-500 font-bold">WKs :</span>
+                    <input type="text" id="ob-cga-days" placeholder="3" class="w-8 input-underlined text-[10px]" /> <span class="text-slate-500 font-bold">DAYS</span>
+                  </div>
+                </div>
+                
+                <!-- Expected Date of Confinement Delivery -->
+                <div class="flex items-center justify-between border-b border-dashed border-slate-200 pb-0.5">
+                  <span class="font-bold text-slate-700">* EXPECTED DATE OF CONFINEMENT DELIVERY :</span>
+                  <input type="date" id="p-edd" class="bg-transparent text-right font-semibold focus:outline-none text-teal-950 border-b border-slate-300 w-28 text-[10px]" />
+                </div>
+
+                <!-- Average Estimated Foetal Weight -->
+                <div class="flex items-center justify-between border-b border-dashed border-slate-200 pb-0.5">
+                  <span class="font-bold text-slate-700">* AVERAGE ESTIMATED FOETAL WEIGHT :</span>
+                  <div class="flex items-center gap-1">
+                    <input type="text" id="ob-efw" placeholder="1950" class="w-16 input-underlined text-[10px]" /> <span class="text-slate-500 font-bold">gms</span>
+                  </div>
+                </div>
+                
+                <!-- Placenta Position and Grade -->
+                <div class="flex items-center justify-between border-b border-dashed border-slate-200 pb-0.5">
+                  <span class="font-bold text-slate-700">* PLACENTA :</span>
+                  <div class="flex items-center gap-1">
+                    <select id="ob-placenta-pos" class="font-bold text-teal-900 bg-transparent border-b border-slate-200 focus:outline-none cursor-pointer px-1 mr-2 text-[10px]">
+                      <option value="ANTERIOR" selected>ANTERIOR</option>
+                      <option value="POSTERIOR">POSTERIOR</option>
+                      <option value="FUNDAL">FUNDAL</option>
+                      <option value="LATERAL">LATERAL</option>
+                    </select>
+                    <span class="text-slate-500 font-bold">GRADE :</span>
+                    <select id="ob-placenta-grade" class="font-bold text-teal-900 bg-transparent border-b border-slate-200 focus:outline-none cursor-pointer px-1 text-[10px]">
+                      <option value="I" selected>I</option>
+                      <option value="II">II</option>
+                      <option value="III">III</option>
+                      <option value="IV">IV</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Amniotic Fluid (Liquor) and AFI -->
+                <div class="flex items-center justify-between border-b border-dashed border-slate-200 pb-0.5">
+                  <span class="font-bold text-slate-700">* AMINIOTIC FLUID IS ADEQUATE / OLIGO HYDRAMNIOS /POLY HYDRAMIOS :</span>
+                  <div class="flex items-center gap-1">
+                    <select id="ob-liquor" class="font-bold text-teal-900 bg-transparent focus:outline-none cursor-pointer text-[10px]">
+                      <option value="ADEQUATE" selected>ADEQUATE</option>
+                      <option value="OLIGO HYDRAMNIOS">OLIGO HYDRAMNIOS</option>
+                      <option value="POLY HYDRAMIOS">POLY HYDRAMIOS</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- AFI value field -->
+                <div class="flex items-center justify-between border-b border-dashed border-slate-200 pb-0.5">
+                  <span class="font-bold text-slate-700">* A.F.I.:</span>
+                  <div class="flex items-center gap-1">
+                    <input type="text" id="ob-afi" placeholder="12" class="w-12 input-underlined text-[10px]" /> <span class="text-slate-500 font-bold">CMs</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Anomalies Declaration Statement matching exactly image_bf02df.jpg text -->
+              <p class="text-[10px] font-bold text-slate-800 pt-1 italic text-center">
+                * NO MAJOR DEMOSTRABLE FOETAL ANOMANES SEEN.
+              </p>
+
+            </div>
+          </section>
+
+          <!-- ================= IMPRESSION ================= -->
+          <section class="mb-2">
+            <div class="bg-teal-800/10 py-0.5 px-2 rounded mb-1">
+              <span class="text-[9px] font-bold tracking-widest text-teal-900 uppercase">Sonographic Impression</span>
+            </div>
+            <div class="px-1 text-slate-800 text-[10px] font-bold flex flex-wrap items-center gap-1.5 leading-normal">
+              <span>* IMPRESSION:SINGLE INTRAUTERINE LIVE FOETUS IN :</span>
+              <input type="text" id="ob-impression-val" placeholder="CEPHALIC" class="w-28 input-underlined text-[10px]" />
+              <span>PRESENTION</span>
+            </div>
+          </section>
+
+          <!-- Legal anomalies warning note box strictly matched with image_bf02ff.png text (Positioned right below Impression) -->
+          <section class="mb-2 p-1.5 bg-slate-50 border border-slate-300 rounded text-[8px] leading-relaxed text-slate-600">
+            <p class="font-black text-slate-800 uppercase tracking-wide mb-0.5">NOTE :</p>
+            All anomalies canot be ruled out by this scan, since assessment of fetal anomalies depends on fetal position, liquor volume and the period of festation at the time scan. Hence this report has limitation and is not for MEDICO –Legal purpose.
+          </section>
+        </div>
+
+
+        <!-- 05-REPORT FOOTER (Strictly arranged to fit page cleanly with slightly higher margin/offset) -->
+        <div class="mt-auto space-y-3">
+          <!-- Footer Legal / Location details (Beautifully aligned above the signature) -->
+            <div class="grid grid-cols-12 gap-3 text-[8.5px] text-slate-600 font-semibold tracking-wide">
+              <div class="col-span-8 pr-4 leading-relaxed">
+                <span class="font-extrabold text-teal-800 block mb-0.5 uppercase tracking-wider text-[9px]">Hospital Address & Contact:</span>
+                D NO:1-7-26, PEDDANNA STREET, OPPO RAMANA FUNCTION HALL, <br>
+                G V TEXSTILES BACKSIDE, ALLAGADDA, NANDYALA DIS, AP-518543. <br>
+                <span class="text-teal-900 font-black">PHONE: +91 9100349825</span>
+              </div>
+            <div class="text-center w-48 border-t border-slate-400 pt-1">
+              <span class="text-[8.5px] font-bold tracking-wider text-slate-700 uppercase">PROFESSOR</span>
+              <p class="text-[8px] text-slate-400 font-medium leading-none">Sanjeeva Hospital Services</p>
+            </div>
+            </div>
+          </footer>
+
+
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzGRVAiQH6x3Azi0Jzuvi5ghwKRW0QymMnjOmqUktH9ueNr-xxue_msQHX0M7wHZ4P61w/exec';
+    window.addEventListener('DOMContentLoaded', () => { document.getElementById('p-exam-date').value = new Date().toISOString().substring(0, 10); });
+    function showToast(message, type = 'success') { const container = document.getElementById('toast-container'); const toast = document.createElement('div'); const colors = { success: 'bg-emerald-600 border-emerald-700 text-white', error: 'bg-rose-600 border-rose-700 text-white', info: 'bg-slate-800 border-slate-900 text-white' }; toast.className = `flex items-center gap-2 px-4 py-2.5 rounded-lg shadow-xl border text-xs font-semibold ${colors[type]} transition-all duration-300 transform translate-x-12 opacity-0 pointer-events-auto max-w-sm`; toast.innerHTML = `<svg class="h-4 w-4 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span>${message}</span>`; container.appendChild(toast); requestAnimationFrame(() => toast.classList.remove('translate-x-12', 'opacity-0')); setTimeout(() => { toast.classList.add('translate-x-12', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 4500); }
+    function resetForm() { document.getElementById('reset-modal').classList.remove('hidden'); }
+    function confirmReset(isConfirmed) { document.getElementById('reset-modal').classList.add('hidden'); if (isConfirmed) { const today = new Date().toISOString().substring(0, 10); document.getElementById('ob-report-id').value = '[Auto-Generated]'; document.getElementById('p-name').value = ''; document.getElementById('p-exam-date').value = today; document.getElementById('p-sex').value = 'Female'; document.getElementById('p-age').value = ''; document.getElementById('p-edd').value = ''; document.getElementById('p-village').value = ''; document.getElementById('ob-presentation').value = 'CEPHALIC'; document.getElementById('ob-fhr-bpm').value = ''; document.getElementById('ob-fhr-rhythm').value = 'REGULAR'; document.getElementById('ob-fetal-movements').value = 'PRESENT'; document.getElementById('ob-bpd-val').value = ''; document.getElementById('ob-bpd-wks').value = ''; document.getElementById('ob-bpd-days').value = ''; document.getElementById('ob-hc-val').value = ''; document.getElementById('ob-hc-wks').value = ''; document.getElementById('ob-hc-days').value = ''; document.getElementById('ob-ac-val').value = ''; document.getElementById('ob-ac-wks').value = ''; document.getElementById('ob-ac-days').value = ''; document.getElementById('ob-fl-val').value = ''; document.getElementById('ob-fl-wks').value = ''; document.getElementById('ob-fl-days').value = ''; document.getElementById('ob-cga-wks').value = ''; document.getElementById('ob-cga-days').value = ''; document.getElementById('ob-efw').value = ''; document.getElementById('ob-liquor').value = 'ADEQUATE'; document.getElementById('ob-afi').value = ''; document.getElementById('ob-placenta-pos').value = 'ANTERIOR'; document.getElementById('ob-placenta-grade').value = 'I'; document.getElementById('ob-impression-val').value = ''; const printBtn = document.getElementById('btn-print'); printBtn.disabled = true; printBtn.classList.add('opacity-50', 'cursor-not-allowed'); showToast('Form reset. Ready to append a new row!', 'info'); } }
+    async function saveReport() { const saveBtn = document.getElementById('btn-save'); saveBtn.disabled = true; saveBtn.innerText = 'Saving...'; const compositeBiometry = `BPD:${document.getElementById('ob-bpd-val').value}cm(${document.getElementById('ob-bpd-wks').value}w-${document.getElementById('ob-bpd-days').value}d)|HC:${document.getElementById('ob-hc-val').value}cm(${document.getElementById('ob-hc-wks').value}w-${document.getElementById('ob-hc-days').value}d)|AC:${document.getElementById('ob-ac-val').value}cm(${document.getElementById('ob-ac-wks').value}w-${document.getElementById('ob-ac-days').value}d)|FL:${document.getElementById('ob-fl-val').value}cm(${document.getElementById('ob-fl-wks').value}w-${document.getElementById('ob-fl-days').value}d)`; const compositeFHR = `FHR:${document.getElementById('ob-fhr-bpm').value}BPM|Rhythm:${document.getElementById('ob-fhr-rhythm').value}|FetalMove:${document.getElementById('ob-fetal-movements').value}`; const compositeCGA = `${document.getElementById('ob-cga-wks').value} Weeks ${document.getElementById('ob-cga-days').value} Days`; const compositePlacentaLiquor = `Placenta:${document.getElementById('ob-placenta-pos').value}(Gr:${document.getElementById('ob-placenta-grade').value})|Liquor:${document.getElementById('ob-liquor').value}(AFI:${document.getElementById('ob-afi').value}cm)`; const payload = { action: 'save', reportId: document.getElementById('ob-report-id').value, patientName: document.getElementById('p-name').value, examDate: document.getElementById('p-exam-date').value, sex: document.getElementById('p-sex').value, village: document.getElementById('p-age').value, lmp: compositeFHR, edd: document.getElementById('p-edd').value, gravida: document.getElementById('p-village').value, asiub: `single intrauterine live|${document.getElementById('ob-presentation').value}`, crl: compositeBiometry, uga: compositeCGA, cardiac: compositePlacentaLiquor, obEdd: document.getElementById('ob-efw').value, remarks: document.getElementById('ob-impression-val').value }; try { const response = await fetch(GAS_API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) }); const text = await response.text(); const result = JSON.parse(text); if (result.status === 'success') { document.getElementById('ob-report-id').value = result.reportId; const printBtn = document.getElementById('btn-print'); printBtn.disabled = false; printBtn.classList.remove('opacity-50', 'cursor-not-allowed'); showToast(result.message || 'Data saved to Google Sheet!', 'success'); } else { showToast(result.message || 'Failed to save.', 'error'); } } catch (err) { showToast('Request sent to spreadsheet. Verify by searching ID if status is unreadable.', 'info'); } finally { saveBtn.disabled = false; saveBtn.innerHTML = `<svg class="h-3.5 w-3.5 text-teal-950 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 10H9m4-3H9m2-9a2 2 0 11-4 0 2 2 0 014 0z" /></svg> Save`; } }
+    async function verifyAndSearchReport() { const searchId = document.getElementById('search-id-input').value.trim(); if (!searchId) { showToast('Please enter an OB ID (e.g. SSMOB001) to verify.', 'error'); return; } showToast(`Verifying ID ${searchId}...`, 'info'); try { const response = await fetch(GAS_API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'verify', reportId: searchId }) }); const text = await response.text(); const result = JSON.parse(text); if (result.status === 'success' && result.data) { const data = result.data; document.getElementById('ob-report-id').value = data.reportId || ''; document.getElementById('p-name').value = data.patientName || ''; document.getElementById('p-exam-date').value = data.examDate || ''; document.getElementById('p-sex').value = data.sex || 'Female'; document.getElementById('p-age').value = data.village || ''; document.getElementById('p-edd').value = data.edd || ''; document.getElementById('p-village').value = data.gravida || ''; document.getElementById('ob-efw').value = data.obEdd || ''; document.getElementById('ob-impression-val').value = data.remarks || ''; if (data.asiub && data.asiub.includes('|')) { const parts = data.asiub.split('|'); document.getElementById('ob-presentation').value = parts[1]; } if (data.lmp && data.lmp.startsWith('FHR:')) { const parts = data.lmp.split('|'); document.getElementById('ob-fhr-bpm').value = parts[0].replace('FHR:', '').replace('BPM', ''); document.getElementById('ob-fhr-rhythm').value = parts[1].replace('Rhythm:', ''); document.getElementById('ob-fetal-movements').value = parts[2].replace('FetalMove:', ''); } if (data.uga && data.uga.includes('Weeks')) { const parts = data.uga.split(' '); document.getElementById('ob-cga-wks').value = parts[0]; document.getElementById('ob-cga-days').value = parts[2]; } if (data.cardiac && data.cardiac.startsWith('Placenta:')) { const parts = data.cardiac.split('|'); const plParts = parts[0].replace('Placenta:', '').split('('); document.getElementById('ob-placenta-pos').value = plParts[0]; if (plParts[1]) { document.getElementById('ob-placenta-grade').value = plParts[1].replace('Gr:', '').replace(')', ''); } const liqParts = parts[1].replace('Liquor:', '').split('('); document.getElementById('ob-liquor').value = liqParts[0]; if (liqParts[1]) { document.getElementById('ob-afi').value = liqParts[1].replace('AFI:', '').replace('cm)', ''); } } if (data.crl && data.crl.includes('|')) { const parts = data.crl.split('|'); parts.forEach(p => { if (p.startsWith('BPD:')) { const bpdParts = p.replace('BPD:', '').split('cm('); document.getElementById('ob-bpd-val').value = bpdParts[0]; const wksDays = bpdParts[1].replace(')', '').split('-'); document.getElementById('ob-bpd-wks').value = wksDays[0].replace('w', ''); if (wksDays[1]) { document.getElementById('ob-bpd-days').value = wksDays[1].replace('d', ''); } } else if (p.startsWith('HC:')) { const hcParts = p.replace('HC:', '').split('cm('); document.getElementById('ob-hc-val').value = hcParts[0]; const wksDays = hcParts[1].replace(')', '').split('-'); document.getElementById('ob-hc-wks').value = wksDays[0].replace('w', ''); if (wksDays[1]) { document.getElementById('ob-hc-days').value = wksDays[1].replace('d', ''); } } else if (p.startsWith('AC:')) { const acParts = p.replace('AC:', '').split('cm('); document.getElementById('ob-ac-val').value = acParts[0]; const wksDays = acParts[1].replace(')', '').split('-'); document.getElementById('ob-ac-wks').value = wksDays[0].replace('w', ''); if (wksDays[1]) { document.getElementById('ob-ac-days').value = wksDays[1].replace('d', ''); } } else if (p.startsWith('FL:')) { const flParts = p.replace('FL:', '').split('cm('); document.getElementById('ob-fl-val').value = flParts[0]; const wksDays = flParts[1].replace(')', '').split('-'); document.getElementById('ob-fl-wks').value = wksDays[0].replace('w', ''); if (wksDays[1]) { document.getElementById('ob-fl-days').value = wksDays[1].replace('d', ''); } } }); } const printBtn = document.getElementById('btn-print'); printBtn.disabled = false; printBtn.classList.remove('opacity-50', 'cursor-not-allowed'); showToast(`Report ${searchId} retrieved and verified successfully!`, 'success'); } else { showToast(result.message || 'Report ID not found.', 'error'); } } catch (err) { showToast('Verification query processed. Double check ID spelling.', 'info'); } }
+    function triggerPrint() { window.print(); }
+  </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanjeeva Lab Report Terminal</title>
+<link rel="icon" type="image/png" href="https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;800&display=swap');
+
+/* CM001 - Global Styles */
+* { font-family: 'Roboto Slab', serif; box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { display: none; }
+body { margin: 0; padding: 0; background-color: #f8fafc; overflow-x: hidden; }
+
+/* CM002 - A4 Page Layout */
+.a4-page { width: 210mm; min-height: 297mm; background: #fff; padding: 16mm; position: relative; box-sizing: border-box; overflow: hidden; margin: 20px auto; box-shadow: 0 10px 25px rgba(0,0,0,.12); }
+.page-border { position: absolute !important; top: 16mm; left: 16mm; right: 16mm; bottom: 16mm; border: 1.5px solid #115e59; display: block !important; pointer-events: none; z-index: 50; }
+
+/* CM003 - Form Inputs */
+.direct-input { border: none; border-bottom: 1px dashed #cbd5e1; background: transparent; padding: 2px 4px; outline: none; transition: all 0.2s; font-size: inherit; font-weight: inherit; font-family: inherit; width: 100%; }
+.direct-input:focus { border-bottom: 2px solid #0d9488; background: #f0fdfa; }
+
+/* CM004 - Print Media Queries */
+@media print { .print-hidden { display: none !important; } @page { size: A4 portrait; margin: 0 !important; } html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; height: auto !important; overflow: visible !important; } .a4-page { width: 210mm !important; min-height: auto !important; height: auto !important; margin: 0 !important; padding: 18mm !important; border: none !important; box-shadow: none !important; overflow: visible !important; box-sizing: border-box !important; } .page-border { position: fixed !important; top: 16mm; left: 16mm; right: 16mm; bottom: 16mm; border: 1.5px solid #115e59 !important; display: block !important; z-index: 9999 !important; pointer-events: none; } .print-layout-table { width: 100%; border-collapse: collapse; z-index: 20; position: relative; } .test-card { page-break-inside: avoid; break-inside: avoid; } .direct-input { border-bottom: none !important; background: transparent !important; } }
+</style>
+</head>
+<body class="min-h-screen bg-slate-50 flex flex-col text-slate-800 print:bg-white print:text-black">
+
+<!-- CM005 - Header Section -->
+<section class="bg-white border-b border-slate-200 p-4 print-hidden shadow-inner sticky top-0 z-40">
+<div class="max-w-7xl mx-auto space-y-3">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<h2 class="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5"><i data-lucide="file-text" class="w-4 h-4 text-teal-600"></i><span>Select Lab Profile (14 Profiles) - Click to add to A4 Canvas</span></h2>
+<div class="flex items-center space-x-3">
+<button onclick="triggerResetConfirm()" class="flex items-center space-x-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold rounded-lg border border-red-200 transition-colors"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i><span>Reset All Fields</span></button>
+<button onclick="triggerPrint()" class="flex items-center space-x-2 px-5 py-2 text-xs font-extrabold bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-lg shadow-md transition-all"><i data-lucide="printer" class="w-3.5 h-3.5"></i><span>Print Report</span></button>
+</div>
+</div>
+<div id="selectionGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 pt-2 border-t border-slate-100"></div>
+</div>
+</section>
+
+<!-- CM006 - Toast Notification -->
+<div id="toastNotification" class="fixed bottom-4 right-4 z-50 shadow-xl rounded-xl p-3 border bg-white border-teal-500 hidden items-center space-x-2 print-hidden"><i data-lucide="info" class="w-4 h-4 text-teal-600"></i><span id="toastText" class="text-xs font-bold text-slate-700"></span></div>
+
+<!-- CM007 - Confirmation Modal -->
+<div id="confirmModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 print-hidden">
+<div class="bg-white rounded-xl shadow-2xl p-5 max-w-md w-full mx-4 border border-slate-100">
+<div class="flex items-start space-x-3">
+<div class="p-2 bg-red-50 text-red-600 rounded-full"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+<div>
+<h3 class="text-sm font-bold text-slate-900">Confirm Reset Operation</h3>
+<p class="text-xs text-slate-500 mt-1">Are you sure you want to clear the entire form? This action will permanently remove all patient details and active lab report parameters.</p>
+</div>
+</div>
+<div class="mt-4 flex justify-end space-x-2">
+<button onclick="dismissResetConfirm()" class="px-3 py-1.5 border border-slate-200 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-50">No, Keep Editing</button>
+<button onClick="executeReset()" class="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg shadow-sm">Yes, Reset All</button>
+</div>
+</div>
+</div>
+
+<!-- CM008 - Main Content Area -->
+<main class="flex-1 p-4 md:p-8 flex justify-center items-start overflow-auto">
+<div id="printSheet" class="a4-page">
+<div class="page-border"></div>
+<table class="print-layout-table w-full relative z-20">
+<thead><tr><td class="bg-white pb-2 relative z-30">
+<div class="flex justify-between items-start border-b-[2px] border-teal-800 pb-2 mb-3">
+<div class="flex items-start space-x-3">
+<img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" alt="Sanjeeva Hospital Logo" class="w-[16mm] h-[16mm] object-contain mt-0.5" onerror="this.style.display='none'">
+<div>
+<h1 class="text-[19px] font-extrabold text-teal-900 tracking-wider uppercase">Sanjeeva Multispecialty Hospital</h1>
+<p class="text-[10px] font-bold text-emerald-700 tracking-widest uppercase mb-0.5">"Health Care with Ethics"</p>
+<p class="text-[8.5px] text-slate-600 max-w-[420px] leading-tight">Diagnostic Laboratory Division - Allagadda Clinical Services</p>
+</div>
+</div>
+<div class="text-right pl-4">
+<span class="inline-block bg-teal-800 text-white text-[7.5px] font-bold px-2 py-0.5 rounded uppercase tracking-wider mb-1">Diagnostic Lab Report</span>
+<div class="text-teal-900 font-extrabold text-[11px]">PH: +91 9100349825</div>
+<p class="text-[7.5px] text-slate-500">24/7 Quality Medical Testing</p>
+</div>
+</div>
+</td></tr></thead>
+<tbody><tr><td>
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.02] select-none z-10"><img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" alt="Emblem Watermark" class="w-[110mm] h-[110mm] object-contain" onerror="this.style.display='none'"></div>
+<div class="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4 grid grid-cols-12 gap-x-3 gap-y-2 text-[10.5px] relative z-20">
+<div class="col-span-6 flex items-center space-x-1"><span class="text-slate-500 font-bold uppercase tracking-wider text-[8px] w-20">Patient Name:</span><input type="text" id="p_name" oninput="updatePatientField('name', this.value)" placeholder="Type Name here..." class="direct-input font-bold text-slate-900"></div>
+<div class="col-span-3 flex items-center space-x-1"><span class="text-slate-500 font-bold uppercase tracking-wider text-[8px] w-12">Age/Sex:</span><input type="text" id="p_age" oninput="updatePatientField('age', this.value)" placeholder="Age..." class="direct-input font-bold text-slate-800"></div>
+<div class="col-span-3 flex items-center space-x-1"><select id="p_gender" onchange="updatePatientField('gender', this.value)" class="direct-input font-bold text-slate-800"><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+<div class="col-span-6 flex items-center space-x-1"><span class="text-slate-500 font-bold uppercase tracking-wider text-[8px] w-20">Referred By:</span><input type="text" id="p_referredBy" list="suggestedDoctors" oninput="updatePatientField('referredBy', this.value)" placeholder="Doctor name..." class="direct-input font-bold text-slate-800"></div>
+<div class="col-span-3 flex items-center space-x-1"><span class="text-slate-500 font-bold uppercase tracking-wider text-[8px] w-12">Reg No:</span><input type="text" id="p_id" oninput="updatePatientField('patientId', this.value)" placeholder="ID..." class="direct-input font-bold text-slate-800"></div>
+<div class="col-span-3 flex items-center space-x-1"><span class="text-slate-500 font-bold uppercase tracking-wider text-[8px] w-12">Date:</span><input type="date" id="p_date" onchange="updatePatientField('date', this.value)" class="direct-input text-slate-800"></div>
+<div class="col-span-6 flex items-center space-x-1"><span class="text-slate-500 font-bold uppercase tracking-wider text-[8px] w-20">Contact No:</span><input type="tel" id="p_phone" oninput="updatePatientField('phone', this.value)" placeholder="Phone..." class="direct-input text-slate-800 font-mono"></div>
+</div>
+<div id="selectedTestsGrid" class="space-y-4 relative z-20"></div>
+<div id="emptyStatePlaceholder" class="text-center py-24 border border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center hidden relative z-20 bg-white/50"><i data-lucide="plus-circle" class="w-8 h-8 text-teal-600 mb-2"></i><h4 class="text-xs font-bold text-slate-600">A4 Document Canvas Empty</h4><p class="text-[10px] text-slate-400 mt-1 max-w-[320px]">Click any of the 14 lab test options in the bar at the top of the page to add a test table to this report.</p></div>
+</td></tr></tbody>
+</table>
+</div>
+</main>
+
+<!-- CM009 - Datalists -->
+<datalist id="suggestedDoctors"><option value="Dr. R. Anjaneyulu MBBS MD (PAED) MCH REGD NO 54702"><option value="Dr. E. Sujatha Anjaneyulu MBBS MS (OBG) REGD NO 62254"></datalist>
+<datalist id="suggest_pos_neg"><option value="Negative"><option value="Positive"><option value="Nil"><option value="Trace"><option value="+"><option value="++"><option value="+++"></datalist>
+<datalist id="suggest_reactive"><option value="Non - Reactive"><option value="Reactive"></datalist>
+<datalist id="suggest_urine_alb"><option value="Nil"><option value="Trace"><option value="Normal"><option value="Present"></datalist>
+<datalist id="suggest_blood_grp"><option value="O Positive"><option value="O Negative"><option value="A Positive"><option value="B Positive"><option value="AB Positive"></datalist>
+
+<script>
+// CM010 - Global Variables & Constants
+const TEMPLATE_TESTS = [ { id: "serology", name: "Serology Report", category: "Serology", parameters: [ { name: "C.R.P (C-Reactive Protein)", value: "", unit: "mg/l", normalRange: "00 - 06 mg/l", suggest: "suggest_pos_neg" }, { name: "Salmonella Typhi 'O'", value: "", unit: "Titre", normalRange: "Negative (< 1:80)", suggest: "suggest_pos_neg" }, { name: "Salmonella Typhi 'H'", value: "", unit: "Titre", normalRange: "Negative (< 1:80)", suggest: "suggest_pos_neg" }, { name: "Salmonella Paratyphi 'AH'", value: "", unit: "Titre", normalRange: "Negative (< 1:80)", suggest: "suggest_pos_neg" }, { name: "Salmonella Paratyphi 'BH'", value: "", unit: "Titre", normalRange: "Negative (< 1:80)", suggest: "suggest_pos_neg" }, { name: "Dengue NS1 Antigen", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "Dengue IgM Antibody", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "Dengue IgG Antibody", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "Ra Factor Test", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "HIV Test (Method I/II)", value: "", unit: "-", normalRange: "Non - Reactive", suggest: "suggest_reactive" }, { name: "H.BsAg", value: "", unit: "-", normalRange: "Non - Reactive", suggest: "suggest_reactive" }, { name: "H.C.V", value: "", unit: "-", normalRange: "Non - Reactive", suggest: "suggest_reactive" }, { name: "V.D.R.L", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" } ] }, { id: "sugar", name: "Blood Sugar Profile", category: "Biochemistry", parameters: [ { name: "Random Blood Sugar", value: "", unit: "mg/dl", normalRange: "70 - 160 mg/dl" }, { name: "Fasting Blood Sugar", value: "", unit: "mg/dl", normalRange: "70 - 110 mg/dl" }, { name: "Post Prandial Blood Sugar", value: "", unit: "mg/dl", normalRange: "110 - 160 mg/dl" } ] }, { id: "hematology", name: "Hematology & Hemoglobin", category: "Hematology", parameters: [ { name: "Haemoglobin (Male)", value: "", unit: "gm%", normalRange: "Male: 14 - 18 gm%" }, { name: "Haemoglobin (Female)", value: "", unit: "gm%", normalRange: "Female: 12 - 18 gm%" }, { name: "Blood Grouping (ABO/Rh)", value: "", unit: "-", normalRange: "A / B / O / AB Group", suggest: "suggest_blood_grp" }, { name: "M.P KIT (Malaria Antigen)", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "Bleeding Time", value: "", unit: "Min/Sec", normalRange: "2 - 5 min" }, { name: "Clotting Time", value: "", unit: "Min/Sec", normalRange: "3 - 6 min" }, { name: "E.S.R (Westergren Method)", value: "", unit: "mm/hr", normalRange: "10 - 20 mm/hr" } ] }, { id: "hepatitis", name: "Hepatitis (HAV / IgM / IgG)", category: "Serology", parameters: [ { name: "HAV Antibody", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "IgM Antibody", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "IgG Antibody", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" } ] }, { id: "urine_chem", name: "Urine Chemical Examination", category: "Urine Analysis", parameters: [ { name: "Urine Albumin (Protein)", value: "", unit: "-", normalRange: "Nil", suggest: "suggest_urine_alb" }, { name: "Urine Sugar (Glucose)", value: "", unit: "-", normalRange: "Nil", suggest: "suggest_urine_alb" }, { name: "Bile Salts", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "Bile Pigments", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "Urine Ketone bodies", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" }, { name: "Urine Pregnancy (UPT)", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" } ] }, { id: "urine_micro", name: "Urine Microscopic Deposits", category: "Urine Analysis", parameters: [ { name: "Pus Cells", value: "", unit: "/hpf", normalRange: "0 - 5 /hpf" }, { name: "R.B Cells (Red Blood Cells)", value: "", unit: "/hpf", normalRange: "Nil" }, { name: "E.P.Cells (Epithelial)", value: "", unit: "/hpf", normalRange: "1 - 5 /hpf" }, { name: "Urine Casts", value: "", unit: "-", normalRange: "Nil" }, { name: "Urine Crystals", value: "", unit: "-", normalRange: "Nil" }, { name: "Others / Yeast / Organisms", value: "", unit: "-", normalRange: "Nil" } ] }, { id: "bilirubin", name: "Bilirubin Panel", category: "Biochemistry", parameters: [ { name: "Total Bilirubin", value: "", unit: "mg/dl", normalRange: "0.2 - 1.0 mg/dl" }, { name: "Direct Bilirubin", value: "", unit: "mg/dl", normalRange: "0.0 - 0.4 mg/dl" }, { name: "Indirect Bilirubin", value: "", unit: "mg/dl", normalRange: "0.2 - 0.8 mg/dl" } ] }, { id: "lft", name: "Liver Function Test (LFT)", category: "Biochemistry", parameters: [ { name: "Total Bilirubin", value: "", unit: "mg/dl", normalRange: "0.2 - 1.0 mg/dl" }, { name: "Direct Bilirubin", value: "", unit: "mg/dl", normalRange: "0.0 - 0.4 mg/dl" }, { name: "Indirect Bilirubin", value: "", unit: "mg/dl", normalRange: "0.2 - 0.8 mg/dl" }, { name: "Alkaline Phosphatase (ALP)", value: "", unit: "U/L", normalRange: "25 - 360 U/L" }, { name: "SGOT (AST)", value: "", unit: "IU/ml", normalRange: "8 - 40 IU/ml" }, { name: "SGPT (ALT)", value: "", unit: "IU/ml", normalRange: "5 - 40 IU/ml" }, { name: "Total Proteins", value: "", unit: "gm/dl", normalRange: "6.4 - 8.4 gm/dl" }, { name: "Albumin", value: "", unit: "mg/dl", normalRange: "3.2 - 5.5 mg/dl" } ] }, { id: "rft", name: "Renal Profile / Kidney Test", category: "Biochemistry", parameters: [ { name: "Blood Urea", value: "", unit: "mg/dl", normalRange: "20 - 40 mg/dl" }, { name: "Serum Creatinine", value: "", unit: "mg/dl", normalRange: "0.7 - 1.4 mg/dl" }, { name: "Serum Uric Acid (Male)", value: "", unit: "mg/dl", normalRange: "4.0 - 8.5 mg/dl" }, { name: "Serum Uric Acid (Female)", value: "", unit: "mg/dl", normalRange: "2.5 - 6.8 mg/dl" }, { name: "Serum Calcium", value: "", unit: "mg/dl", normalRange: "8.5 - 10.0 mg/dl" } ] }, { id: "electrolytes", name: "Serum Electrolytes", category: "Biochemistry", parameters: [ { name: "Sodium (Na+)", value: "", unit: "m.mole/lit", normalRange: "135 - 155 m.mole/lit" }, { name: "Potassium (K+)", value: "", unit: "m.moles/lit", normalRange: "3.5 - 5.5 m.moles/lit" }, { name: "Chloride (Cl-)", value: "", unit: "m.moles/lit", normalRange: "90 - 110 m.moles/lit" } ] }, { id: "troponin", name: "Troponin - I Card Test", category: "Biochemistry", parameters: [ { name: "Troponin - I", value: "", unit: "-", normalRange: "Negative", suggest: "suggest_pos_neg" } ] }, { id: "thyroid", name: "Thyroid Profile (T3, T4, TSH)", category: "Hormones", parameters: [ { name: "T3 (Method: FIA)", value: "", unit: "mg/ML", normalRange: "0.5 - 1.8 mg/ML" }, { name: "T4 (Method: FIA) Male", value: "", unit: "mg/DL", normalRange: "4.4 - 10.8 mg/DL" }, { name: "T4 (Method: FIA) Female", value: "", unit: "mg/DL", normalRange: "4.8 - 11.6 mg/DL" }, { name: "TSH (Method: FIA)", value: "", unit: "MIU/ML", normalRange: "0.5 - 5.5 MIU/ML" } ] }, { id: "hba1c", name: "HbA1c Test (Glycated)", category: "Biochemistry", parameters: [ { name: "HbA1c Value", value: "", unit: "%", normalRange: "Normal: 4.5-6.5% | Good: <7%" } ] }, { id: "custom", name: "Custom General Profile", category: "General", parameters: [ { name: "Custom Parameter", value: "", unit: "-", normalRange: "Normal", suggest: "suggest_pos_neg" } ] } ];
+let patientDetails = JSON.parse(localStorage.getItem('sanjeeva_patient_details')) || { patientId: createRegistrationCode(), name: '', age: '', gender: 'Male', referredBy: 'Dr. R. Anjaneyulu MBBS MD (PAED) MCH REGD NO 54702', date: new Date().toISOString().split('T')[0], phone: '' };
+let activeTests = JSON.parse(localStorage.getItem('sanjeeva_active_tests')) || [];
+
+// CM011 - Utility Functions
+function createRegistrationCode() { const date = new Date(); return `SMLAB${String(date.getDate()).padStart(2, '0')}${String(date.getHours()).padStart(2, '0')}`; }
+function persistState() { localStorage.setItem('sanjeeva_patient_details', JSON.stringify(patientDetails)); localStorage.setItem('sanjeeva_active_tests', JSON.stringify(activeTests)); }
+function notify(message) { const toast = document.getElementById('toastNotification'); document.getElementById('toastText').innerText = message; toast.classList.remove('hidden'); toast.classList.add('flex'); setTimeout(() => { toast.classList.remove('flex'); toast.classList.add('hidden'); }, 3000); }
+
+// CM012 - State Management Functions
+function updatePatientField(field, value) { patientDetails[field] = value; persistState(); }
+function toggleProfile(id, checkboxElement) { if (checkboxElement.checked) { if (activeTests.some(t => t.id === id)) return; const template = TEMPLATE_TESTS.find(t => t.id === id); activeTests.push({ ...template, uniqueId: template.id + '-' + Date.now(), parameters: template.parameters.map(p => ({ ...p, printEnabled: true, comment: '' })) }); persistState(); drawActiveTests(); notify("Added " + template.name); } else { activeTests = activeTests.filter(t => t.id !== id); persistState(); drawActiveTests(); notify("Removed profile."); } }
+function updateParameterValue(uniqueId, paramIndex, field, value) { activeTests = activeTests.map(t => { if (t.uniqueId === uniqueId) { t.parameters[paramIndex][field] = value; } return t; }); persistState(); }
+function toggleParamRowPrint(uniqueId, paramIndex, checkedState) { activeTests = activeTests.map(t => { if (t.uniqueId === uniqueId) { t.parameters[paramIndex].printEnabled = checkedState; } return t; }); persistState(); const rowEl = document.getElementById(`row-${uniqueId}-${paramIndex}`); if (checkedState) { rowEl.classList.remove('row-unchecked', 'row-unchecked-print'); } else { rowEl.classList.add('row-unchecked', 'row-unchecked-print'); } }
+
+// CM013 - Modal & Print Functions
+function triggerResetConfirm() { document.getElementById('confirmModal').classList.remove('hidden'); document.getElementById('confirmModal').classList.add('flex'); }
+function dismissResetConfirm() { document.getElementById('confirmModal').classList.remove('flex'); document.getElementById('confirmModal').classList.add('hidden'); }
+function executeReset() { patientDetails = { patientId: createRegistrationCode(), name: '', age: '', gender: 'Male', referredBy: 'Dr. R. Anjaneyulu MBBS MD (PAED) MCH REGD NO 54702', date: new Date().toISOString().split('T')[0], phone: '' }; activeTests = []; persistState(); drawAll(); dismissResetConfirm(); notify("All report fields have been reset."); }
+function triggerPrint() { window.print(); }
+
+// CM014 - UI Rendering Functions
+function drawSelectionGrid() { const grid = document.getElementById('selectionGrid'); grid.innerHTML = ''; TEMPLATE_TESTS.forEach(test => { const active = activeTests.some(t => t.id === test.id); const card = document.createElement('label'); card.className = 'flex items-center space-x-2.5 p-2 rounded-lg border cursor-pointer transition-all ' + (active ? 'bg-teal-50 border-teal-300 text-teal-900' : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300'); card.innerHTML = `<input type="checkbox" class="rounded border-slate-300 text-teal-600 focus:ring-teal-500 w-3.5 h-3.5" ${active ? 'checked' : ''} onchange="toggleProfile('${test.id}', this)"><div class="truncate flex-1"><p class="text-[10px] font-extrabold truncate">${test.name}</p><span class="text-[8px] text-slate-400 block">${test.category}</span></div>`; grid.appendChild(card); }); }
+function drawActiveTests() { const grid = document.getElementById('selectedTestsGrid'); const empty = document.getElementById('emptyStatePlaceholder'); grid.innerHTML = ''; if (activeTests.length === 0) { empty.classList.remove('hidden'); return; } empty.classList.add('hidden'); activeTests.forEach(test => { const container = document.createElement('div'); container.className = 'test-card border border-slate-100 rounded p-1.5 relative'; let tableRows = ''; test.parameters.forEach((param, pIdx) => { const printChecked = param.printEnabled !== false; const statusClass = printChecked ? '' : 'row-unchecked row-unchecked-print'; const datalistAttr = param.suggest ? `list="${param.suggest}"` : ''; tableRows += `<tr id="row-${test.uniqueId}-${pIdx}" class="border-b border-slate-50 ${statusClass}"><td class="py-1 px-1 text-center print-hidden w-6"><input type="checkbox" class="param-checkbox w-3.5 h-3.5" ${printChecked ? 'checked' : ''} onchange="toggleParamRowPrint('${test.uniqueId}', ${pIdx}, this.checked)"></td><td class="py-1 font-bold text-slate-800"><input type="text" value="${param.name}" oninput="updateParameterValue('${test.uniqueId}', ${pIdx}, 'name', this.value)" class="direct-input"></td><td class="py-1 text-center font-extrabold text-teal-950"><input type="text" value="${param.value}" placeholder="Enter..." ${datalistAttr} oninput="updateParameterValue('${test.uniqueId}', ${pIdx}, 'value', this.value)" class="direct-input text-center text-teal-950 font-extrabold"></td><td class="py-1 text-center text-slate-500 font-mono"><input type="text" value="${param.unit}" oninput="updateParameterValue('${test.uniqueId}', ${pIdx}, 'unit', this.value)" class="direct-input text-center"></td><td class="py-1 text-center text-slate-500"><input type="text" value="${param.normalRange}" oninput="updateParameterValue('${test.uniqueId}', ${pIdx}, 'normalRange', this.value)" class="direct-input text-center"></td><td class="py-1 text-right text-slate-400 italic"><input type="text" value="${param.comment || ''}" placeholder="Comment..." oninput="updateParameterValue('${test.uniqueId}', ${pIdx}, 'comment', this.value)" class="direct-input text-right"></td></tr>`; }); container.innerHTML = `<div class="flex justify-between items-center border-b border-teal-800 pb-0.5 mb-1 bg-teal-50/40 px-1 rounded"><span class="text-[9.5px] font-extrabold text-teal-900 uppercase tracking-wide truncate">${test.name}</span><button onclick="activeTests = activeTests.filter(t => t.uniqueId !== '${test.uniqueId}'); persistState(); drawActiveTests(); drawSelectionGrid();" class="p-0.5 text-slate-400 hover:text-red-600 print-hidden" title="Remove Profile"><i data-lucide="x" class="w-3.5 h-3.5"></i></button></div><table class="w-full text-left text-[9.5px]"><thead><tr class="border-b border-slate-200 text-slate-400 font-extrabold uppercase text-[7.5px] tracking-wider"><th class="py-1 w-6 print-hidden"></th><th class="py-1 w-4/12">Parameter</th><th class="py-1 w-2/12 text-center">Result</th><th class="py-1 w-2/12 text-center">Unit</th><th class="py-1 w-2/12 text-center">Reference Range</th><th class="py-1 w-2/12 text-right">Comment</th></tr></thead><tbody>${tableRows}</tbody></table>`; grid.appendChild(container); }); lucide.createIcons(); }
+function updatePatientFormUI() { document.getElementById('p_name').value = patientDetails.name; document.getElementById('p_age').value = patientDetails.age; document.getElementById('p_gender').value = patientDetails.gender; document.getElementById('p_referredBy').value = patientDetails.referredBy; document.getElementById('p_id').value = patientDetails.patientId; document.getElementById('p_date').value = patientDetails.date; document.getElementById('p_phone').value = patientDetails.phone; }
+function drawAll() { drawSelectionGrid(); drawActiveTests(); updatePatientFormUI(); }
+
+// CM015 - Event Listeners
+document.addEventListener('keydown', function(e) { if (e.key === 'Enter' && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) { e.preventDefault(); const inputs = Array.from(document.querySelectorAll('.direct-input, input, select')); const index = inputs.indexOf(e.target); if (index > -1 && index + 1 < inputs.length) { inputs[index + 1].focus(); if (typeof inputs[index + 1].select === 'function') { inputs[index + 1].select(); } } } });
+window.onload = function() { drawAll(); lucide.createIcons(); };
+</script>
+</body>
+</html>

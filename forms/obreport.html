@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanjeeva Multispecialty Hospital - OB Report Portal</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Roboto Slab for the entire page -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Roboto Slab', serif !important;
+    }
+    input {
+      font-family: 'Roboto Slab', serif !important;
+    }
+    select {
+      font-family: 'Roboto Slab', serif !important;
+    }
+    textarea {
+      font-family: 'Roboto Slab', serif !important;
+    }
+    button {
+      font-family: 'Roboto Slab', serif !important;
+    }
+
+
+    /* 01-CONTROL PANEL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-box {
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+
+    /* 02-REPORT HEADER */
+    .a4-page {
+      width: 210mm;
+      height: 297mm;
+      margin: 20px auto;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border-radius: 6px;
+      position: relative;
+      box-sizing: border-box;
+      padding: 15mm; 
+    }
+    .border-frame {
+      border: 3px solid #0f766e; 
+      border-radius: 12px;
+      height: 100%;
+      padding: 8mm 10mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+
+    /* 03-PATIENT DATA */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.7;
+      filter: invert(32%) sepia(85%) saturate(437%) hue-rotate(130deg) brightness(95%) contrast(90%);
+      transition: opacity 0.2s;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+    }
+
+
+    /* 04-CLINICAL MEASUREMENTS */
+
+
+    /* 05-REPORT FOOTER */
+    @media print {
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      body {
+        background: white;
+        margin: 0;
+        padding: 0;
+        height: 297mm;
+        overflow: hidden;
+      }
+      html {
+        height: 297mm;
+        overflow: hidden;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .a4-page {
+        width: 210mm;
+        height: 297mm;
+        max-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 10mm;
+        page-break-after: avoid;
+        page-break-before: avoid;
+        page-break-inside: avoid;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      .border-frame {
+        border: 3px solid #0f766e !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        height: 100%;
+        box-sizing: border-box;
+      }
+      input, select, textarea {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        appearance: none;
+        -webkit-appearance: none;
+      }
+      ::placeholder {
+        color: transparent !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
+
+
+  <!-- 01-CONTROL PANEL -->
+  <header class="bg-teal-950 border-b border-teal-900 shadow-md relative z-50 no-print py-3.5 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Verification Tool with Hidden Backend App Url -->
+      <div class="flex items-center gap-2 w-full md:w-96 bg-teal-900/60 p-1.5 rounded-lg border border-teal-800">
+        <input type="text" id="search-id-input" placeholder="Enter OB ID (e.g. SMOB001)" class="bg-transparent text-sm px-3 py-1 w-full focus:outline-none text-teal-100 placeholder-teal-400 font-medium" />
+        <button onclick="verifyAndSearchReport()" class="bg-[#10b981] hover:bg-emerald-600 text-teal-950 text-xs font-bold px-5 py-2 rounded-md transition-all flex items-center gap-1 shrink-0 uppercase tracking-wide">
+          Verify ID
+        </button>
+      </div>
+
+      <!-- Control Keys with Exact matching uploaded styles -->
+      <div class="flex items-center gap-3 shrink-0">
+        <!-- Reset Button: Red rounded capsule style -->
+        <button onclick="resetForm()" class="bg-[#de1a44] hover:bg-rose-700 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-all flex items-center gap-1.5 uppercase tracking-wider shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15.172" />
+          </svg>
+          Reset
+        </button>
+        <!-- Save Button: Orange / Amber rounded style -->
+        <button id="btn-save" onclick="saveReport()" class="bg-[#f59e0b] hover:bg-amber-600 text-teal-950 text-xs font-black px-5 py-2.5 rounded-lg transition-all flex items-center gap-1.5 uppercase tracking-wider shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-teal-950 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3" />
+          </svg>
+          Save
+        </button>
+        <!-- Print Button: Green rounded style, disabled by default -->
+        <button id="btn-print" onclick="triggerPrint()" disabled class="bg-[#10b981] hover:bg-emerald-600 text-teal-950 text-xs font-black px-6 py-2.5 rounded-lg transition-all shadow-md flex items-center gap-2 uppercase tracking-wider opacity-50 cursor-not-allowed">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-teal-950 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2" />
+          </svg>
+          Print
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Custom Reset Confirmation Modal Overlay -->
+  <div id="reset-modal" class="modal-overlay hidden no-print">
+    <div class="modal-box">
+      <h3 class="text-base font-black text-slate-800 tracking-wide uppercase leading-tight mb-2">Reset Report</h3>
+      <p class="text-xs text-slate-600 font-medium mb-6">Are you sure want to reset?</p>
+      <div class="flex items-center justify-center gap-4">
+        <button onclick="confirmReset(true)" class="bg-[#de1a44] hover:bg-rose-700 text-white text-xs font-bold px-6 py-2 rounded-md transition-all shadow uppercase tracking-wider">Yes</button>
+        <button onclick="confirmReset(false)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-6 py-2 rounded-md transition-all shadow uppercase tracking-wider">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST ALERTS CONTAINER -->
+  <div id="toast-container" class="fixed top-20 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+
+  <!-- 02-REPORT HEADER -->
+  <main class="flex-grow p-4 flex justify-center items-start">
+    <div id="print-area" class="a4-page">
+      <div class="border-frame">
+        
+        <div>
+          <!-- ================= HEADER: SINGLE BIG LOGO + TEXT LINE ================= -->
+          <header class="border-b-2 border-teal-800 pb-3 flex items-center gap-4">
+            <img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" alt="Sanjeeva Hospital Logo" class="h-16 md:h-20 object-contain shrink-0" onerror="this.src='https://placehold.co/220x80?text=SANJEEVA+HOSPITAL'">
+            <div class="flex-grow flex flex-col justify-center">
+              <h2 class="text-xl md:text-2xl font-black text-teal-800 tracking-wide uppercase leading-tight whitespace-nowrap">
+                SANJEEVA MULTISPECIALTY HOSPITAL
+              </h2>
+              <div class="mt-1">
+                <span class="inline-block bg-teal-800 text-white font-bold text-[9px] tracking-widest px-3 py-0.5 rounded-md uppercase">
+                  HEALTH CARE WITH ETHICS
+                </span>
+              </div>
+            </div>
+          </header>
+
+          <!-- ================= DOCTOR CREDENTIALS SECTION ================= -->
+          <section class="border-b border-teal-800/20 py-3 px-2 flex justify-between items-center text-slate-800">
+            <div>
+              <h3 class="text-xs font-black text-teal-900 uppercase tracking-wider">Dr. E. Sujata Anjaneyulu</h3>
+              <p class="text-[10px] font-bold text-slate-600 uppercase tracking-wider">M.B.B.S., M.S. (OBG)</p>
+              <p class="text-[9px] text-slate-400 font-semibold uppercase">Civil Assistant Surgeon</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[10px] font-black text-teal-800 uppercase tracking-wider">Obstetrician & Gynecologist</p>
+              <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Regd. No. 62254</p>
+            </div>
+          </section>
+
+          <!-- ================= FORUM HEADER ================= -->
+          <div class="text-center my-4">
+            <span class="border-b-4 border-double border-teal-800 px-12 py-0.5 text-sm font-black tracking-widest text-teal-900 uppercase">
+              OB Report
+            </span>
+          </div>
+
+
+          <!-- 03-PATIENT DATA -->
+          <section class="mb-4">
+            <div class="grid grid-cols-12 gap-x-4 gap-y-3.5 bg-teal-50/10 p-4 rounded-xl border border-teal-800/10">
+              
+              <!-- Left Column: OB Report ID -->
+              <div class="col-span-12 md:col-span-4 flex flex-col justify-center border-b md:border-b-0 md:border-r border-teal-800/15 pb-2.5 md:pb-0 md:pr-4">
+                <span class="text-[9px] font-extrabold tracking-widest text-teal-800 uppercase mb-0.5">OB Report ID</span>
+                <input type="text" id="ob-report-id" value="[Auto-Generated]" readonly class="w-full bg-transparent border-b border-slate-300 font-extrabold text-teal-950 text-sm focus:outline-none pb-0.5 select-all" />
+                <span class="text-[8px] text-slate-400 mt-1 no-print">* Generated automatically on save</span>
+              </div>
+
+              <!-- Right Column: Patient Details -->
+              <div class="col-span-12 md:col-span-8 grid grid-cols-2 gap-x-4 gap-y-3">
+                
+                <!-- Patient Name -->
+                <div class="flex flex-col col-span-2">
+                  <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Patient Name</span>
+                  <input type="text" id="p-name" placeholder="Enter Full Patient Name" class="w-full bg-transparent border-b border-slate-300 text-slate-800 text-[11px] font-bold focus:border-teal-600 focus:outline-none pb-0.5" />
+                </div>
+
+                <!-- Exam Date -->
+                <div class="flex flex-col">
+                  <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Exam Date</span>
+                  <input type="date" id="p-exam-date" class="w-full bg-transparent text-slate-800 text-[11px] font-semibold focus:outline-none pb-0.5 border-b border-slate-300" />
+                </div>
+
+                <!-- Sex Selection -->
+                <div class="flex flex-col">
+                  <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Sex</span>
+                  <select id="p-sex" class="w-full bg-transparent border-b border-slate-300 text-slate-800 text-[11px] font-semibold focus:border-teal-600 focus:outline-none pb-0.5 cursor-pointer">
+                    <option value="Female" selected>Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <!-- Village/Address -->
+                <div class="flex flex-col">
+                  <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Patient Village</span>
+                  <input type="text" id="p-village" placeholder="Enter Village" class="w-full bg-transparent border-b border-slate-300 text-slate-800 text-[11px] font-semibold focus:border-teal-600 focus:outline-none pb-0.5" />
+                </div>
+
+                <!-- LND/LMP -->
+                <div class="flex flex-col">
+                  <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">LND / LMP</span>
+                  <input type="date" id="p-lmp" class="w-full bg-transparent text-slate-800 text-[11px] font-semibold focus:outline-none pb-0.5 border-b border-slate-300" />
+                </div>
+
+                <!-- EDD -->
+                <div class="flex flex-col">
+                  <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">EDD</span>
+                  <input type="date" id="p-edd" class="w-full bg-transparent text-slate-800 text-[11px] font-semibold focus:outline-none pb-0.5 border-b border-slate-300" />
+                </div>
+
+                <!-- Gravida -->
+                <div class="flex flex-col">
+                  <span class="text-[9px] font-black text-teal-800 uppercase tracking-wider">Gravida</span>
+                  <input type="text" id="p-gravida" placeholder="e.g. G2 P1 L1 A0" class="w-full bg-transparent border-b border-teal-600/50 text-slate-800 text-[11px] font-black focus:border-teal-600 focus:outline-none pb-0.5" />
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+
+
+          <!-- 04-CLINICAL MEASUREMENTS -->
+          <section class="mb-4">
+            <div class="bg-teal-800 text-white py-1 px-3.5 rounded-lg mb-3">
+              <span class="text-[10px] font-bold tracking-widest uppercase">Ultrasound Evaluation Parameters</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3.5 px-3">
+              
+              <!-- ASIUB -->
+              <div class="flex items-center justify-between border-b border-slate-100 pb-1">
+                <label for="ob-asiub" class="text-[11px] font-bold text-slate-600 uppercase tracking-wide">ASIUB:</label>
+                <input type="text" id="ob-asiub" placeholder="Enter findings" class="w-44 bg-transparent text-right border-b border-slate-200 text-slate-800 text-[11px] font-medium focus:border-teal-600 focus:outline-none pb-0.5" />
+              </div>
+
+              <!-- CRL -->
+              <div class="flex items-center justify-between border-b border-slate-100 pb-1">
+                <label for="ob-crl" class="text-[11px] font-bold text-slate-600 uppercase tracking-wide">CRL (Crown-Rump Length):</label>
+                <input type="text" id="ob-crl" placeholder="e.g. 52 mm" class="w-44 bg-transparent text-right border-b border-slate-200 text-slate-800 text-[11px] font-medium focus:border-teal-600 focus:outline-none pb-0.5" />
+              </div>
+
+              <!-- UGA / VGA / UDA -->
+              <div class="flex items-center justify-between border-b border-slate-100 pb-1">
+                <label for="ob-uga" class="text-[11px] font-bold text-slate-600 uppercase tracking-wide">UGA / VGA / UDA:</label>
+                <input type="text" id="ob-uga" placeholder="e.g. 12 Weeks 1 Day" class="w-44 bg-transparent text-right border-b border-slate-200 text-slate-800 text-[11px] font-medium focus:border-teal-600 focus:outline-none pb-0.5" />
+              </div>
+
+              <!-- Cardiac Activity -->
+              <div class="flex items-center justify-between border-b border-slate-100 pb-1">
+                <label for="ob-cardiac" class="text-[11px] font-bold text-slate-600 uppercase tracking-wide">Cardiac Activity:</label>
+                <input type="text" id="ob-cardiac" placeholder="Present" class="w-44 bg-transparent text-right border-b border-slate-200 text-slate-800 text-[11px] font-medium focus:border-teal-600 focus:outline-none pb-0.5" />
+              </div>
+
+              <!-- EDD Downside -->
+              <div class="flex items-center justify-between border-b border-slate-100 pb-1 md:col-span-2">
+                <label for="ob-edd" class="text-[11px] font-bold text-slate-700 uppercase tracking-wide">Estimated Date of Delivery (EDD):</label>
+                <input type="date" id="ob-edd" class="bg-transparent text-right text-slate-800 text-[11px] font-semibold focus:outline-none pb-0.5 border-b border-slate-200 w-44" />
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ================= REMARKS / NOTES ================= -->
+          <section class="mb-4">
+            <div class="bg-teal-800/10 py-1 px-3.5 rounded-lg mb-2">
+              <span class="text-[10px] font-bold tracking-widest text-teal-900 uppercase">Clinical Observations / Advice</span>
+            </div>
+            <textarea id="ob-remarks" rows="2" placeholder="Enter clinical notes, patient-specific remarks, recommendations..." class="w-full text-[11px] text-slate-700 bg-transparent border border-dashed border-teal-800/20 rounded-lg p-2 focus:border-teal-500 focus:outline-none resize-none"></textarea>
+          </section>
+        </div>
+
+
+        <!-- 05-REPORT FOOTER -->
+        <div class="mt-auto">
+          <!-- Consulting Gynecologist Signature Row -->
+          <section class="mb-4 flex justify-end">
+            <div class="text-center w-52 border-t border-slate-400 pt-1">
+              <span class="text-[9px] font-bold tracking-wider text-slate-700 uppercase">Consulting Gynecologist</span>
+              <p class="text-[8px] text-slate-400 font-medium">Sanjeeva Hospital Services</p>
+            </div>
+          </section>
+
+          <!-- Footer Legal / Location details as requested -->
+          <footer class="border-t border-teal-800/20 pt-2 mt-auto">
+            <div class="grid grid-cols-12 gap-2 text-[8px] text-slate-500 font-semibold tracking-wide">
+              <div class="col-span-8 pr-4 leading-relaxed">
+                <span class="font-extrabold text-teal-800 block mb-0.5 uppercase tracking-wider">Hospital Address & Contact:</span>
+                D NO:1-7-26, PEDDANNA STREET, OPPO RAMANA FUNCTION HALL, <br>
+                G V TEXSTILES BACKSIDE, ALLAGADDA, NANDYALA DIS, AP-518543. <br>
+                <span class="text-teal-900 font-black">PHONE: +91 9100349825</span>
+              </div>
+              <div class="col-span-4 text-right flex flex-col justify-end border-l border-teal-800/10 pl-3 leading-relaxed">
+                <span class="block text-slate-700 uppercase tracking-tighter">ALL RIGHTS ARE RESERVED UNDER SANJEEVA MULTISPECIALTY HOSPITAL</span>
+                <span class="block text-[7px] text-teal-700 font-black tracking-widest uppercase mt-0.5">ARCHITECTURE BY SRI VEDA ORG</span>
+              </div>
+            </div>
+          </footer>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+
+
+    /* 01-CONTROL PANEL */
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbznDkP3HUhGifBtPr8WsBSyGJiw4FvTz_7eS_haXuGfgXUXwOte1cfQ_wS8VZ_6TUs/exec';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('p-exam-date').value = new Date().toISOString().substring(0, 10);
+    });
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const colors = {
+        success: 'bg-emerald-600 border-emerald-700 text-white',
+        error: 'bg-rose-600 border-rose-700 text-white',
+        info: 'bg-slate-800 border-slate-900 text-white'
+      };
+
+      toast.className = `flex items-center gap-2 px-4 py-2.5 rounded-lg shadow-xl border text-xs font-semibold ${colors[type]} transition-all duration-300 transform translate-x-12 opacity-0 pointer-events-auto max-w-sm`;
+      
+      // Removed standard close button and rendered checkmark icon inside toast per request
+      toast.innerHTML = `
+        <svg class="h-4 w-4 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-x-12', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('translate-x-12', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 4500);
+    }
+
+    function resetForm() {
+      // Trigger confirmation overlay
+      document.getElementById('reset-modal').classList.remove('hidden');
+    }
+
+    function confirmReset(isConfirmed) {
+      document.getElementById('reset-modal').classList.add('hidden');
+      if (isConfirmed) {
+        const today = new Date().toISOString().substring(0, 10);
+        
+        document.getElementById('ob-report-id').value = '[Auto-Generated]';
+        document.getElementById('p-name').value = '';
+        document.getElementById('p-exam-date').value = today;
+        document.getElementById('p-sex').value = 'Female';
+        document.getElementById('p-village').value = '';
+        document.getElementById('p-lmp').value = '';
+        document.getElementById('p-edd').value = '';
+        document.getElementById('p-gravida').value = '';
+        
+        document.getElementById('ob-asiub').value = '';
+        document.getElementById('ob-crl').value = '';
+        document.getElementById('ob-uga').value = '';
+        document.getElementById('ob-cardiac').value = '';
+        document.getElementById('ob-edd').value = '';
+        document.getElementById('ob-remarks').value = '';
+
+        // Disable print button on reset
+        const printBtn = document.getElementById('btn-print');
+        printBtn.disabled = true;
+        printBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        showToast('Form reset. Ready to append a new row!', 'info');
+      }
+    }
+
+    async function saveReport() {
+      const saveBtn = document.getElementById('btn-save');
+      saveBtn.disabled = true;
+      saveBtn.innerText = 'Saving...';
+
+      const payload = {
+        action: 'save',
+        reportId: document.getElementById('ob-report-id').value,
+        patientName: document.getElementById('p-name').value,
+        examDate: document.getElementById('p-exam-date').value,
+        sex: document.getElementById('p-sex').value,
+        village: document.getElementById('p-village').value,
+        lmp: document.getElementById('p-lmp').value,
+        edd: document.getElementById('p-edd').value,
+        gravida: document.getElementById('p-gravida').value,
+        asiub: document.getElementById('ob-asiub').value,
+        crl: document.getElementById('ob-crl').value,
+        uga: document.getElementById('ob-uga').value,
+        cardiac: document.getElementById('ob-cardiac').value,
+        obEdd: document.getElementById('ob-edd').value,
+        remarks: document.getElementById('ob-remarks').value
+      };
+
+      try {
+        const response = await fetch(GAS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        });
+
+        const text = await response.text();
+        const result = JSON.parse(text);
+
+        if (result.status === 'success') {
+          document.getElementById('ob-report-id').value = result.reportId;
+          
+          // Enable Print button after saving successfully
+          const printBtn = document.getElementById('btn-print');
+          printBtn.disabled = false;
+          printBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+          showToast(result.message || 'Data saved to Google Sheet!', 'success');
+        } else {
+          showToast(result.message || 'Failed to save.', 'error');
+        }
+      } catch (err) {
+        showToast('Request sent to spreadsheet. Verify by searching ID if status is unreadable.', 'info');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = `
+          <svg class="h-3.5 w-3.5 text-teal-950 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3" /></svg>
+          Save
+        `;
+      }
+    }
+
+    async function verifyAndSearchReport() {
+      const searchId = document.getElementById('search-id-input').value.trim();
+      
+      if (!searchId) {
+        showToast('Please enter an OB ID (e.g. SMOB001) to verify.', 'error');
+        return;
+      }
+
+      showToast(`Verifying ID ${searchId}...`, 'info');
+
+      try {
+        const response = await fetch(GAS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'verify', reportId: searchId })
+        });
+        
+        const text = await response.text();
+        const result = JSON.parse(text);
+
+        if (result.status === 'success' && result.data) {
+          const data = result.data;
+          
+          document.getElementById('ob-report-id').value = data.reportId || '';
+          document.getElementById('p-name').value = data.patientName || '';
+          document.getElementById('p-exam-date').value = data.examDate || '';
+          document.getElementById('p-sex').value = data.sex || 'Female';
+          document.getElementById('p-village').value = data.village || '';
+          document.getElementById('p-lmp').value = data.lmp || '';
+          document.getElementById('p-edd').value = data.edd || '';
+          document.getElementById('p-gravida').value = data.gravida || '';
+          
+          document.getElementById('ob-asiub').value = data.asiub || '';
+          document.getElementById('ob-crl').value = data.crl || '';
+          document.getElementById('ob-uga').value = data.uga || '';
+          document.getElementById('ob-cardiac').value = data.cardiac || '';
+          document.getElementById('ob-edd').value = data.obEdd || '';
+          document.getElementById('ob-remarks').value = data.remarks || '';
+
+          // Enable Print button after loading successfully
+          const printBtn = document.getElementById('btn-print');
+          printBtn.disabled = false;
+          printBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+          showToast(`Report ${searchId} retrieved and verified successfully!`, 'success');
+        } else {
+          showToast(result.message || 'Report ID not found.', 'error');
+        }
+      } catch (err) {
+        showToast('Verification query processed. Double check ID spelling.', 'info');
+      }
+    }
+
+
+    /* 02-REPORT HEADER */
+
+
+    /* 03-PATIENT DATA */
+
+
+    /* 04-CLINICAL MEASUREMENTS */
+
+
+    /* 05-REPORT FOOTER */
+    function triggerPrint() {
+      window.print();
+    }
+  </script>
+</body>
+</html>

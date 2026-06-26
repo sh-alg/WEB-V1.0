@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arjun Diagnostic Center - Billing & Receipts</title>
+<link rel="icon" type="image/png" href="https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700&family=Roboto+Slab:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Roboto Slab', 'Noto Sans Telugu', serif; background-color: #f1f5f9; padding: 15px 10px; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; }
+
+/* CM001 - CSS Control Panel */
+.controls-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 1000; width: 100%; max-width: 800px; margin: 5px auto 15px auto; }
+.btn { padding: 6px 16px; background-color: #1e3a8a; color: white; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: all 0.2s ease; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 8px -1px rgba(0,0,0,0.15); }
+.search-box { background: linear-gradient(135deg,#e0e7ff,#c7d2fe); border: 2px solid #1e3a8a; padding: 4px 12px; border-radius: 6px; display: flex; align-items: center; gap: 8px; font-weight: 800; color: #1e3a8a; box-shadow: 0 4px 6px rgba(0,0,0,0.1); height: 36px; }
+.search-box input { border: 1px solid #1e3a8a; outline: none; padding: 2px 8px; height: 24px; border-radius: 4px; font-weight: 700; background: #ffffff; width: 220px; font-size: 11px; }
+
+/* CM002 - CSS Receipt Slip Layout (A4 Half Page with 16mm Outer Margins & Optimized Height fitting) */
+.receipt-slip-segment { width: 210mm; height: 124mm; border: 2.5px solid #1e3a8a; border-radius: 8px; padding: 4mm 6mm; position: relative; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,.1); margin-top: 5px; overflow: hidden; }
+.watermark-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 180px; height: 180px; object-fit: contain; opacity: .03; z-index: 0; pointer-events: none; }
+.slip-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2.5px solid #1e3a8a; padding-bottom: 4px; margin-bottom: 6px; z-index: 10; }
+.slip-logo { height: 48px; width: 56px; object-fit: contain; }
+.slip-title-container { display: flex; align-items: center; gap: 12px; flex-grow: 1; }
+.slip-hospital-name { font-size: 1.85rem; font-weight: 800; color: #1e3a8a; text-transform: uppercase; line-height: 1; letter-spacing: 0.03em; white-space: nowrap; }
+
+/* CM003 - CSS Typography and Fields */
+.receipt-headline { font-size: 0.85rem; font-weight: 800; color: #1e3a8a; text-decoration: underline; text-transform: uppercase; letter-spacing: 0.12em; text-align: center; margin-top: 2px; margin-bottom: 6px; z-index: 10; }
+.line-input { border: none; border-bottom: 1.5px dotted #1e3a8a; outline: none; padding: 0 4px; font-weight: 800; color: #b91c1c; text-align: center; background: transparent; font-size: 0.75rem; display: inline-block; vertical-align: bottom; }
+.line-input:focus { border-bottom: 1.5px solid #b91c1c; background: #fffbeb; }
+.date-picker-wrapper { position: relative; display: inline-flex; align-items: center; cursor: pointer; }
+.date-picker-hidden { position: absolute; opacity: 0; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer; }
+.date-display-field { border-bottom: 1.5px dotted #1e3a8a; padding: 0 4px; font-weight: 800; color: #b91c1c; font-size: 0.75rem; text-align: center; min-width: 90px; }
+.calendar-icon-btn { color: #1e3a8a; margin-left: 3px; font-size: 0.75rem; cursor: pointer; }
+
+/* Gender Dropdown Styling */
+.gender-select { border-bottom: 1.5px dotted #1e3a8a; background: transparent; color: #b91c1c; font-weight: 800; font-size: 0.75rem; outline: none; cursor: pointer; text-align-last: center; padding-right: 5px; }
+
+/* Investigation Table Grid */
+.investigation-table { width: 100%; border-collapse: collapse; margin-top: 2px; margin-bottom: 6px; font-size: 0.72rem; z-index: 10; }
+.investigation-table th { background-color: #1e3a8a; color: white; font-weight: 700; text-transform: uppercase; padding: 4px; border: 1.5px solid #1e3a8a; font-size: 0.7rem; }
+.investigation-table td { padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700; color: #1e293b; }
+.investigation-table input { width: 100%; border: none; outline: none; background: transparent; font-weight: 800; color: #b91c1c; font-family: inherit; font-size: 0.72rem; }
+.investigation-table input::placeholder { color: #94a3b8; font-weight: 500; font-style: italic; }
+
+/* Dynamic referred by dropdown */
+.referred-select { border-bottom: 1.5px dotted #1e3a8a; background: transparent; color: #b91c1c; font-weight: 800; font-size: 0.75rem; outline: none; cursor: pointer; max-width: 100%; }
+
+/* CM004 - CSS Popup Modals */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; }
+.modal-content { background: #ffffff; padding: 24px; border-radius: 12px; text-align: center; min-width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+
+/* CM005 - CSS Print Media Engine */
+@page { size: A4 portrait; margin: 16mm; }
+@media print {
+body { margin: 0 !important; padding: 0 !important; background: #ffffff !important; }
+.controls-wrapper, .calendar-icon-btn, .date-picker-hidden, .gender-select, .referred-select { display: none !important; }
+.gender-print-text, .referred-print-text { display: inline-block !important; }
+.receipt-slip-segment { width: 178mm !important; height: 124mm !important; min-height: 124mm !important; max-height: 124mm !important; border: 2.5px solid #1e3a8a !important; box-shadow: none !important; margin: 0 auto !important; padding: 4mm 6mm !important; box-sizing: border-box !important; }
+.investigation-table td { border-color: #64748b !important; }
+/* Hides empty table rows during printing */
+.empty-row { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- CM006 - HTML Controls -->
+<div class="controls-wrapper">
+<div class="flex gap-4">
+<button class="btn bg-rose-600 hover:bg-rose-700" onclick="confirmReset()"><i class="fa-solid fa-trash-can"></i> RESET</button>
+<button class="btn btn-save bg-emerald-600 hover:bg-emerald-700" id="commitBtn_9381" onclick="handleSaveOrUpdate_7182()"><i class="fa-solid fa-cloud-arrow-up" id="saveIcon"></i> <span id="btnText_992">SAVE</span></button>
+<button class="btn btn-print bg-blue-500 hover:bg-blue-600" onclick="window.print()"><i class="fa-solid fa-print"></i> PRINT</button>
+</div>
+
+<div class="search-box">
+Lab ID / Bill ID:
+<input type="text" id="searchInput_8822" placeholder="Enter Lab ID (e.g. SMB001)" oninput="this.value=this.value.toUpperCase()" onkeydown="handleSearchEnter(event)">
+<button id="verifyBtn_7722" class="btn" style="padding:2px 10px;height:24px;font-size:10px;min-width:80px;" onclick="performSearch_9281()">
+<i id="verifyIcon_7722" class="fa-solid fa-check"></i> VERIFY
+</button>
+</div>
+</div>
+
+<!-- CM007 - HTML Receipt Slip Segment -->
+<div class="receipt-slip-segment" id="receiptSegment">
+<img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="watermark-bg" alt="watermark">
+
+<!-- CM008 - HTML Receipt Slip Header -->
+<div class="slip-header">
+<div class="slip-title-container">
+<img src="https://sh-alg.github.io/SM-IMG/02-SMH-HOSPITAL%20LOGO.png" class="slip-logo" id="headerLogo" alt="hospital logo">
+<h1 class="slip-hospital-name" id="clinicHeaderName">ARJUN DIAGNOSTIC CENTER</h1>
+</div>
+<div class="text-right text-blue-900 font-bold text-[0.65rem]">
+<div><i class="fas fa-phone-alt"></i> 9100349825</div>
+</div>
+</div>
+
+<!-- CM009 - HTML Receipt Metadata Fields -->
+<div class="grid grid-cols-2 gap-y-1.5 border-b border-blue-900/10 pb-2 mb-1.5 z-10 text-[0.75rem] font-bold text-blue-900">
+<!-- Row 1: Bill ID vs Date -->
+<div class="flex items-center">
+Bill Number / Lab ID :&nbsp;
+<span contenteditable="plaintext-only" id="receiptNo_val" class="line-input w-24 text-left uppercase text-rose-600 font-extrabold" oninput="saveFormData()">NEW</span>
+</div>
+<div class="flex items-center justify-end">
+Date :&nbsp;
+<div class="date-picker-wrapper">
+<span id="receiptDate_display" class="date-display-field">25 JUN 2026</span>
+<i class="far fa-calendar-alt calendar-icon-btn"></i>
+<input type="date" class="date-picker-hidden" onchange="handleDateSelection(this, 'receiptDate_display')">
+</div>
+</div>
+
+<!-- Row 2: Patient Name vs Age & Sex Dropdown Selection -->
+<div class="flex items-center">
+Patient Name :&nbsp;
+<span contenteditable="plaintext-only" id="patientName" class="line-input flex-grow text-left" oninput="saveFormData()">[ENTER PATIENT NAME]</span>
+</div>
+<div class="flex items-center justify-end gap-2">
+Age :&nbsp;
+<span contenteditable="plaintext-only" id="patientAge" class="line-input w-10 text-center" oninput="saveFormData()">25</span>
+Yrs&nbsp;&nbsp;|&nbsp;&nbsp;Sex :
+<select id="genderSelect" class="gender-select mr-1" onchange="handleGenderChange()">
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+</select>
+<span id="genderPrint" class="gender-print-text hidden font-extrabold text-rose-600 text-[0.75rem] border-b border-dotted border-blue-900"></span>
+</div>
+
+<!-- Row 3: Referred By with Dropdown Selector -->
+<div class="flex items-center col-span-2">
+Referred By :&nbsp;
+<select id="referredBySelect" class="referred-select mr-2" onchange="handleReferredByChange()">
+  <option value="DR. R. ANJANEYULU M.B.B.S., M.D. (PAED) MCH.">DR. R. ANJANEYULU M.B.B.S., M.D. (PAED) MCH.</option>
+  <option value="DR. E SUJATHA ANJANEYULU M.B.B.S., M.S. (OBG)">DR. E SUJATHA ANJANEYULU M.B.B.S., M.S. (OBG)</option>
+  <option value="CUSTOM">OTHERS (TYPE CUSTOM NAME BELOW)</option>
+</select>
+<span contenteditable="plaintext-only" id="referredByCustom" class="line-input flex-grow text-left hidden" oninput="saveFormData()">[TYPE DOCTOR NAME]</span>
+<span id="referredByPrint" class="referred-print-text hidden font-extrabold text-rose-600 text-[0.75rem] border-b border-dotted border-blue-900"></span>
+</div>
+</div>
+
+<!-- CM010 - HTML Receipt Headline -->
+<div class="receipt-headline">DIAGNOSTIC TEST REPORT BILL & RECEIPT</div>
+
+<!-- CM011 - HTML Investigation Table (6 rows max) -->
+<table class="investigation-table">
+<thead>
+<tr>
+<th style="width: 8%;">S.No</th>
+<th style="width: 72%;">Investigation Description</th>
+<th style="width: 20%; text-align: right;">Amount (?)</th>
+</tr>
+</thead>
+<tbody id="investigationTableBody">
+<!-- Row 1 -->
+<tr id="tableRow_1">
+<td class="text-center">1</td>
+<td><input type="text" id="inv_name_1" placeholder="Enter investigation details" oninput="handleRowInput(1)"></td>
+<td><input type="text" id="inv_amt_1" class="text-right" placeholder="0.00" oninput="handleTableAmountChange()"></td>
+</tr>
+<!-- Row 2 -->
+<tr id="tableRow_2">
+<td class="text-center">2</td>
+<td><input type="text" id="inv_name_2" placeholder="Enter investigation details" oninput="handleRowInput(2)"></td>
+<td><input type="text" id="inv_amt_2" class="text-right" placeholder="0.00" oninput="handleTableAmountChange()"></td>
+</tr>
+<!-- Row 3 -->
+<tr id="tableRow_3">
+<td class="text-center">3</td>
+<td><input type="text" id="inv_name_3" placeholder="Enter investigation details" oninput="handleRowInput(3)"></td>
+<td><input type="text" id="inv_amt_3" class="text-right" placeholder="0.00" oninput="handleTableAmountChange()"></td>
+</tr>
+<!-- Row 4 -->
+<tr id="tableRow_4">
+<td class="text-center">4</td>
+<td><input type="text" id="inv_name_4" placeholder="Enter investigation details" oninput="handleRowInput(4)"></td>
+<td><input type="text" id="inv_amt_4" class="text-right" placeholder="0.00" oninput="handleTableAmountChange()"></td>
+</tr>
+<!-- Row 5 -->
+<tr id="tableRow_5">
+<td class="text-center">5</td>
+<td><input type="text" id="inv_name_5" placeholder="Enter investigation details" oninput="handleRowInput(5)"></td>
+<td><input type="text" id="inv_amt_5" class="text-right" placeholder="0.00" oninput="handleTableAmountChange()"></td>
+</tr>
+<!-- Row 6 -->
+<tr id="tableRow_6">
+<td class="text-center">6</td>
+<td><input type="text" id="inv_name_6" placeholder="Enter investigation details" oninput="handleRowInput(6)"></td>
+<td><input type="text" id="inv_amt_6" class="text-right" placeholder="0.00" oninput="handleTableAmountChange()"></td>
+</tr>
+</tbody>
+<tfoot>
+<tr class="font-extrabold bg-slate-50">
+<td colspan="2" class="text-right text-blue-900 border border-slate-300 py-1">Total Amount Received:</td>
+<td id="totalAmountDisplay" class="text-right text-rose-600 font-extrabold border border-slate-300 py-1">0.00</td>
+</tr>
+</tfoot>
+</table>
+
+<!-- CM012 - HTML Rupees in Words -->
+<div class="text-[0.62rem] font-bold text-indigo-900 uppercase flex items-baseline gap-1 z-10 mb-1">
+<span>Rupees in words :</span>
+<span id="rupeesInWords" class="line-input-words text-rose-700 lowercase first-letter:uppercase">Zero Rupees Only</span>
+</div>
+
+<!-- CM013 - HTML Signature Area (DOCTOR SIGNATURE ON THE RIGHT) -->
+<div class="flex justify-between items-end text-[0.6rem] font-bold text-blue-900 mt-2 z-10">
+<div class="text-[0.48rem] text-slate-500 italic flex items-center gap-1 pb-1">
+</div>
+<div class="text-center mr-2">
+<div class="w-36 border-b border-blue-900/40 mb-1"></div>
+<p class="text-[0.52rem] font-bold uppercase tracking-wider text-blue-900">Doctor Signature</p>
+</div>
+</div>
+
+
+
+<!-- CM015 - HTML Modals -->
+<div id="resetPopup" class="modal-overlay">
+<div class="modal-content border border-rose-500">
+<h3 class="font-extrabold text-blue-900 text-lg">Are You Sure To Reset?</h3>
+<p class="text-xs text-slate-500 mt-1">This will clear all edited data fields and test lists.</p>
+<div class="mt-4 flex justify-center gap-4">
+<button class="btn bg-rose-600" onclick="doReset()">YES</button>
+<button class="btn bg-slate-500" onclick="closeResetPopup()">NO</button>
+</div>
+</div>
+</div>
+
+<div id="successPopup" class="modal-overlay">
+<div class="modal-content border-2 border-emerald-500">
+<i class="fa-solid fa-circle-check text-5xl text-emerald-500"></i>
+<h2 class="text-lg font-extrabold text-emerald-500 mt-3">SAVED</h2>
+<p id="successText" class="text-slate-700 text-xs font-bold mt-2"></p>
+<button class="btn bg-emerald-600 mt-4 mx-auto" onclick="closeSuccessPopup()">OK</button>
+</div>
+</div>
+
+<div id="errorPopup" class="modal-overlay">
+<div class="modal-content border-2 border-rose-500">
+<i class="fa-solid fa-circle-exclamation text-5xl text-rose-500"></i>
+<h2 class="text-lg font-extrabold text-rose-500 mt-3">ERROR</h2>
+<p id="errorText" class="text-slate-700 text-xs font-bold mt-2"></p>
+<button class="btn bg-rose-600 mt-4 mx-auto" onclick="closeErrorPopup()">OK</button>
+</div>
+</div>
+
+<script>
+/* CM016 - JS Core Configuration */
+const URL = "https://script.google.com/macros/s/AKfycbxoExSBOp6dxZnBWw4P5UZZswKtwH8cQZ0uVP3bmMz8l8RUfjwJju1qjYy1T_RYmmlg/exec";
+
+/* Helper to generate today's date formatted as "DD MMM YYYY" (e.g., "25 JUN 2026") */
+const getFormattedTodayDate = () => {
+  const d = new Date();
+  const m = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  return `${("0"+d.getDate()).slice(-2)} ${m[d.getMonth()]} ${d.getFullYear()}`.toUpperCase();
+};
+
+/* CM017 - JS Word Conversion Routine */
+const numToWords = (num) => { if (num == 0) return 'Zero Rupees Only'; const a = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen']; const b = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety']; const format = (n, suffix) => n > 0 ? (n < 20 ? a[n] : b[Math.floor(n/10)] + (n%10 ? ' ' + a[n%10] : '')) + ' ' + suffix + ' ' : ''; let str = ''; str += format(Math.floor(num/10000000), 'Crore'); str += format(Math.floor((num%10000000)/100000), 'Lakh'); str += format(Math.floor((num%100000)/1000), 'Thousand'); str += format(Math.floor((num%1000)/100), 'Hundred'); const rem = num % 100; if (rem > 0) { str += (str != '' ? 'and ' : '') + (rem < 20 ? a[rem] : b[Math.floor(rem/10)] + (rem%10 ? ' ' + a[rem%10] : '')); } return str.trim() + ' Rupees Only'; };
+
+/* Gender Switcher Dropdown Logic */
+const handleGenderChange = () => {
+  const genderSelect = document.getElementById('genderSelect');
+  const genderPrint = document.getElementById('genderPrint');
+  genderPrint.innerText = genderSelect.value;
+  saveFormData();
+};
+
+/* Referred By Dropdown Trigger logic */
+const handleReferredByChange = () => {
+  const select = document.getElementById('referredBySelect');
+  const customSpan = document.getElementById('referredByCustom');
+  const printText = document.getElementById('referredByPrint');
+
+  if (select.value === 'CUSTOM') {
+    customSpan.classList.remove('hidden');
+    customSpan.focus();
+    printText.innerText = customSpan.innerText;
+  } else {
+    customSpan.classList.add('hidden');
+    printText.innerText = select.value;
+  }
+  saveFormData();
+};
+
+/* Dynamic Print Engine Helper: Hide or show rows based on inputs */
+const handleRowInput = (rowNum) => {
+  const value = document.getElementById(`inv_name_${rowNum}`).value.trim();
+  const rowElement = document.getElementById(`tableRow_${rowNum}`);
+  if (value === "") {
+    rowElement.classList.add('empty-row');
+  } else {
+    rowElement.classList.remove('empty-row');
+  }
+  saveFormData();
+};
+
+/* Initialize empty rows state */
+const initializePrintRows = () => {
+  for (let i = 1; i <= 6; i++) {
+    handleRowInput(i);
+  }
+};
+
+/* Interactive Real-Time Amount Addition Routine */
+const handleTableAmountChange = () => {
+  let sum = 0;
+  for (let i = 1; i <= 6; i++) {
+    const rawVal = document.getElementById(`inv_amt_${i}`).value;
+    const numericVal = parseFloat(rawVal) || 0;
+    sum += numericVal;
+  }
+  document.getElementById('totalAmountDisplay').innerText = sum.toFixed(2);
+  document.getElementById('rupeesInWords').innerText = numToWords(Math.round(sum));
+  saveFormData();
+};
+
+/* CM018 - JS Sync and Persistence Logic */
+const saveFormData = () => {
+  const tableData = [];
+  for (let i = 1; i <= 6; i++) {
+    tableData.push({
+      name: document.getElementById(`inv_name_${i}`).value,
+      amt: document.getElementById(`inv_amt_${i}`).value
+    });
+  }
+  
+  const genderSelect = document.getElementById('genderSelect');
+  const gender = genderSelect.value;
+
+  const selectVal = document.getElementById('referredBySelect').value;
+  const customVal = document.getElementById('referredByCustom').innerText;
+  const finalReferred = (selectVal === 'CUSTOM') ? customVal : selectVal;
+
+  // Sync print mirrors
+  document.getElementById('referredByPrint').innerText = finalReferred;
+  document.getElementById('genderPrint').innerText = gender;
+
+  const receiptData = {
+    certNo: document.getElementById('searchInput_8822').value,
+    receiptNo: document.getElementById('receiptNo_val').innerText,
+    receiptDate: document.getElementById('receiptDate_display').innerText,
+    patientName: document.getElementById('patientName').innerText,
+    patientAge: document.getElementById('patientAge').innerText,
+    patientSex: gender,
+    referredBySelect: selectVal,
+    referredByCustom: customVal,
+    totalAmount: document.getElementById('totalAmountDisplay').innerText,
+    words: document.getElementById('rupeesInWords').innerText,
+    tests: tableData
+  };
+  localStorage.setItem('arjun_billing_data_v3', JSON.stringify(receiptData));
+};
+
+const loadFormData = () => {
+  const dataString = localStorage.getItem('arjun_billing_data_v3');
+  if (!dataString) {
+    const today = getFormattedTodayDate();
+    document.getElementById('receiptDate_display').innerText = today;
+    initializePrintRows();
+    handleReferredByChange();
+    handleGenderChange();
+    return;
+  }
+  try {
+    const d = JSON.parse(dataString);
+    document.getElementById('searchInput_8822').value = d.certNo || '';
+    document.getElementById('receiptNo_val').innerText = d.receiptNo || 'NEW';
+    document.getElementById('receiptDate_display').innerText = d.receiptDate || getFormattedTodayDate();
+    document.getElementById('patientName').innerText = d.patientName || '[ENTER PATIENT NAME]';
+    document.getElementById('patientAge').innerText = d.patientAge || '25';
+    
+    // Set gender select dropdown state
+    const targetSex = d.patientSex || 'Male';
+    const genderSelect = document.getElementById('genderSelect');
+    genderSelect.value = targetSex;
+    document.getElementById('genderPrint').innerText = targetSex;
+
+    // Set referred by dropdown and inputs
+    const select = document.getElementById('referredBySelect');
+    select.value = d.referredBySelect || "DR. R. ANJANEYULU M.B.B.S., M.D. (PAED) MCH.";
+    document.getElementById('referredByCustom').innerText = d.referredByCustom || "[TYPE DOCTOR NAME]";
+    handleReferredByChange();
+
+    // Populate test list values
+    if (d.tests && Array.isArray(d.tests)) {
+      d.tests.forEach((t, index) => {
+        const i = index + 1;
+        if (i <= 6) {
+          document.getElementById(`inv_name_${i}`).value = t.name || '';
+          document.getElementById(`inv_amt_${i}`).value = t.amt || '';
+        }
+      });
+    }
+
+    handleTableAmountChange();
+    initializePrintRows();
+  } catch (e) {
+    console.error("Local restore pipeline interrupted", e);
+  }
+};
+
+const handleDateSelection = (inputEl, displayId) => {
+  if (!inputEl.value) return;
+  const d = new Date(inputEl.value);
+  const m = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  document.getElementById(displayId).innerText = `${("0"+d.getDate()).slice(-2)} ${m[d.getMonth()]} ${d.getFullYear()}`.toUpperCase();
+  saveFormData();
+};
+
+/* CM019 - JS Database Search handlers */
+const performSearch_9281 = () => {
+  const q = document.getElementById('searchInput_8822').value.trim();
+  if (!q) return;
+  document.getElementById('verifyBtn_7722').disabled = true;
+  document.getElementById('verifyIcon_7722').className = 'fa-solid fa-spinner fa-spin';
+  
+  fetch(`${URL}?certNo=${encodeURIComponent(q)}`)
+    .then(r => r.json())
+    .then(d => {
+      if (d.status === "success") {
+        const patName = d.data['patientName'] || d.data['Patient Name'] || '';
+        const recNo = d.data['receiptNo'] || d.data['Receipt ID'] || q;
+        const recDate = d.data['receiptDate'] || d.data['Receipt Date'] || getFormattedTodayDate();
+        
+        document.getElementById('receiptNo_val').innerText = recNo;
+        document.getElementById('receiptDate_display').innerText = recDate;
+        document.getElementById('patientName').innerText = patName;
+        
+        // If extra metadata was saved down to spreadsheet, parse it
+        if (d.data['words'] && d.data['words'].startsWith('{')) {
+          try {
+            const parsedMeta = JSON.parse(d.data['words']);
+            document.getElementById('patientAge').innerText = parsedMeta.age || '25';
+            
+            // Set sex select dropdown
+            const targetSex = parsedMeta.sex || 'Male';
+            const genderSelect = document.getElementById('genderSelect');
+            genderSelect.value = targetSex;
+            document.getElementById('genderPrint').innerText = targetSex;
+
+            // Set select elements
+            const select = document.getElementById('referredBySelect');
+            if (parsedMeta.referredBySelect) {
+              select.value = parsedMeta.referredBySelect;
+            } else {
+              // Backward compatibility check
+              select.value = "CUSTOM";
+              document.getElementById('referredByCustom').innerText = parsedMeta.referredBy || "DR. SELF";
+            }
+            if (parsedMeta.referredByCustom) {
+              document.getElementById('referredByCustom').innerText = parsedMeta.referredByCustom;
+            }
+            handleReferredByChange();
+
+            // Repopulate investigations
+            if (parsedMeta.tests && Array.isArray(parsedMeta.tests)) {
+              parsedMeta.tests.forEach((t, index) => {
+                const i = index + 1;
+                if (i <= 6) {
+                  document.getElementById(`inv_name_${i}`).value = t.name || '';
+                  document.getElementById(`inv_amt_${i}`).value = t.amt || '';
+                }
+              });
+            }
+
+          } catch(e) {
+            document.getElementById('rupeesInWords').innerText = d.data['words'];
+          }
+        } else {
+          document.getElementById('rupeesInWords').innerText = d.data['words'] || 'Zero Rupees Only';
+        }
+        
+        handleTableAmountChange();
+        initializePrintRows();
+        showSuccess('Diagnostic report matched and loaded successfully!');
+      } else {
+        showError('No record found matching this Reference ID.');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      showError('Database communication offline. Operating in fallback local storage.');
+    })
+    .finally(() => {
+      document.getElementById('verifyBtn_7722').disabled = false;
+      document.getElementById('verifyIcon_7722').className = 'fa-solid fa-check';
+    });
+};
+
+const handleSearchEnter = (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    performSearch_9281();
+  }
+};
+
+const handleSaveOrUpdate_7182 = () => {
+  document.getElementById('saveIcon').className = 'fa-solid fa-spinner fa-spin';
+  document.getElementById('btnText_992').innerText = 'SAVING...';
+
+  const tableData = [];
+  for (let i = 1; i <= 6; i++) {
+    tableData.push({
+      name: document.getElementById(`inv_name_${i}`).value.trim(),
+      amt: document.getElementById(`inv_amt_${i}`).value.trim()
+    });
+  }
+
+  const genderSelect = document.getElementById('genderSelect');
+  const gender = genderSelect.value;
+
+  const selectVal = document.getElementById('referredBySelect').value;
+  const customVal = document.getElementById('referredByCustom').innerText;
+  const finalReferred = (selectVal === 'CUSTOM') ? customVal : selectVal;
+
+  const wordsPayload = {
+    age: document.getElementById('patientAge').innerText.trim(),
+    sex: gender,
+    referredBy: finalReferred,
+    referredBySelect: selectVal,
+    referredByCustom: customVal,
+    tests: tableData,
+    plainWords: document.getElementById('rupeesInWords').innerText.trim()
+  };
+
+  const data = {
+    certNo: document.getElementById('searchInput_8822').value.trim(),
+    receiptNo: document.getElementById('receiptNo_val').innerText.trim(),
+    receiptDate: document.getElementById('receiptDate_display').innerText.trim(),
+    amount: document.getElementById('totalAmountDisplay').innerText.trim(),
+    patientName: document.getElementById('patientName').innerText.trim(),
+    onDate: document.getElementById('receiptDate_display').innerText.trim(),
+    words: JSON.stringify(wordsPayload) // Keep structural data perfectly formatted inside plain words database element
+  };
+
+  fetch(URL, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(resData => {
+    if (resData.status === 'success') {
+      document.getElementById('receiptNo_val').innerText = resData.receiptNo;
+      document.getElementById('searchInput_8822').value = resData.receiptNo;
+      saveFormData();
+      showSuccess('Billing record saved. Invoice Reference ID: ' + resData.receiptNo);
+    } else {
+      showError('Sync failed: ' + resData.message);
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    showError('Database communication offline. Saved locally.');
+  })
+  .finally(() => {
+    document.getElementById('saveIcon').className = 'fa-solid fa-cloud-arrow-up';
+    document.getElementById('btnText_992').innerText = 'SAVE';
+  });
+};
+
+/* CM020 - JS Modal Display Controls */
+const confirmReset = () => { document.getElementById('resetPopup').style.display = 'flex'; };
+const closeResetPopup = () => { document.getElementById('resetPopup').style.display = 'none'; };
+
+const doReset = () => {
+  localStorage.removeItem('arjun_billing_data_v3');
+  const today = getFormattedTodayDate();
+  document.getElementById('searchInput_8822').value = '';
+  document.getElementById('receiptNo_val').innerText = 'NEW';
+  document.getElementById('receiptDate_display').innerText = today;
+  document.getElementById('patientName').innerText = '[ENTER PATIENT NAME]';
+  document.getElementById('patientAge').innerText = '25';
+  
+  // Reset gender selection
+  const genderSelect = document.getElementById('genderSelect');
+  genderSelect.value = 'Male';
+  document.getElementById('genderPrint').innerText = 'Male';
+
+  // Restore doctors defaults
+  document.getElementById('referredBySelect').value = "DR. R. ANJANEYULU M.B.B.S., M.D. (PAED) MCH.";
+  document.getElementById('referredByCustom').innerText = "[TYPE DOCTOR NAME]";
+  handleReferredByChange();
+
+  // Clear 6 rows
+  for (let i = 1; i <= 6; i++) {
+    document.getElementById(`inv_name_${i}`).value = '';
+    document.getElementById(`inv_amt_${i}`).value = '';
+  }
+  
+  handleTableAmountChange();
+  initializePrintRows();
+  closeResetPopup();
+  showSuccess('Reset completed successfully.');
+};
+
+const showSuccess = (msg) => {
+  document.getElementById('successText').innerHTML = msg;
+  document.getElementById('successPopup').style.display = 'flex';
+};
+
+const showError = (msg) => {
+  document.getElementById('errorText').innerHTML = msg;
+  document.getElementById('errorPopup').style.display = 'flex';
+};
+
+const closeSuccessPopup = () => {
+  document.getElementById('successPopup').style.display = 'none';
+};
+
+const closeErrorPopup = () => {
+  document.getElementById('errorPopup').style.display = 'none';
+};
+
+/* CM021 - JS Initialization */
+window.addEventListener('load', loadFormData);
+</script>
+</body>
+</html>
