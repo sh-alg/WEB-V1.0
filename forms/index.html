@@ -1,1 +1,97 @@
 test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hospital Forms Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* CM001 - CSS Variables */
+:root { --primary-blue: #1e40af; --bg-body: #f3f4f6; --bg-surface: #ffffff; --bg-hover: #f9fafb; --text-main: #111827; --text-muted: #6b7280; --border-color: #e5e7eb; --header-height: 55px; --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05); --shadow-md: 0 2px 4px -1px rgba(0, 0, 0, 0.1); --radius-md: 6px; }
+
+/* CM002 - Global Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto Slab', serif; }
+
+/* CM003 - Body Base */
+body { background-color: var(--bg-body); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; }
+
+/* CM004 - Scrollbar Elements */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-surface); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* CM005 - Header Layout */
+.main-header { height: var(--header-height); background-color: var(--bg-surface); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; box-shadow: var(--shadow-sm); z-index: 100; }
+.header-title { font-size: 1.15rem; font-weight: 700; color: var(--primary-blue); }
+
+/* CM006 - Dropdown Styles */
+.dropdown-container { display: flex; align-items: center; }
+.form-dropdown { padding: 6px 12px; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); background-color: var(--bg-surface); color: var(--text-main); cursor: pointer; outline: none; transition: border-color 0.2s; min-width: 250px; }
+.form-dropdown:hover, .form-dropdown:focus { border-color: var(--primary-blue); }
+
+/* CM007 - Content Iframe Area */
+.main-container { flex-grow: 1; display: flex; flex-direction: column; position: relative; height: calc(100vh - var(--header-height)); }
+.content-area { flex-grow: 1; position: relative; background-color: var(--bg-body); padding: 10px; display: flex; flex-direction: column; overflow: hidden; }
+.iframe-container { flex-grow: 1; background-color: var(--bg-surface); border-radius: var(--radius-md); box-shadow: var(--shadow-md); overflow: hidden; position: relative; border: 1px solid var(--border-color); }
+iframe { width: 100%; height: 100%; border: none; display: block; }
+
+/* CM008 - Loading Overlay Element */
+.loader-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-surface); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; transition: opacity 0.3s; }
+.loader-overlay.hidden { opacity: 0; pointer-events: none; }
+.spinner { width: 30px; height: 30px; border: 3px solid var(--border-color); border-top: 3px solid var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; }
+.loader-text { margin-top: 10px; font-size: 0.9rem; font-weight: 500; color: var(--text-muted); }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+</style>
+</head>
+<body>
+
+<!-- CM009 - App Header Wrapper -->
+<header class="main-header"><div class="header-title">Hospital Forms Manager</div><div class="dropdown-container"><select id="formDropdown" class="form-dropdown"></select></div></header>
+
+<!-- CM010 - Main Layout Wrapper -->
+<main class="main-container">
+<section class="content-area">
+<div class="iframe-container">
+<div class="loader-overlay" id="iframeLoader"><div class="spinner"></div><div class="loader-text">Loading Form...</div></div>
+<iframe id="formViewer" src="about:blank" title="Form Viewer"></iframe>
+</div>
+</section>
+</main>
+
+<script>
+
+// CM011 - Application State & Data Setup
+const defaultFormsData = [{id:"form_1",file:"https://sh-alg.github.io/WEB-V1.0/forms/deliverycertificate.html",name:"Delivery Certificate"},{id:"form_2",file:"https://sh-alg.github.io/WEB-V1.0/forms/dischargesummary.html",name:"Discharge Summary"},{id:"form_3",file:"https://sh-alg.github.io/WEB-V1.0/forms/feereceipt.html",name:"Fee Receipt"},{id:"form_4",file:"https://sh-alg.github.io/WEB-V1.0/forms/ipbill.HTML",name:"IP Bill"},{id:"form_5",file:"https://sh-alg.github.io/WEB-V1.0/forms/labbill.html",name:"Lab Bill"},{id:"form_6",file:"https://sh-alg.github.io/WEB-V1.0/forms/labreports.html",name:"Lab Reports"},{id:"form_7",file:"https://sh-alg.github.io/WEB-V1.0/forms/medicinebill.html",name:"Medicine Bill"},{id:"form_8",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob1report.html",name:"OB1 Report"},{id:"form_9",file:"https://sh-alg.github.io/WEB-V1.0/forms/ob2report.html",name:"OB2 Report"},{id:"form_10",file:"https://sh-alg.github.io/WEB-V1.0/forms/obreport.html",name:"OB Report"},{id:"form_11",file:"https://sh-alg.github.io/WEB-V1.0/forms/sterilaizationcertificate.html",name:"Sterilization Certificate"}];
+let activeFormId = null;
+
+// CM012 - Cached DOM References
+const formDropdown = document.getElementById('formDropdown'); const formViewer = document.getElementById('formViewer'); const iframeLoader = document.getElementById('iframeLoader');
+
+// CM013 - App Initialization Method
+function initApp() { renderDropdown(); restoreLastOpened(); setupEvents(); }
+
+// CM014 - Dropdown Rendering Logic
+function renderDropdown() { formDropdown.innerHTML = ''; defaultFormsData.forEach(form => { const option = document.createElement('option'); option.value = form.id; option.textContent = form.name; option.dataset.file = form.file; formDropdown.appendChild(option); }); }
+
+// CM015 - Iframe Loader Logic
+function loadForm(id) { const form = defaultFormsData.find(f => f.id === id); if(!form) return; activeFormId = id; formDropdown.value = id; iframeLoader.classList.remove('hidden'); formViewer.src = form.file; formViewer.onload = () => { iframeLoader.classList.add('hidden'); }; formViewer.onerror = () => { iframeLoader.classList.add('hidden'); }; saveLastOpened(id); }
+
+// CM016 - Event Listeners
+function setupEvents() { formDropdown.addEventListener('change', (e) => { loadForm(e.target.value); }); }
+
+// CM017 - Local Storage Handlers
+function saveLastOpened(id) { localStorage.setItem('hospitalFormsLastOpened_Dropdown', id); }
+function restoreLastOpened() { const lastId = localStorage.getItem('hospitalFormsLastOpened_Dropdown'); const target = defaultFormsData.find(f => f.id === lastId) || defaultFormsData[0]; if(target) { loadForm(target.id); } }
+
+// CM018 - DOM Load Trigger
+document.addEventListener('DOMContentLoaded', initApp);
+
+</script>
+</body>
+</html>
