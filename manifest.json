@@ -10,13 +10,19 @@
       "src": "https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "https://sh-alg.github.io/SM-IMG/01-SMH-FEVICON_ICON.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
